@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>50.043 Introduction to Database System - Database System and Big Data 50.043</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">Database System and Big Data 50.043</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../../project/" class="nav-link">Project</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../l1_course_handout/" class="nav-link">Handout</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#50043-introduction-to-database-system" class="nav-link">50.043 Introduction to Database System</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#learning-outcomes" class="nav-link">Learning Outcomes</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#what-is-a-database" class="nav-link">What is a database?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#what-is-a-database-management-system" class="nav-link">What is a database management system?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#characteristics-of-a-database-management-system" class="nav-link">Characteristics of a database management system</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#common-techniques-available-in-database-management-systems" class="nav-link">Common Techniques available in database management systems</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#overview-of-data-modelling" class="nav-link">Overview of Data Modelling</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="50043-introduction-to-database-system">50.043 Introduction to Database System</h1>
+<h2 id="learning-outcomes">Learning Outcomes</h2>
+<p>By the end of this unit, you should be able to</p>
+<ol>
+<li>List the problems handled by database management systems​</li>
+<li>Describe the techniques used in database system to solve these problems​</li>
+</ol>
+<p>​</p>
+<h2 id="what-is-a-database">What is a database?</h2>
+<p>Generally speaking, a database is an organized collection of data. </p>
+<p>For instance, </p>
+<ul>
+<li>your excel sheet that keep tracks of your monthly finance.</li>
+<li>a text file that stores the list of items you want to buy for christmas or CNY.</li>
+<li>a collection of student records in an LMS.</li>
+<li>a collection of product information and stock level for a minimart chain.</li>
+</ul>
+<h2 id="what-is-a-database-management-system">What is a database management system?</h2>
+<p>It is a system (hopefully a software system) that manages databases. Many DBMS orchestrates and manages multiple databases simultanenously. For instance, Oracle, MySQL, MS SQL, MongoDB, Firebase, Amazon RDs and etc. </p>
+<p>It is confusing when people use to the term "database" to refer to a DBMS. </p>
+<h2 id="characteristics-of-a-database-management-system">Characteristics of a database management system</h2>
+<p>For a DBMS to be pragmatically useful, here are some of the characteristics that it may possess</p>
+<ol>
+<li>It should be efficient. Queries and data operation should be evaluated and performed in an efficient way.</li>
+<li>It should be crash consistent. In the event of unexpected crash and system distruption, the data stored should remain consistent.</li>
+<li>It should support concurrent access. There are many users and softwares that could access the data without interfering each other.</li>
+<li>It should support data abstraction. Data and their relationships are allowed to be described in a logical manner without the users / software to be exposed with the detail implementation.</li>
+</ol>
+<h2 id="common-techniques-available-in-database-management-systems">Common Techniques available in database management systems</h2>
+<ol>
+<li>Storage and Index. DBMSes have their own internal storage system. It often differs from those available in the operating system, due to use case difference. Internal storage system enables DBMSes to organize and retrieve data in a systematic and efficient way. Indices are inspired from data structure and algorithms. With indices, data queries and operation can be further optimized. </li>
+<li>Transaction. Many DBMSes support transactional operations. Trasaction groups multiple operations to be performed as an atomic sequence of actions to be performed. Conflicts caused by concurrent access can be resolved by studying and manipulating multiple transactions. Transactions are logged, so that in the event of system crashes, partial data changes can be reverted back to the nearest consistent state.</li>
+<li>Data Model and SQL. Many tranditional DBMSes support data model and SQL. This combination is a simple and expressive data abstraction for many applications. Softwares developed based on an existing database (system) could be possible migrate to another with marginal technical effort. </li>
+</ol>
+<p>Recently many big data systems extend their support to these techniques and it proves the essentiality of them.</p>
+<h2 id="overview-of-data-modelling">Overview of Data Modelling</h2>
+<p>For the first part of this module, we dwell into the details of data modelling. </p>
+<p><img alt="" src="../images/overview-of-data-modelling.png" /></p>
+<p>In the upper diagram, we describe the user interaction with the database as blackbox. </p>
+<p>In the lower diagram, we define the processes of data modelling. </p>
+<ol>
+<li>
+<p>Conceptual Model - in this step, we try to capture the user needs from user study, and identify what data the application has and need.</p>
+</li>
+<li>
+<p>Logical Model - in this step, supported by the user needs identified, we study how data are been accessed, updated and maintained from the business perspective. We design a high level structure of the data storage and the set of possible constraints over the data to enforce varies integrity derived from the business logics. </p>
+</li>
+<li>
+<p>Physical Model - in this step, we translate the logical model into a specific database (supported by the database management system that has been deployed).</p>
+</li>
+</ol></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/jquery-3.6.0.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../javascripts/mathjax.js"></script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

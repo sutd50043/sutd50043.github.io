@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>50.043 - SQL - Database System and Big Data 50.043</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">Database System and Big Data 50.043</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../../project/" class="nav-link">Project</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../l1_course_handout/" class="nav-link">Handout</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#50043-sql" class="nav-link">50.043 - SQL</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#learning-outcomes" class="nav-link">Learning Outcomes</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#sql" class="nav-link">SQL</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#data-definition-language" class="nav-link">Data definition language</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="50043-sql">50.043 - SQL</h1>
+<h2 id="learning-outcomes">Learning Outcomes</h2>
+<p>By the end of this unit you should be able to use SQL to</p>
+<ol>
+<li>create and alter databases and tables</li>
+<li>create and alter table constraints</li>
+<li>inject data into tables</li>
+<li>retrieve data from tables</li>
+<li>update/delete data from tables</li>
+</ol>
+<h2 id="sql">SQL</h2>
+<p>SQL is a high-level language for data definition and data manipulation. By high-level, we mean it is 
+* expressive
+* closer to the programmers</p>
+<p>SQL is a declarative programming language. By declarative, we use SQL
+to specify what to do but not how to do. (The "how-to" parts are left to the underlying runtime to decide, i.e. the DBMS query operation module).</p>
+<p>SQL is almost universal and cross platforms. Modern big data and non-relation databases extend to support SQL.</p>
+<p>Note that different DBMSes have different subset of SQL statements. In this unit, we try to cover the common ones.</p>
+<h2 id="data-definition-language">Data definition language</h2>
+<p>Let's consider the DDL of SQL. </p>
+<h3 id="create-and-drop-database">Create and drop database</h3>
+<p>Note that in a DBMS, there may be many different databases, identified by their names. </p>
+<p>To create a database, we may use the following SQL statement.</p>
+<pre><code class="language-sql">create database if not exists db_name;
+</code></pre>
+<p>where <code>db_name</code> is the name of the database; <code>if not exists</code> means the create statement only applies when there is no existing database in the DBMS with name <code>db_name</code>. </p>
+<p>Note that SQL is case-insensitive. </p>
+<p>To drop a database</p>
+<pre><code class="language-sql">drop database if exists db_name;
+</code></pre>
+<p>To rename a database</p>
+<pre><code class="language-sql">alter database db_name rename to my_db; 
+</code></pre>
+<p>However in some DBMS, e.g. MySQL, the above statement is rejected. Instead, we need to dump the old database and load it into the new database. </p>
+<h3 id="create-table">Create table</h3>
+<pre><code class="language-sql">create table if not exists my_db.article (
+    id char(100) primary key,
+    name char(100)
+);
+</code></pre>
+<p>In the above statement, we create the <code>article</code> table in the database <code>my_db</code>. <code>article</code> has two attributes, <code>id</code> and <code>name</code>. Both attributes are of type <code>char(100)</code>, i.e. character sequence with max length = 100. <code>id</code> is set to be primary key of the table. </p>
+<p>Similarly, we create the <code>book</code>, <code>publisher</code> and <code>publish</code> tables.</p>
+<pre><code class="language-sql">create table if not exists  my_db.book (
+    id char(100) primary key,
+    name char(100)
+);
+
+create table if not exists my_db.publisher (
+    id char(100) primary key,
+    name char(100)
+);
+</code></pre>
+<p>Finally, we create the table <code>publish</code> which was translated from a tertiary relationship.</p>
+<pre><code class="language-sql">create table if not exists my_db.publish (
+    article_id char(100),
+    book_id char(100),
+    publisher_id char(100),
+    primary key (article_id, book_id),
+    foreign key (article_id) references my_db.article(id),
+    foreign key (book_id) references my_db.book(id),
+    foreign key (publisher_id) references my_db.publisher(id)
+);
+</code></pre>
+<p>Since the primary key is a composite key, it is specified in a separate clause (line 5). In addition, we have to create three foreign key constraints on <code>article_id</code>, <code>book_id</code> and <code>publisher_id</code> to ensure their existence in the entity table <code>article</code>, <code>book</code> and <code>publisher</code>. </p>
+<h3 id="alter-table">Alter table</h3>
+<p>We can alter a table (e.g. name, attribute name, attribute type, constraints) using the alter statement. For instance, </p>
+<pre><code class="language-sql">-- drop primary key
+alter table my_db.publish drop primary key;
+-- recreate primary key
+alter table my_db.publish add primary key (article_id, publisher_id);
+</code></pre>
+<p>The first alter statement drop the primary key, and the second one recreate a new primary using <code>(article_id, publisher_id)</code> composition. </p>
+<h5 id="some-dbms-implementation-specific-details">Some DBMS Implementation Specific Details</h5>
+<p>Note that in some DBMS implementation, we need to drop the foreign key constraints before we can drop the primary key. For instance MySQL, the foreign key constraint automatically create an index on the attribute, in this case <code>article_id</code> and <code>book_id</code>. It uses the existing index from the existing primary key constraint. </p>
+<p>In case of MySQL, we need to first find out the name of the foreign key constraints </p>
+<pre><code class="language-sql">select table_schema, table_name, column_name, constraint_name  from information_schema.key_column_usage where table_name = 'publish';
++--------------+------------+--------------+-----------------+
+| TABLE_SCHEMA | TABLE_NAME | COLUMN_NAME  | CONSTRAINT_NAME |
++--------------+------------+--------------+-----------------+
+| my_db        | publish    | article_id   | PRIMARY         |
+| my_db        | publish    | book_id      | PRIMARY         |
+| my_db        | publish    | article_id   | publish_ibfk_1  |
+| my_db        | publish    | book_id      | publish_ibfk_2  |
+| my_db        | publish    | publisher_id | publish_ibfk_3  |
++--------------+------------+--------------+-----------------+
+5 rows in set (0.00 sec)
+</code></pre>
+<p>Then execute the following statements before 
+the <code>drop primary key</code> statement.</p>
+<pre><code class="language-sql">alter table my_db.publish drop foreign key publish_ibfk_1;
+alter table my_db.publish drop foreign key publish_ibfk_2;
+</code></pre>
+<p>Then execute the following statements after the <code>add primary key</code> statement</p>
+<pre><code class="language-sql">alter table my_db.publish add foreign key (article_id) references my_db.article(id) ;
+alter table my_db.publish add foreign key (book_id) references my_db.book(id);
+</code></pre>
+<p>For more detals of alter table statement for MySQL, refer to the MySQL <a href="https://dev.mysql.com/doc/refman/8.0/en/alter-table.html">documentation</a>.</p>
+<h3 id="drop-table">Drop table</h3>
+<p>To drop a table, we could run</p>
+<pre><code class="language-sql">drop table my_db.publish; 
+-- but don't do it, it is irreversible, instead we should probably to rename it to something else.
+</code></pre>
+<h3 id="injecting-value">Injecting value</h3>
+<p>To inject values, we use the insert statement.</p>
+<pre><code class="language-sql">insert into my_db.article (id, name) values 
+('a1', 'article 1'),
+('a2', 'article 2'); 
+
+insert into my_db.book (id, name) values 
+('b1', 'book 1'),
+('b2', 'book 2');
+
+insert into my_db.publisher (id, name) values
+('p1', 'publisher 1'),
+('p2', 'publisher 2');
+</code></pre>
+<p>Note that we can omit the schema <code>(id, name)</code> when values for all columsn are present. Furthermore, when inserting values into a table with foreign key constraint, e.g. <code>publish</code> references <code>article</code>, <code>book</code> and <code>publisher</code>, the values to be inserted must respect the existence of the referenced keys from the referenced tables.</p>
+<pre><code class="language-sql">insert into my_db.publish (article_id, book_id, publisher_id) values
+('a1', 'b1', 'p1'),
+('a2', 'b1', 'p1'),
+('a1', 'b2', 'p2');
+</code></pre>
+<h5 id="mass-importing-and-exporting">Mass importing and exporting</h5>
+<p>In some situation, it is inefficient to inject values one by one via insert statement. Many DBMS implementations offer means to import and export data from text file or other format. For MySQL, please refer to this <a href="https://www.digitalocean.com/community/tutorials/how-to-import-and-export-databases-in-mysql-or-mariadb">document</a> and this <a href="https://www.mysqltutorial.org/import-csv-file-mysql-table/">document</a>.</p>
+<h3 id="querying-table">Querying table</h3>
+<p>To retrieve data stored in a table, we use the select statement.</p>
+<pre><code class="language-sql">select article_id, book_id, publisher_id  from my_db.publish;
+</code></pre>
+<p>In the above statement we retrieve all records (tuples) from the <code>publish</code> table. In this case, since we are retrieving all columns, we could re-write the above as follows,</p>
+<pre><code class="language-sql">select * from my_db.publish;
+</code></pre>
+<h5 id="export-to-csv">Export to CSV</h5>
+<p>In some implemntation, such as MySQL, we could use the select statement to export the data in a table into a CSV file. </p>
+<pre><code class="language-sql">select * from my_db.publish into outfile '/tmp/publish.csv' fields terminated by ','; 
+</code></pre>
+<h3 id="join-query">Join-Query</h3>
+<p>When querying multiple table, we would use the inner join.</p>
+<pre><code class="language-sql">select * from my_db.publish 
+inner join my_db.article 
+on my_db.publish.article_id = my_db.article.id;
+</code></pre>
+<p>For breivity, we could give aliases to the tables being joined.</p>
+<pre><code class="language-sql">select * from my_db.publish p 
+inner join my_db.article a 
+on p.article_id = a.id;
+</code></pre>
+<p>The above queries produce</p>
+<pre><code>+------------+---------+--------------+----+-----------+
+| article_id | book_id | publisher_id | id | name      |
++------------+---------+--------------+----+-----------+
+| a1         | b1      | p1           | a1 | article 1 |
+| a1         | b2      | p2           | a1 | article 1 |
+| a2         | b1      | p1           | a2 | article 2 |
++------------+---------+--------------+----+-----------+
+</code></pre>
+<p>The left- and right- outter join queries can be expressed in a similar way by replacing <code>inner</code> by <code>left</code> or <code>right</code>.</p>
+<h3 id="where-clause">Where clause</h3>
+<p>Suppose we would like to find all the article names that are published by publisher <code>p1</code>.</p>
+<pre><code class="language-sql">select a.name from my_db.publish p 
+inner join my_db.article a 
+on p.article_id = a.id
+where p.publisher_id = 'p1';
+</code></pre>
+<p>which produces</p>
+<pre><code>+-----------+
+| name      |
++-----------+
+| article 1 |
+| article 2 |
++-----------+
+</code></pre>
+<p>Note that instead of <code>inner join</code>, we can rewrite the above query using <code>equi-join</code> which is pushing the id matching to the filtering operation.</p>
+<pre><code class="language-sql">select a.name from my_db.publish p, my_db.article a 
+where p.article_id = a.id
+and p.publisher_id = 'p1';
+</code></pre>
+<p>This is because the following equation holds in relational algebra</p>
+<div class="arithmatex">\[
+publish \bowtie_{publish.article_id = article.id} article = \sigma_{publish.article_id = article.id}(publish \times article)
+\]</div>
+<h3 id="self-join">Self join</h3>
+<p>Suppose we want to find all articles that are published by both publisher <code>p1</code> and <code>p2</code>.</p>
+<p>The following query </p>
+<pre><code class="language-sql">select a.* from my_db.publish p, my_db.article a
+where p.article_id = a.id
+and p.publisher_id = 'p1'
+and p.publisher_id = 'p2';
+</code></pre>
+<p>won't produce any result. This is due to the fac that the entire conjunction predicate in the <code>where</code> clause is applied to per tuple level. Since there is no tuple having <code>publisher_id</code> as <code>p1</code> and <code>p2</code> at the same time, the result is an empty set.</p>
+<p>In such situation, we need to join a table to itself. </p>
+<pre><code class="language-sql">select a.* from my_db.publish p1, my_db.publish p2, my_db.article a
+where p1.article_id = a.id
+and p2.article_id = a.id
+and p1.publisher_id = 'p1'
+and p2.publisher_id = 'p2';
+</code></pre>
+<p>In the above, we "clone" the <code>publish</code> table twice, then the join are performed among the two clones and the article table.</p>
+<h3 id="nested-query">Nested query</h3>
+<p>Alternatively to self-join, we could express the above query using nested query.</p>
+<pre><code class="language-sql">select a1.* from my_db.publish p1, my_db.article a1
+where p1.article_id = a1.id
+and p1.publisher_id = 'p1'
+and a1.id in (select a2.id from my_db.publish p2, my_db.article a2
+              where p2.article_id = a2.id
+              and p2.publisher_id = 'p2' 
+             );
+</code></pre>
+<p>In the above, we find a nested query, the outer query joins <code>publish</code> with <code>article</code> and filters out those tuples with <code>publisher_id</code> as <code>p1</code>. The last predicate checks the article id must be found in the result of the nested query. The nested query joins the clones of the two tables and filter tuples with <code>publisher_id</code> equal to <code>p2</code>. </p>
+<h3 id="aggregation">Aggregation</h3>
+<p>For analytic purpose, we need to aggregate values by group.</p>
+<p>For example, the following statement counts the number of tuples in the <code>publish</code> table.</p>
+<pre><code class="language-sql">select count(*) from my_db.publish;
+</code></pre>
+<p>Suppose we would like to counts the number of published article published by publisher <code>p1</code>.</p>
+<pre><code class="language-sql">select publisher_id, count(*) from my_db.publish 
+group by publisher_id;
+</code></pre>
+<pre><code>+--------------+----------+
+| publisher_id | count(*) |
++--------------+----------+
+| p1           |        2 |
+| p2           |        1 |
++--------------+----------+
+</code></pre>
+<p>In the above the <code>group by</code> clause specifies the attribute <code>publisher_id</code> is the attribute the groups created by, i.e. tuples within each group should have the same <code>publisher_id</code>. </p>
+<p>The above SQL statement is equivalent to the following relational algebra express</p>
+<div class="arithmatex">\[
+_{publisher\_id}\gamma_{count(*)}(publish)
+\]</div>
+<h3 id="sorting">Sorting</h3>
+<p>Suppose we want to sort the result of the last query by the counts in ascending order.</p>
+<pre><code class="language-sql">select publisher_id, count(*) as cnt from my_db.publish 
+group by publisher_id
+order by cnt asc;
+</code></pre>
+<p>In the above the <code>as cnt</code> creates an alias for the column <code>count(*)</code> for the ease of references. The <code>order by</code> clause specifies the order of the returned results.</p>
+<pre><code>+--------------+-----+
+| publisher_id | cnt |
++--------------+-----+
+| p2           |   1 |
+| p1           |   2 |
++--------------+-----+
+</code></pre>
+<h3 id="update-and-delete">Update and delete</h3>
+<p>To update  tuples/records in table, we use the update statement.</p>
+<pre><code class="language-sql">update my_db.publisher set name = 'publisher one' 
+where name = 'publisher 1';
+</code></pre>
+<p>The above SQL statement updates all tuples's name to <code>publisher one</code> in <code>publisher</code> table with the existing name as <code>publisher 1</code>.</p>
+<p>To delete tuples/records, we use the delete statement.</p>
+<pre><code class="language-sql">delete from my_db.publisher where name = 'publisher 1';
+</code></pre></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/jquery-3.6.0.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../javascripts/mathjax.js"></script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

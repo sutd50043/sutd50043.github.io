@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>50.043 - Storage - Database System and Big Data 50.043</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">Database System and Big Data 50.043</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../../project/" class="nav-link">Project</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../l1_course_handout/" class="nav-link">Handout</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#50043-storage" class="nav-link">50.043 - Storage</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#learning-outcomes" class="nav-link">Learning Outcomes</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#motivation" class="nav-link">Motivation</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#hardware" class="nav-link">Hardware</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#database-storage" class="nav-link">Database Storage</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#disk-manager" class="nav-link">Disk Manager</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#cache-system-buffer-pool" class="nav-link">Cache system - Buffer Pool</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="50043-storage">50.043 - Storage</h1>
+<h2 id="learning-outcomes">Learning Outcomes</h2>
+<p>By this end of this unit you should be able to</p>
+<ol>
+<li>Explain the internal structure a hard disk</li>
+<li>Compute the estimated cost for a data operation</li>
+<li>Explain the roles and functionality of a disk manager</li>
+<li>Explain the roles and functionality of a Buffer Pool</li>
+<li>Describe the LRU and Clock Replacement Policy</li>
+</ol>
+<h2 id="motivation">Motivation</h2>
+<p>Starting from this week onwards, we look deep into the internal of the database manage systems. </p>
+<p>In particular, we want to find out is how queries are executed and how data are fetched from and updated back to the database.</p>
+<p>The answer the question, we first need to understand how data are stored in the database. </p>
+<h2 id="hardware">Hardware</h2>
+<p>For simplicity, we only consider the mechanincal hard disk storage. </p>
+<p>We do not consider in memory database because it is not common, due to its cost. </p>
+<p>We do not consider SSD and non-volatile memory because they similar to hard disk storage except that there is no rotational delay and seek time delay is marginal, but the general cost computation model is still applicable. </p>
+<h3 id="mechanical-rotational-hard-disk">Mechanical Rotational Hard disk</h3>
+<p><img alt="" src="../images/disk_internal.png" />
+(image from Database Management Systems, R. RamaKrishnan and J. Gehrke)</p>
+<p>The figure above illustrate the internal of a mechanical hard disk, which is a cylindrical structure. It consists of multiple platter of disks stacked up vertically. Each platter consists of multiple tracks. Each track is divided into multiple sectors. Disk heads read from/write to disk track. Only one head is allowed to operate at any point in time. Data are organized into blocks (which is determined by the governing system, DBMS storage or OS file system). A block might span across multiple consecutive sectors. Different system use different block size.</p>
+<p>We break down the time needed for each type of disk head movement that related to disk I/O.</p>
+<ul>
+<li>Seek time <span class="arithmatex">\(t_s\)</span>: to move arm to correct platters &amp; track​, it is roughly  20ms​.</li>
+<li>Rotate time <span class="arithmatex">\(t_r\)</span> : to rotate to correct sector​, roughly 10ms​</li>
+<li>Transfer time <span class="arithmatex">\(t_{tf}\)</span> : to read/write a block of data​, 0.1ms​</li>
+</ul>
+<h4 id="random-vs-sequential-access-cost">Random vs sequential access cost</h4>
+<p>Given <span class="arithmatex">\(D\)</span> number of blocks of data, the cost of accessing the data randomly is </p>
+<div class="arithmatex">\[
+T_1 = D * (t_s + t_r + t_{tf})
+\]</div>
+<p>and the cost of accessing the data sequentially is </p>
+<div class="arithmatex">\[
+T_2 = t_s+t_r + D * t_{tf}
+\]</div>
+<h4 id="note">Note</h4>
+<p>For SSD, seek time is a lot faster and there is zero rotate time. Transfer time is also magnitude faster. But the basic components of the breakdown remain the same. Typically we see significant improvement in random access time when upgrading to SSD.</p>
+<h2 id="database-storage">Database Storage</h2>
+<p>Given the estimated cost of data access, it is clear that we should minimize the factor being multipled with <span class="arithmatex">\(t_s\)</span> and <span class="arithmatex">\(t_r\)</span> as much as we can. </p>
+<p>For most the DBMS storage system, we favor a larger block size as it reduces the number of blocks given the same set of data in size and data related to each other tend to be fetched together in one block. </p>
+<p>When some records (or tuples) are needed, the entire block of data is read from the disk. Same idea applies when the records needed to be written back to the disk. </p>
+<p>To minimize the overhead of reading/writing the data blocks back and forth and to boost the performance of the data processing, the DBMS need to 
+1. have some logical mapping over the physical storage - disk manager
+2. have some in memory cache - buffer pool</p>
+<h2 id="disk-manager">Disk Manager</h2>
+<p>Different DBMSes have different ways of managing the logical mapping. One common approach is to store data as a collection of files. The disk manager keeps track of the mapping from database tables to files, which is known as the system <em>catalogue</em>. These database files are no ordinary ones which can be accessed by other software in the OS. They have to be access through the Disk Manager.</p>
+<p>Each file managed by the Disk Manager is organized as a set of <em>page</em>s. </p>
+<h3 id="page-vs-block">Page vs Block</h3>
+<p>Page is the basic unit of data storage from the memory (RAM) perspective, determined by the DBMS configuration. </p>
+<p>Block is the basic unit of data storage from the physical disk (hard disk) perspective, determined by the OS configuration. </p>
+<p>These two might or might not be in sync in terms of size. </p>
+<p>From now onwards, for the ease of reasoning, we assume a page is of the same size of a block unless we specifically define otherwise.</p>
+<h3 id="what-is-inside-a-page">What is Inside a Page</h3>
+<p>Besides a set of tuples/records, a page contains </p>
+<ul>
+<li>the meta information (also known as the header)</li>
+<li>the index and the log</li>
+</ul>
+<p>we will defer the discussion until the next unit.</p>
+<h2 id="cache-system-buffer-pool">Cache system - Buffer Pool</h2>
+<p>Knowing that fetching data block (or page) to and fro is expensive. We need a fixed set of working space in the RAM, which serves as the Buffer Pool. </p>
+<p>Any read operation from the DBMS must check whether the target page is in the Buffer Pool, if it is in the pool, the operation should be performed on the cached copy.  When the cached copy needs to be evicted, it will be only be written to the disk if it is <em>dirty</em>, i.e. some data has changed. Otherwise, it will be discarded. </p>
+<p>The Buffer Pool has a fixed set of slots (known as frames). Each page is loaded into a frame when it is fetched from the disk.</p>
+<p>The Buffer Pool maintains the following information,</p>
+<ol>
+<li>Page to frame mapping</li>
+<li>Whether a page is <em>pinned</em>. A page is pinned means it is being accessed currently. When a data operation (query/insert/update/delete) is performed it will pin all the required pages. When the operation is completed, the pages are unpinned. Note that in a full scale system, we might see concurrent accesses to pages, thus, in most of the situation, the Buffer Pool maintains a pin counter per slot.</li>
+<li>Whether a page is dirty.</li>
+<li>Extra information to support the eviction policy.</li>
+</ol>
+<h3 id="eviction-policy">Eviction Policy</h3>
+<p>When a new page needs to be fetched from the disk but the Buffer Pool is full, we need to free up some slot. An eviction policy helps to decide which frame slot should be freed. </p>
+<p>In the ideal situation, the (dream) eviction policy should evict the cached page requested farthest in the future, because we won't need it again so soon compared to the rest. In reality, such policy does not exist as we can't see the future.</p>
+<p>Instead, we use several policies based on the situation</p>
+<h4 id="lru-policy">LRU Policy</h4>
+<p>The Least Recently Used (LRU) Policy works as follows,</p>
+<ol>
+<li>pinned frames should not be evicted</li>
+<li>keep track of the timestamp when frame's pin was set to 0. </li>
+<li>evict the page in the frame with the smallest (oldest) timestamp.</li>
+</ol>
+<p>In details steps.</p>
+<p>Initialize all frames to be empty with pincount 0</p>
+<ol>
+<li>when a page is being pinned<ol>
+<li>if the page is already in the pool, increase the pincount, return the page in the frame.</li>
+<li>otherwise, <ol>
+<li>find the frames with 0 pincount, find the one oldest timestamp, write it to disk if it is dirty.</li>
+<li>load the new page to this vacant frame, set pincount = 1</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>when a page is being unpinned, decrease the pincount and update the timestamp to the current time.</li>
+</ol>
+<h5 id="example">Example</h5>
+<p>For example, consider the a buffer pool with 3 frame slots. The folloing sequence of pages are requested in order (pin, then unpin immediately)</p>
+<div class="arithmatex">\[ 1,2,3,4,1,2 \]</div>
+<p>pg = page, pc = pincount, ts = timestamp</p>
+<table>
+<thead>
+<tr>
+<th>time</th>
+<th>page req'ed</th>
+<th>frame 0</th>
+<th>frame 1</th>
+<th>frame 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>1</td>
+<td><strong>pg:1, pc:0, ts: 1</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>2</td>
+<td>pg:1, pc:0, ts: 1</td>
+<td><strong>pg:2, pc:0, ts:2</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td>3</td>
+<td>pg:1, pc:0, ts: 1</td>
+<td>pg:2, pc:0, ts:2</td>
+<td><strong>pg:3, pc:0, ts:3</strong></td>
+</tr>
+<tr>
+<td>4</td>
+<td>4</td>
+<td><strong>pg:4, pc:0, ts: 4</strong></td>
+<td>pg:2, pc:0, ts:2</td>
+<td>pg:3, pc:0, ts:3</td>
+</tr>
+<tr>
+<td>5</td>
+<td>1</td>
+<td>pg:4, pc:0, ts: 4</td>
+<td><strong>pg:1, pc:0, ts:5</strong></td>
+<td>pg:3, pc:0, ts:3</td>
+</tr>
+<tr>
+<td>6</td>
+<td>2</td>
+<td>pg:4, pc:0, ts: 4</td>
+<td>pg:1, pc:0, ts:5</td>
+<td><strong>pg:2, pc:0, ts:6</strong></td>
+</tr>
+</tbody>
+</table>
+<h4 id="clock-replacement-policy">Clock Replacement Policy</h4>
+<p>While LRU works, its implementation could be less complex. </p>
+<p>The Clock Replacement Policy is a simpler approach which approximates LRU. (The formal proof is not discussed in this module.)</p>
+<p>The Clock Replacement Policy does keep track of timestamps, instead it keep track of the reference bit (0 or 1) per frame and a hand (index to frame slots). During the initialization phase, all frames are empty with pincount and reference bit set to 0, the hand is set to 0.</p>
+<p>The Clock Replacement Policy works as follows, </p>
+<ol>
+<li>when a page is being pinned<ol>
+<li>if the page is already in the pool, set the frame's reference bit to 1, increase the pincount, return the page in the frame.</li>
+<li>otherwise, we need to find a slot for it, by checking the frame pointed by the hand<ol>
+<li>if it is pinned, (somebody is using it), advance hand to the next frame</li>
+<li>otherwise<ol>
+<li>if the frame's reference bit is 1, set it to 0, advance hand</li>
+<li>otherwise<ol>
+<li>write the current payload to disk if it is dirty</li>
+<li>load the new page to this slot</li>
+<li>set reference bit to 1, and set pincount to 1</li>
+<li>advance the hand to the next frame</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>when a page is being unpinned, decrease the pincount.</li>
+</ol>
+<p>Compared to LRU, the Clock Replacement Policy uses less memory, reference bit vs timestamp. The Clock Replacement Policy is more efficient, because there is no need to search for the oldest timestamp.</p>
+<h4 id="example_1">Example</h4>
+<p>Let's re-run the same example </p>
+<p><span class="arithmatex">\(1,2,3,4,1,2\)</span> </p>
+<p>with Clock Replacement Policy</p>
+<p>pg = page, pc = pincount, ref = reference bit</p>
+<table>
+<thead>
+<tr>
+<th>time</th>
+<th>page req'ed</th>
+<th>frame 0</th>
+<th>frame 1</th>
+<th>frame 2</th>
+<th>hand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>1</td>
+<td><strong>pg:1, pc:0, ref: 1</strong></td>
+<td></td>
+<td></td>
+<td>1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2</td>
+<td>pg:1, pc:0, ref: 1</td>
+<td><strong>pg:2, pc:0, ref: 1</strong></td>
+<td></td>
+<td>2</td>
+</tr>
+<tr>
+<td>3</td>
+<td>3</td>
+<td>pg:1, pc:0, ref: 1</td>
+<td>pg:2, pc:0, ref: 1</td>
+<td><strong>pg:3, pc:0, ref: 1</strong></td>
+<td>0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>4</td>
+<td>pg:1, pc:0, <strong>ref: 0</strong></td>
+<td>pg:2, pc:0, ref:1</td>
+<td>pg:3, pc:0, ref:1</td>
+<td><strong>1</strong></td>
+</tr>
+<tr>
+<td>5</td>
+<td>4</td>
+<td>pg:1, pc:0, ref: 0</td>
+<td>pg:2, pc:0, <strong>ref:0</strong></td>
+<td>pg:3, pc:0, ref:1</td>
+<td><strong>2</strong></td>
+</tr>
+<tr>
+<td>6</td>
+<td>4</td>
+<td>pg:1, pc:0, ref: 0</td>
+<td>pg:2, pc:0, ref:0</td>
+<td>pg:3, pc:0, <strong>ref:0</strong></td>
+<td><strong>0</strong></td>
+</tr>
+<tr>
+<td>7</td>
+<td>4</td>
+<td><strong>pg:4, pc:0, ref: 1</strong></td>
+<td>pg:2, pc:0, ref:0</td>
+<td>pg:3, pc:0, ref:0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>8</td>
+<td>1</td>
+<td>pg:4, pc:0, ref: 1</td>
+<td><strong>pg:1, pc:0, ref:1</strong></td>
+<td>pg:3, pc:0, ref:0</td>
+<td>2</td>
+</tr>
+<tr>
+<td>9</td>
+<td>2</td>
+<td>pg:4, pc:0, ref: 1</td>
+<td>pg:1, pc:0, ref:1</td>
+<td><strong>pg:2, pc:0, ref:1</strong></td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<h3 id="other-optimization">Other optimization</h3>
+<p>There is no one size fit all solution here. Modern databases often employ some heuristics, called prefetching. The idea is to anticipate subsequent pages will soon be needed when an operation requests for a page (say, a sequential scan of table). This eliminates some of the cost of rotation time and seek time. </p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/jquery-3.6.0.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../javascripts/mathjax.js"></script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

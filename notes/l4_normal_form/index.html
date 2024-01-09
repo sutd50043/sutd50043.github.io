@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>50.043 - Normal Forms - Database System and Big Data 50.043</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">Database System and Big Data 50.043</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../../project/" class="nav-link">Project</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../l1_course_handout/" class="nav-link">Handout</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#50043-normal-forms" class="nav-link">50.043 - Normal Forms</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#learning-outcomes" class="nav-link">Learning Outcomes</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#decomposition" class="nav-link">Decomposition</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#normal-forms" class="nav-link">Normal Forms</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="50043-normal-forms">50.043 - Normal Forms</h1>
+<h2 id="learning-outcomes">Learning Outcomes</h2>
+<p>By the end of this unit, you should be able to </p>
+<ul>
+<li>apply lossless decomposition to a relation</li>
+<li>verify a relation is in 1NF/2NF/BCNF/3NF</li>
+<li>decompose a relation into 2NF/BCNF/3NF</li>
+</ul>
+<h2 id="decomposition">Decomposition</h2>
+<p>By now, we know that having an FD in which the LHS of the constraint is not a the primary key of the relation imposes data anomalies. </p>
+<p>Recall the relation Publish(<ins>article_id, book_id</ins>, publisher_id, date)</p>
+<p>with the fillowing data</p>
+<table>
+<thead>
+<tr>
+<th>article_id</th>
+<th>book_id</th>
+<th>publisher_id</th>
+<th>date</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a1</td>
+<td>b1</td>
+<td>p1</td>
+<td>11/5/2019</td>
+</tr>
+<tr>
+<td>a2</td>
+<td>b1</td>
+<td>p1</td>
+<td>11/5/2019</td>
+</tr>
+<tr>
+<td>a1</td>
+<td>b2</td>
+<td>p2</td>
+<td>21/3/2020</td>
+</tr>
+</tbody>
+</table>
+<p>There exists an FD book_id <span class="arithmatex">\(\rightarrow\)</span> date. Note that <code>book\_id</code> is not the primary key (though it is part of the primary key).</p>
+<p>To fix the issue, we need to decompose <code>publish</code> into two smaller relations. But how?</p>
+<p>The idea is to decompose it based on the FD. From the FD, we find that book_id determines date. We should move book_id and date into another relation. At the same time we should keep the book_id in <code>publish</code> so that the relationship between author_id, book_id and publisher_id is not lost. </p>
+<h3 id="lossless-decomposition">Lossless decomposition</h3>
+<p>Give a relation <span class="arithmatex">\(R\)</span>, a decompsition of <span class="arithmatex">\(R\)</span>, say <span class="arithmatex">\(R_1\)</span> and <span class="arithmatex">\(R_2\)</span> is lossless, iff <span class="arithmatex">\(R_1 \bowtie R_2 \equiv R\)</span>.</p>
+<p>To ensure a decomposition is lossless, we pick an FD constraint <span class="arithmatex">\(X \rightarrow Y\)</span> of <span class="arithmatex">\(R\)</span> then let <span class="arithmatex">\(R_1 = R_1(XY)\)</span> and <span class="arithmatex">\(R_2 = R_2( attr(R) - Y)\)</span>, assuming <span class="arithmatex">\(X \cap Y = \emptyset\)</span>. We write <span class="arithmatex">\(attr(R)\)</span> to compute the set of attributes of <span class="arithmatex">\(R\)</span>. It follows that <span class="arithmatex">\(X\)</span> is the common attributes among <span class="arithmatex">\(R_1\)</span> and <span class="arithmatex">\(R_2\)</span>, the natural join between <span class="arithmatex">\(R_1\)</span> and <span class="arithmatex">\(R_2\)</span> will leverage <span class="arithmatex">\(X\)</span> hence <span class="arithmatex">\(R_1 \bowtie R_2 \equiv R\)</span>.</p>
+<p>For instance, in the <code>Publish</code> relation above, we may decompose it by the FD book_id <span class="arithmatex">\(\rightarrow\)</span> date. </p>
+<ul>
+<li>Publish1(<ins>article_id, book_id</ins>, publisher_id)</li>
+<li>Publish2(<ins>book_id</ins>, date)</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>article_id</th>
+<th>book_id</th>
+<th>publisher_id</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a1</td>
+<td>b1</td>
+<td>p1</td>
+</tr>
+<tr>
+<td>a2</td>
+<td>b1</td>
+<td>p1</td>
+</tr>
+<tr>
+<td>a1</td>
+<td>b2</td>
+<td>p2</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>book_id</th>
+<th>date</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>b1</td>
+<td>11/5/2019</td>
+</tr>
+<tr>
+<td>b2</td>
+<td>21/3/2020</td>
+</tr>
+</tbody>
+</table>
+<p>Note that we eliminate the data anomalies. (Eventually, we might merge <code>Publish2</code> with the <code>Book</code> relation, which is a seperate topic.)</p>
+<h2 id="normal-forms">Normal Forms</h2>
+<p>The next question we need to consider is how far should we decompose relation?</p>
+<p>Normal forms define a set of criteria which allows us to check whether the result of decomposition is <em>good enough</em>.</p>
+<h3 id="1nf">1NF</h3>
+<p>A relation is in 1NF iff its schema is flat, (i.e. contains no sub-structure) and there is no repeating group (i.e. there is no repeating column).</p>
+<p>For example the following relations are not in 1NF</p>
+<table>
+<thead>
+<tr>
+<th>student_id</th>
+<th>name</th>
+<th>phones</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1234</td>
+<td>Peter Parker</td>
+<td>[95598221, 82335354]</td>
+</tr>
+</tbody>
+</table>
+<p>This relation's schema is not flat.</p>
+<table>
+<thead>
+<tr>
+<th>student_id</th>
+<th>name</th>
+<th>phone1</th>
+<th>phone2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1234</td>
+<td>Peter Parker</td>
+<td>95598221</td>
+<td>82335354</td>
+</tr>
+</tbody>
+</table>
+<p>This relation has a set of repeating columns, <code>phone1</code>, <code>phone2</code>. (Though in reality, we could be lenient here, maybe we could rename it to <code>primary contact</code>, <code>secondary contact</code>.)</p>
+<h3 id="2nf">2NF</h3>
+<p>A relation is in 2NF iff </p>
+<ol>
+<li>it is in 1NF and </li>
+<li>all non-key attributes are fully dependent on candidate key. </li>
+</ol>
+<p>In other words, the relation is at least 1NF and there should be no partial dependency.</p>
+<p><img alt="" src="../images/partial_dependency.png" /></p>
+<p>For example, in the running example </p>
+<p>Publish(<ins>article_id, book_id</ins>, publisher_id, date) </p>
+<p>is in 1NF but not in 2NF, because the attribute <code>date</code> is not fully dependent on the primary key <code>article_id,book_id</code>. It is partially dependent on <code>book_id</code>. </p>
+<h3 id="boyd-codd-normal-form-bcnf">Boyd-Codd Normal Form (BCNF)</h3>
+<p>Given a relation <span class="arithmatex">\(R\)</span> with FDs <span class="arithmatex">\(F\)</span>, <span class="arithmatex">\(R\)</span> is in BCNF iff for all non-trivial dependency <span class="arithmatex">\(X \rightarrow Y \in F^+\)</span>, <span class="arithmatex">\(X\)</span> is a super key. </p>
+<p>An FD is <em>trivial</em> iff its lhs is a superset of the rhs.</p>
+<p>For example, </p>
+<ul>
+<li>Publish1(<ins>article_id, book_id</ins>, publisher_id)</li>
+<li>Publish2(<ins>book_id</ins>, date)</li>
+</ul>
+<p>are in BCNF, because the only non trial FDs are 
+1. <code>article_id,book_id</code> <span class="arithmatex">\(\rightarrow\)</span> <code>publisher_id</code>
+2. <code>article_id,publisher_id</code> <span class="arithmatex">\(\rightarrow\)</span> <code>book_id</code> (recall the ER diagram)
+3. <code>book_id</code> <span class="arithmatex">\(\rightarrow\)</span> <code>date</code>. </p>
+<p>Note that FD #2 does not violate the BCNF requirement, because <code>article_id,publisher_id</code> is a candidate key of <code>Publish1</code> hence also a super key.</p>
+<h4 id="lemma-a-relation-r-is-in-bcnf-implies-r-is-in-2nf">Lemma: A relation <span class="arithmatex">\(R\)</span> is in BCNF implies <span class="arithmatex">\(R\)</span> is in 2NF.</h4>
+<p>The proof is omitted. You are encouraged to try proving it.</p>
+<h4 id="algorithm-to-decompose-into-bcnf">Algorithm to decompose into BCNF</h4>
+<p>Given a relation <span class="arithmatex">\(R\)</span> and a set of FDs <span class="arithmatex">\(F\)</span>. The algorithm of decomposing <span class="arithmatex">\(R\)</span> into BCNF is described as follows. </p>
+<ol>
+<li>Compute <span class="arithmatex">\(F^+\)</span></li>
+<li>Let <span class="arithmatex">\(Result = \{R\}\)</span></li>
+<li>While <span class="arithmatex">\(R_i \in Result\)</span> not in BCNF, do 
+  3.1. Choose <span class="arithmatex">\(X\rightarrow Y \in F^+\)</span> such that <span class="arithmatex">\(X\)</span> and <span class="arithmatex">\(Y\)</span> are attribtues in <span class="arithmatex">\(R_i\)</span> but <span class="arithmatex">\(X\)</span> is not a super key of <span class="arithmatex">\(R_i\)</span>.
+  3.2. Decompose <span class="arithmatex">\(R_i\)</span> into <span class="arithmatex">\(R_{i1}\)</span> <span class="arithmatex">\(R_{i2}\)</span> with <span class="arithmatex">\(X\rightarrow Y\)</span>.
+  3.3. Update <span class="arithmatex">\(Result = Result - \{ R_i\}  \cup \{ R_{i1}, R_{i2} \}\)</span></li>
+</ol>
+<h4 id="a-slightly-more-optimized-algorithm">A slightly more optimized algorithm</h4>
+<ol>
+<li>def <span class="arithmatex">\(normalize(R)\)</span><ol>
+<li>Let <span class="arithmatex">\(C = attr(R)\)</span></li>
+<li>find an attribute set <span class="arithmatex">\(X\)</span> such that <span class="arithmatex">\(X^+ \neq X\)</span> and <span class="arithmatex">\(X^+ \neq C\)</span>.<ol>
+<li>if <span class="arithmatex">\(X\)</span> is not found, then <span class="arithmatex">\(R\)</span> is in BCNF</li>
+<li>else <ol>
+<li>decompose <span class="arithmatex">\(R\)</span> into <span class="arithmatex">\(R_1(X^+)\)</span> and <span class="arithmatex">\(R_2(C-X^+ \cup X)\)</span></li>
+<li><span class="arithmatex">\(normalize(R_1)\)</span></li>
+<li><span class="arithmatex">\(normalize(R_2)\)</span></li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><span class="arithmatex">\(normalize(R)\)</span></li>
+</ol>
+<p>Consider <span class="arithmatex">\(R(A,B,C,D)\)</span> with FDS <span class="arithmatex">\(\{AB \rightarrow C, A\rightarrow D, C\rightarrow B\}\)</span>.</p>
+<p>First we find all attribute closures.</p>
+<ul>
+<li><span class="arithmatex">\(A^+ = AD\)</span></li>
+<li><span class="arithmatex">\(B^+ = B\)</span></li>
+<li><span class="arithmatex">\(C^+ = CB\)</span></li>
+<li><span class="arithmatex">\(D^+ = D\)</span></li>
+<li><span class="arithmatex">\(AB^+ = ABCD\)</span></li>
+<li><span class="arithmatex">\(ABC^+ = ABCD\)</span></li>
+<li>...
+We find that <span class="arithmatex">\(AB\)</span> is a candidate key of $$.</li>
+</ul>
+<p>At step 1.2, we found <span class="arithmatex">\(A^+\)</span>, since <span class="arithmatex">\(A^+ = AD \neq ABCD\)</span>. We decompose 
+<span class="arithmatex">\(R\)</span> into 
+* <span class="arithmatex">\(R_1(A,D)\)</span>
+* <span class="arithmatex">\(R_2(A,B,C)\)</span></p>
+<p><span class="arithmatex">\(R_1\)</span> is already in BCNF. <span class="arithmatex">\(R_2\)</span> is not, because found <span class="arithmatex">\(C^+ = BC\)</span>. We decompose <span class="arithmatex">\(R_2\)</span> into</p>
+<ul>
+<li><span class="arithmatex">\(R_{21}(B,C)\)</span></li>
+<li><span class="arithmatex">\(R_{22}(A,B)\)</span></li>
+</ul>
+<p>Then we are done.</p>
+<h3 id="3nf">3NF</h3>
+<p>Given a relation <span class="arithmatex">\(R\)</span> with FDs <span class="arithmatex">\(F\)</span>, <span class="arithmatex">\(R\)</span> is in 3NF iff for all non-trivial dependency <span class="arithmatex">\(X \rightarrow Y \in F^+\)</span>, 
+1. <span class="arithmatex">\(X\)</span> is a super key or
+2. <span class="arithmatex">\(Y\)</span> is part of a candidate key</p>
+<p>The following diagram shows some example</p>
+<p><img alt="" src="../images/3nf.png" /></p>
+<p>In the first diagram, <span class="arithmatex">\(X \rightarrow A\)</span>, assuming <span class="arithmatex">\(KEY\)</span> is the only candidate key, hence <span class="arithmatex">\(X\)</span> is not a super key. Further more <span class="arithmatex">\(A\)</span> is not part of a candidate key. Thus it is a counter example of 3NF.</p>
+<p>In the second diagram, <span class="arithmatex">\(X\rightarrow A\)</span>, <span class="arithmatex">\(X\)</span> is not a supere key and <span class="arithmatex">\(A\)</span> is part of a candidate key. Thus it is in 3NF.</p>
+<h4 id="lemma-a-relation-in-3nf-is-also-in-bcnf">Lemma: A relation in 3NF is also in BCNF.</h4>
+<p>It can be proven from by the definitions. </p>
+<h4 id="bcnf-vs-3nf">BCNF vs 3NF</h4>
+<p>BCNF is easier to compute, we just keep finding a FD that violates the definition and keep decomposing until none is found.</p>
+<p>Though BCNF decomposition is lossless, it is <em>not</em> dependency preserving.</p>
+<p>A FD set <span class="arithmatex">\(F_i\)</span> is preserved by <span class="arithmatex">\(R_i\)</span> iff for each <span class="arithmatex">\(X_1...X_n \rightarrow Y \in F_i\)</span>, <span class="arithmatex">\(X_1,...,X_n,Y\)</span> are attributes of <span class="arithmatex">\(R_i\)</span>.</p>
+<p>Recall the previous example <span class="arithmatex">\(R(A,B,C,D)\)</span> with FDS <span class="arithmatex">\(\{AB \rightarrow C, A\rightarrow D, C\rightarrow B\}\)</span>.</p>
+<p>Applying BCNF-decomposition will yield <span class="arithmatex">\(R_1(A,D), R_{21}(B,C), R_{22}(A,B)\)</span> which do not preserve <span class="arithmatex">\(AB\rightarrow C\)</span>.</p>
+<h4 id="algorithm-to-compute-3nf">Algorithm to compute 3NF</h4>
+<p>With that difference in mind, we present the algorithm to compute 3NF as folows. </p>
+<ol>
+<li>Apply the BCNF algorithm to decompose <span class="arithmatex">\(R\)</span>, let's say the result is a set of relations <span class="arithmatex">\(R_1, ..., R_n\)</span>.</li>
+<li>Let <span class="arithmatex">\(F_1,...,F_n\)</span> be the list of FDs preserved by <span class="arithmatex">\(R_1, ..., R_n\)</span>.</li>
+<li>Compute <span class="arithmatex">\((F_1 \cup ... \cup F_n)^{+}\)</span>. Let <span class="arithmatex">\(\bar{F} = F - (F_1 \cup ... \cup F_n)^{+}\)</span>.</li>
+<li>For each <span class="arithmatex">\(X_1...,X_n\rightarrow Y \in \bar{F}\)</span>, create a new relation <span class="arithmatex">\(R'(X_1,...,X_n,Y)\)</span></li>
+</ol>
+<p>For example, recall the previous example <span class="arithmatex">\(R(A,B,C,D)\)</span> with FDS <span class="arithmatex">\(\{AB \rightarrow C, A\rightarrow D, C\rightarrow B\}\)</span>.</p>
+<p>After the BCNF decomposition, we realize <span class="arithmatex">\(R_1(A,D), R_{21}(B,C), R_{22}(A,B)\)</span> do not preserve <span class="arithmatex">\(AB\rightarrow C\)</span>. We create (or restore) <span class="arithmatex">\(R_2(A,B,C)\)</span>. </p>
+<p><span class="arithmatex">\(R_2\)</span> subsumes <span class="arithmatex">\(R_{21}(B,C)\)</span> and <span class="arithmatex">\(R_{22}(A,B)\)</span>, hence we remove <span class="arithmatex">\(R_{21}\)</span> and <span class="arithmatex">\(R_{22}\)</span> and keep <span class="arithmatex">\(R_2\)</span>. </p>
+<p>Alternatively, we could have used the BCNF algorithm but do not decompose <span class="arithmatex">\(R_2\)</span> since it does not violate 3NF.</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/jquery-3.6.0.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../javascripts/mathjax.js"></script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

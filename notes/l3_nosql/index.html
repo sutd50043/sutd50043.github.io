@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>50.043 - NoSQL - Database System and Big Data 50.043</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">Database System and Big Data 50.043</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../../project/" class="nav-link">Project</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../l1_course_handout/" class="nav-link">Handout</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#50043-nosql" class="nav-link">50.043 - NoSQL</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#learning-outcomes" class="nav-link">Learning Outcomes</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#motivation" class="nav-link">Motivation</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#key-value-store" class="nav-link">Key-value store</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#document-store" class="nav-link">Document store</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="50043-nosql">50.043 - NoSQL</h1>
+<h2 id="learning-outcomes">Learning Outcomes</h2>
+<p>By the end of this unit, you should be able to</p>
+<ol>
+<li>articulate the trade-off made between relational model and other data model.</li>
+<li>contrast the different use-cases for SQL and NoSQL.</li>
+<li>List the pros and cons for different NoSQL-driven data storage.</li>
+</ol>
+<h2 id="motivation">Motivation</h2>
+<p>NoSQL existed long ago. It recently received more attention due to the shift of infrastruture from on-premise to cloud, from single server to distributed system.</p>
+<p>Recall from week 1 lesson, we learnt that database system should be efficient, crash consitent, supporting concurrent access, offering data abstraction. </p>
+<p>As we scale out to multiple machines, we have to give up some of the above. It is technically challenging to have a distributed system that is consistent.  Another less alarming issue is that it is hard to perform efficient data join across machines (though there has been progress made). </p>
+<p>Due to various reasons, developers turn to the older alternative, key-value data structure. </p>
+<h2 id="key-value-store">Key-value store</h2>
+<p>Key-value store is simple. Many of us have seen the in-memory version, e.g. dictionary of Python, HashMap of Java, etc. The idea of key-value storage is to put data associated with a key in a look-up table. Keys must be unique, otherwise existing data will be overwritten. </p>
+<p>Storing data in key-value pairs offers some obvious advantages
+1. easy to retrieve, like part of your code
+2. fit in many applications, mobile app, web app. 
+3. fast, since it is just a lookup and/or set.
+4. easy to scale, since we could split the data by key-space. </p>
+<p>However key-value pair storage has several limitations.
+1. limited API, we can only get or set. There is no range query.
+2. Join query is out of the question.
+3. it does not differetiate the data type you store by default everything is binary.
+4. it does not support inner structure in your data.
+5. there is no immediate consistency gauranteed, i.e. sometimes your change takes a while to be reflected on the web app.</p>
+<p>Due to the above reasons, it pushes the processing load to the application-tier (which is your source code, in Python, Java or C etc.)</p>
+<h2 id="document-store">Document store</h2>
+<h3 id="unstructured-document">Unstructured Document</h3>
+<p>In this category, the data store saves data in an unstructured manner. Treating everything as text or sequence of bytes.</p>
+<p>The advantage is it saves every thing, like your file system. The disadantage is that it offers no processing API.</p>
+<h3 id="semi-structured-document">Semi-structured Document</h3>
+<p>It is a tree-like structure. Data are stored like JSON/XML document. Some implementation offers limited support of indices and range search, e.g. MongoDB.</p>
+<p>The advantage is that semi-structured data are close to their in-memory counter-parts living in the software application, (binary tree, graph, JSON). It offers flexibility of going back and fro between database and app without the need of joining and object-relational mapping. </p>
+<p>Most of the semi-structured data are self-explanatory, respecting data types and data structure. </p>
+<p>One obvious disadvantage is that semi-strutured data do not eliminate data redundancy. Immediate consistency is handled loosely. Range queries could be harder to implememented.</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/jquery-3.6.0.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../javascripts/mathjax.js"></script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

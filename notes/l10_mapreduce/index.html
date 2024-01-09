@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>50.043 Map Reduce - Database System and Big Data 50.043</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">Database System and Big Data 50.043</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../../project/" class="nav-link">Project</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../l1_course_handout/" class="nav-link">Handout</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#50043-map-reduce" class="nav-link">50.043 Map Reduce</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#learning-outcomes" class="nav-link">Learning Outcomes</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#recall" class="nav-link">Recall</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#parallel-computing" class="nav-link">Parallel Computing</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#means-of-parallelism" class="nav-link">Means of Parallelism</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#mapreduce-framework" class="nav-link">MapReduce Framework</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#example-word-count" class="nav-link">Example : Word Count</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#hadoop-mapreduce-architecture" class="nav-link">Hadoop MapReduce Architecture</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#hadoop-mapreduce-job-management" class="nav-link">Hadoop MapReduce Job Management</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="50043-map-reduce">50.043 Map Reduce</h1>
+<h2 id="learning-outcomes">Learning Outcomes</h2>
+<p>By the end of this lesson, you are able to</p>
+<ul>
+<li>Differentiate Parallelism and Concurrency</li>
+<li>Differentiate Data Parallelism and Task Parallelism</li>
+<li>Explain map and reduce</li>
+<li>Explain Hadoop MapReduce</li>
+</ul>
+<h2 id="recall">Recall</h2>
+<p>HDFS addresses the big data issues by </p>
+<ol>
+<li>distributing the data into multiple data nodes.</li>
+<li>storing meta data on the name node.</li>
+<li>allowing only sequential read and append.</li>
+</ol>
+<p>Based on the design decision made during the design of Google File system, data query via join and B-tree based indexing was not the top-most wanted use case.</p>
+<p>On the other hand, most of the data processing is to scan through the needed data files and perform transformation or aggregation (page rank algorithm).</p>
+<p>To shorten the processing time, we could leverage on the processors found in the data nodes. This leads us to parallel computing.</p>
+<h2 id="parallel-computing">Parallel Computing</h2>
+<p>A parallel program is one that uses a <strong>multiplicity of computational hardware</strong> (e.g., several processor cores or several server nodes) to <strong>perform a computation more quickly</strong>. The aim is to arrive at the answer earlier, by
+delegating different parts of the computation to different processors that execute at the same time.</p>
+<p>We are often confused parallelism with concurrency.
+By contrast, concurrency is a <strong>program-structuring technique</strong> in which there are multiple threads of control. Conceptually, the threads of control execute "at the same time"; that is, the user sees <strong>their effects interleaved</strong>. Whether they actually execute at the same time or not is an implementation detail; a concurrent program can execute on a single processor through interleaved execution or  on multiple physical processors.</p>
+<p>We summarize the difference between parallelism and and concurrency in the following table.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Parallelism</th>
+<th>Concurrency</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Area of Focus</td>
+<td>Efficiency</td>
+<td>Structural and Modularity</td>
+</tr>
+<tr>
+<td>Number of Goals</td>
+<td>One</td>
+<td>One or more</td>
+</tr>
+<tr>
+<td>Program Semantic</td>
+<td>Deterministic</td>
+<td>Non-deterministic</td>
+</tr>
+<tr>
+<td>Single processor Exec</td>
+<td>Sequential</td>
+<td>Interleaving</td>
+</tr>
+</tbody>
+</table>
+<p>We focus on the key differences. Though concurrency also achieve certain level of speed up, its focus is in handling multiple tasks with a fixed set of resources through scheudling. Parallelism focuses on getting one thing done and fast. The result of parallel computing must be deterministic whilst concurrency does not necessarily entail determinism.</p>
+<p>The following are some examples of parallelism </p>
+<ul>
+<li>A sodoku solver uses multiple CPU cores</li>
+<li>A parallelized database query that retrieves and aggregates records from a cluster of replica of database.</li>
+<li>A K-means analyses running over a Hadoop cluster</li>
+</ul>
+<p>and concurrency</p>
+<ul>
+<li>A web application that handles multiple clients HTTP requests  and interacting with the databases.</li>
+<li>A User Interface of the a mobile phone handles user's touch screen input    and exchanging data via the 4G network</li>
+</ul>
+<h2 id="means-of-parallelism">Means of Parallelism</h2>
+<p>Parallelism can be achieved via special hardware or/and via software </p>
+<h3 id="hardware-parallelism">Hardware Parallelism</h3>
+<h4 id="single-processor">Single Processor</h4>
+<p>Parallelism can be actualized via a single processor when the given instructions use less than provided bits, e.g. we can parallelize the execution of some 32 bit operations given that the processor operates on 64 bit addresses.</p>
+<p>Alterantively, the parallelism can be achieved by instruction pipelining, assume different sub components of the processor handles different types of process operators. For instance, </p>
+<pre><code class="language-java">1: add r1 r2 r3 // r1 = r2 + r3
+2: mul r1 2     // r2 *= 2
+3: add r2 r4 r5 // r2 = r4 + r5
+</code></pre>
+<p>assuming <code>add</code> and <code>mul</code> instructions are executed by different components of the same processor, after the instruction <code>1</code> is executed, instructions <code>2</code> and <code>3</code> can be executed in parallel.</p>
+<h4 id="gpu">GPU</h4>
+<p>GPU can be leveraged to perform matrix operations in parallel by making use of the multiple cores builtin. The acceleration of computation often requires firwmware level and driver level support, e.g. Nvidia CUDA and AMD ROCM.</p>
+<h4 id="multiple-processors-with-shared-memory">Multiple processors with shared memory</h4>
+<p>Modern personal computers and mobile devices are equipped with multi-core processors. These processors share the same pool of physical memory. Parallelism can be achieved via data parallelism, task parallelism, multi-threading and etc.</p>
+<h4 id="multiple-processors-with-distributed-memory">Multiple processors with distributed memory</h4>
+<p>As the number of processors increases. the processing power per dollar for mutliple processor with shared memory is diminishing. Large scale systems are often built over multiple processors (multiple servers) with distributed memory. Each processor (set of processors) has its own dedicated memory. They are connected and communicating through high speed networks.</p>
+<h3 id="software-parallelism">Software Parallelism</h3>
+<p>In the earlier year of study, we came acrossing the concept of multithreading. In this module, we focus the other two commonly used (higher level) software parallelism, task parallelism and data paralleism.</p>
+<h4 id="task-parallelism">Task Parallelism</h4>
+<p>In Task parallelism, if some sub-computations (sub tasks) are mutually independent, (which can be identified via human checking or software analysis), they can be executed in parallel. For instance,</p>
+<pre><code class="language-python">def cook_beef_bolognese(beef,spaghetti):
+  sauce = cook_sauce(beef) # task A
+  pasta = cook_pasta(spaghetti) # task B
+  return mix(sauce,pasta)
+</code></pre>
+<p>If we identify that sub task of cooking sauce is independent of the sub task of cooking pasta, we can execute the two sub tasks in parallel when the hardware resource is available.</p>
+<p>Note that in Task parallelism, the sub tasks are not necessary having the same set of instructions.</p>
+<h4 id="data-parallelism">Data Parallelism</h4>
+<p>In data parallelism, we compute the result by running a common routine repeatedly over a set of input data. If there is no dependency among the iteration, we could parallize these computations too. </p>
+<p>For example,</p>
+<pre><code class="language-python">def fib(n): ... 
+def main():
+    inputs = [ 10, 100, 200, ...]
+    results = []
+    for i in inputs: 
+        results.append(fib(i))
+    return results
+</code></pre>
+<p>in the above code snippet, we repeatedly compute the fibonacci numbers given the index positions as the input. Note that these computations are independent. We could rewrite the above using the python `map`` function.</p>
+<pre><code class="language-python">def fib(n): ... 
+def main():
+   inputs = [ 10, 100, 200, ...]
+   # task C 
+   results = map(fib, inputs) 
+   return results
+
+def map(f,l):
+    if len(l) == 0:
+        return []
+    else:
+        hd = l[0]
+        tl = l[1:]
+        fst = f(hd)
+        rest = map(f,tl)
+        return [fst] + rest
+</code></pre>
+<p>The above variant is the computing the same results as the original version, except that we are using the map function instead of the for loop. The <code>map</code> function applies a higher order function <code>f</code>  to a list of items <code>l</code>. In case <code>l</code> is an empty list, it returns an empty list. otherwise, it applies <code>f</code> to the first item in <code>l</code> and recursively calls itself to handle the rest of the elements. (Note: since Python 3, the <code>map</code> is implemented in iterator style. However, we still use the above version for the ease of reasoning.) One motivation to use <code>map</code> instead of for-loop is to explicitly show that</p>
+<ol>
+<li>each call to <code>f(hd)</code> for each item in <code>l</code> is using the same instruction</li>
+<li>each call to <code>f(hd)</code> for each item in <code>l</code> is indpendent (c.f. task parallelism)</li>
+</ol>
+<p>Exploiting these results, the compiler could parallelize these calls, e.g. by scheduling <code>fib(10)</code> in CPU core 1, <code>fib(100)</code> in CPU core 2, and etc. </p>
+<p>Unfortunately, Python does not have data parallelism builtin for <code>map</code>. In some other languages such as Scala, the <code>map</code> function has builtin support of data parallelism. We will see some of the demo during the lecture when time permits.</p>
+<h3 id="data-parallelism-and-determinism">Data Parallelism and determinism</h3>
+<h4 id="defintion-determinisism">Defintion: Determinisism</h4>
+<p>We say a programm <span class="arithmatex">\(P\)</span> is <strong>deterministic</strong> iff 
+for all input <span class="arithmatex">\(i_1\)</span> and <span class="arithmatex">\(i_2\)</span> such that <span class="arithmatex">\(i_1 \equiv i_2\)</span> then <span class="arithmatex">\(P(i_1) \equiv P(i_2)\)</span>.</p>
+<p>In the presence of parallelism and concurrency, it is tricky to ensure a program is determinsitic. </p>
+<p>Fortunately, for <code>map</code> data parallelism, all we need is a side condition to ensure <strong>deterministic</strong> semantics. </p>
+<h4 id="pure-function">Pure function</h4>
+<p>Recall from some earlier module, we learned that a function <code>f</code> is <em>pure</em> if it does not modify nor is dependent on the external state when it is executed.</p>
+<p><code>map(f,l)</code> is guaranteed to be deterministic (regardless whether it is executed sequentially or in parallel.)</p>
+<h3 id="data-parallelism-with-reduce">Data Parallelism with <code>Reduce</code></h3>
+<p>Orthogonal to <code>map</code>, function <code>reduce(f, l, initial)</code> aggregates all the items in <code>l</code> with a binary operation <code>f</code>, using <code>initial</code> as the initial aggregated value.</p>
+<pre><code class="language-python">def reduce(f,l,acc):
+    if len(l) == 0: 
+        return acc
+    else:
+        hd = l[0]
+        tl = l[1:]
+        return reduce(f, tl, f(hd,acc))
+
+def reduce(f,l):
+    return reduce(f,l[1:], l[0])
+</code></pre>
+<p>For example,</p>
+<pre><code class="language-python">def main():
+    inputs = [10, 100, 200, 400]
+    result = reduce(lambda x,y:x+y,inputs,0)
+    return result
+</code></pre>
+<p>computes the sum of all numbers found in <code>inputs</code>, i.e. it is effectively computing </p>
+<pre><code class="language-python">(0 + 10 + 100 + 200 + 400)
+</code></pre>
+<p>If we are given 2 CPU cores, we could evaluate <code>(0 + 10 + 100)</code> in Core 1, <code>(200 + 400)</code> in Core 2, then <code>(110 + 600)</code> in Core 1. </p>
+<h4 id="reduce-and-determinism"><code>Reduce</code> and determinism</h4>
+<p>Given that a binary function <code>f</code> is <em>pure</em>, <em>commutative</em> and <em>associative</em> it is guaranteed that <code>reduce(f,l,a)</code> can be parallelized. The results will be the same as it is executed sequentially.</p>
+<p>Note: A binary function <code>f</code> is commutative iff <code>f(x,y) = f(y,x)</code>. A binary function <code>f</code> is associative iff <code>f(x,f(y,z)) = f(f(x,y),z)</code>.</p>
+<h2 id="mapreduce-framework">MapReduce Framework</h2>
+<p>Though this looks prosing on paper, </p>
+<ul>
+<li>In practice, it won't scale well with each map or reduce task being teeny tiny. </li>
+<li>It is better to partition data into chunks so that each map or reduce task is reasonably large enough.</li>
+</ul>
+<p>This leads to the MapReduce Framework found in Google FS, Hadoop and many other big data platforms.</p>
+<h3 id="the-toy-mapreduce-framework">The Toy MapReduce Framework</h3>
+<p>For the ease of understanding, we consider a scaled down and simplified implementation of the MapReduce Framework in Python.  Though there is no parallelism builtin, we know that when the same library can be easily ported to other languguages or environments with parallel <code>map</code> and <code>reduce</code> support. </p>
+<p>Besides <code>map</code> and <code>reduce</code> we need a few more combinators (functions)</p>
+<pre><code class="language-python">def flatMap(f,l):
+    ll = map(f,l)
+    return reduce(lambda x,y:x+y, ll, [])
+</code></pre>
+<p><code>flatMap</code> is similar to map, except that each inner list is flattened. e.g.  <code>flatMap(lambda x: [x+1], [1,2,3])</code> yields <code>[2,3,4]</code>.</p>
+<pre><code class="language-python">def lift_if(p,x):
+    if p(x):
+        return [x]
+    else:
+        return []
+
+def filter(p,l):
+    return flatMap(lambda x:lift_if(p,x), l)
+</code></pre>
+<p><code>filter</code> returns a new list whose elements are from <code>l</code> and satisfying the test <code>p</code>. e.g.
+<code>filter(lambda x:x%2==0, [1,2,3,4,5,6])</code> yields <code>[2,4,6]</code>.</p>
+<pre><code class="language-python">def merge(kvls1, kvls2):
+    if len(kvls1) == 0: return kvls2
+    elif len(kvls2) == 0: return kvls1
+    else:
+        ((k1,vl1), tl1) = (kvls1[0], kvls1[1:])
+        ((k2,vl2), tl2) = (kvls2[0], kvls2[1:])
+        if k1 == k2: return [(k1,vl1+vl2)]+merge(tl1,tl2)
+        elif k1 &lt; k2: return [(k1,vl1)]+merge(tl1,kvls2)
+        else: return [(k2,vl2)]+merge(kvls1, tl2)
+
+def shuffle(kvs):
+    kvls = map(lambda kv: [(kv[0], [kv[1]])], kvs)
+    return reduce(merge, kvls, [])
+</code></pre>
+<p>We assume that there exists a total order among keys. 
+Given a list of key-value pairs, <code>shuffle</code> shuffles and merge values sharing the same key.
+e.g. <code>shuffle([("k1",1),("k2",1), ("k1",2), ("k2",3)])</code> yields
+<code>[('k1', [1, 2]), ('k2', [1, 3])]</code></p>
+<pre><code class="language-python">def reduceByKey(f, kvs, acc):
+    s = shuffle(kvs)
+    return map(lambda p: (p[0], reduce(f,p[1],acc)), s)
+
+def reduceByKey(f, kvs):
+    s = shuffle(kvs)
+    return map(lambda p: (p[0], reduce(f,p[1])), s)
+</code></pre>
+<p><code>reduceByKey</code> shuffles the list of key-value pairs, grouping them by keys, then applies the binary aggregation function <code>f</code> to values in 
+each group. e.g. <code>reduceByKey(lambda x,y:x+y, [("k1",1),("k2",1), ("k1",2), ("k2",3)],0)</code> yields <code>[('k1', 3), ('k2', 4)]</code></p>
+<p>Note that all these combinators are implemented using <code>map</code> and <code>reduce</code>. If <code>map</code> and <code>reduce</code> are parallelized, so are these combinators.</p>
+<p>Apart from <code>reduceByKey</code>, we would also like to include a variant </p>
+<pre><code class="language-python">def reduceByKey2(agg, kvs):
+    return map(agg, shuffle(kvs))
+</code></pre>
+<p>Both variants call shuffle to partition the input.
+The difference is that given a partition <code>(key,values)</code> obtained from the shuffled results, the function <code>agg</code> in <code>reducedByKey2</code> is applied to aggregate <code>values</code>, and returns key of the partition and the aggregated result. Note that <code>agg</code> is given by the user/programmer, which might not be implemented using <code>reduce</code>, in contrast, the <code>f</code> in <code>reduceByKey</code> is applied to the <code>reduce(f,values)</code>.</p>
+<h2 id="example-word-count">Example : Word Count</h2>
+<p>In this example, we would to write a program which opens a text file, reads all the words in the file and counts the number of occurences of words.</p>
+<h3 id="using-for-loop">Using for loop</h3>
+<pre><code class="language-python">infile = open(sys.argv[1], 'r')
+dict = {}
+for line in infile:
+     words = line.strip().split()
+     for word in words:
+         if (dict.has_key(word)):
+             dict[word] +=1
+         else:
+             dict[word] = 1
+for word,count in dict.items():
+    print(&quot;%s,%d\n&quot; % (word,count))
+</code></pre>
+<h3 id="using-toy-mapreduce">Using Toy MapReduce</h3>
+<pre><code class="language-python">infile = open(sys.argv[1], 'r')
+lines = []
+for line in infile: lines.append(line.strip())
+
+def f(text):
+    wordand1s = []
+    for word in text.split(): wordand1s.append((word,1))
+    return wordand1s
+
+def g(p):
+    word,icounts = p
+    return (word, sum(icounts))
+
+w1s = flatMap(f,lines)
+
+res = reduceByKey2(g, w1s)
+
+for word,count in res: print(&quot;%s,%d&quot; % (word,count))
+</code></pre>
+<p>we abstract away the use of for loop and the dictionary by using <code>flatMap</code> and <code>reduceByKey2</code>.</p>
+<h3 id="using-mapreduce-in-hadoop">Using MapReduce in Hadoop</h3>
+<p>We consider using the Python API of Hadoop (a.k.a. pydoop). Hadoop MapReduce provides the standard parallelized/distributed implementtation of the <code>flatMap</code> and <code>reduceByKey2</code>, we don't need to worry implement them.</p>
+<pre><code class="language-python">def mapper(key, text, writer): 
+    for word in text.split():
+        writer.emit(word, &quot;1&quot;)
+
+def reducer(word, icounts, writer):
+    writer.emit(word, sum(map(int, icounts)))
+</code></pre>
+<p>the function <code>mapper</code> is taking the role of <code>f</code> in the toy mapreduce version, and function <code>reducer</code> is taking the role of <code>g</code>.</p>
+<p>We can think of <code>writer.emit</code> is similar to the regular <code>return</code> and <code>yield</code> in Python's iterator
+depending on the context. </p>
+<p>Note that <code>mapper</code> also takes a key as input. Hadoop generalize to all
+data that potentially has a key for each entry. In case like the input
+ot the mapper is a plain text file, the key is the byte offset
+w.r.t to the start of the text file.</p>
+<p>Since we are using Pydoop, the integration with with the Hadoop MapReduce is just to run it as a script. </p>
+<pre><code class="language-bash">$ pydoop script wordcount.py /input /output
+</code></pre>
+<p>Note that we do not need to call <code>flatMap</code> or <code>reduceByKey2</code> explicitly.</p>
+<p>In the following chart illustrate of the steps taken place during wordcount example.</p>
+<p><img alt="Hadoop MapReduce" src="../images/a11.png" /></p>
+<h2 id="hadoop-mapreduce-architecture">Hadoop MapReduce Architecture</h2>
+<p>The following diagram show a basic structure of all the server and clients component of the Hadoop MapReduce.</p>
+<p><img alt="MapReduce Architecture" src="../images/12774181-jobtracker-tasktracker.jpg" /></p>
+<p>In Hadoop v1, a JobTracker is spawned for coordination purpose; TaskTrackers are spawedfor executing the actual jobs. We can think of the JobTrackers are run in the name node, and the Tasktrackers are processes in the data nodes.</p>
+<p>We leave the advanced architecture of Hadoop Version 2+ in the upcoming lesson, i.e. YARN. </p>
+<h2 id="hadoop-mapreduce-job-management">Hadoop MapReduce Job Management</h2>
+<p>Hadoop MapReduce follows the locallity principal, i.e. computation must be moved to the data, i.e. compute at the data nodes. This is possible thanks to the determinism property discussed earlier. These common tasks, mappers and reducers are compiled and packaged as (JAR) and uploaded to the data node. </p>
+<p>The input data are (pre-) partitioned into splits, (by data nodes). Data are fed to the mappers by split.  </p>
+<p>The output of the mappers will be re-shuffled and re-partitioned and sent to the reducers. </p>
+<p>In some cases combiners are used. Combiners are like local mini-reducers, they reduce the immediate output coming straight from the mapper task so that the network traffic can be further reduced. </p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/jquery-3.6.0.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../javascripts/mathjax.js"></script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

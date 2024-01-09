@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="../../img/favicon.ico" rel="shortcut icon"/>
+<title>50.043 - Transactions and Concurrency Control - Database System and Big Data 50.043</title>
+<link href="../../css/bootstrap.min.css" rel="stylesheet"/>
+<link href="../../css/font-awesome.min.css" rel="stylesheet"/>
+<link href="../../css/base.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+</head>
+<body>
+<div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+<div class="container">
+<a class="navbar-brand" href="../..">Database System and Big Data 50.043</a>
+<!-- Expander button -->
+<button class="navbar-toggler" data-target="#navbar-collapse" data-toggle="collapse" type="button">
+<span class="navbar-toggler-icon"></span>
+</button>
+<!-- Expanded navigation -->
+<div class="navbar-collapse collapse" id="navbar-collapse">
+<!-- Main navigation -->
+<ul class="nav navbar-nav">
+<li class="navitem">
+<a class="nav-link" href="../..">Home</a>
+</li>
+<li class="navitem">
+<a class="nav-link" href="../../project/">Project</a>
+</li>
+<li class="navitem">
+<a class="nav-link" href="../l1_course_handout/">Handout</a>
+</li>
+</ul>
+<ul class="nav navbar-nav ml-auto">
+<li class="nav-item">
+<a class="nav-link" data-target="#mkdocs_search_modal" data-toggle="modal" href="#">
+<i class="fa fa-search"></i> Search
+                            </a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="container">
+<div class="row">
+<div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+<div class="navbar-header">
+<button class="navbar-toggler collapsed" data-target="#toc-collapse" data-toggle="collapse" title="Table of Contents" type="button">
+<span class="fa fa-angle-down"></span>
+</button>
+</div>
+<div class="navbar-collapse collapse card bg-secondary" id="toc-collapse">
+<ul class="nav flex-column">
+<li class="nav-item" data-level="1"><a class="nav-link" href="#50043-transactions-and-concurrency-control">50.043 - Transactions and Concurrency Control</a>
+<ul class="nav flex-column">
+<li class="nav-item" data-level="2"><a class="nav-link" href="#learning-outcomes">Learning Outcomes</a>
+<ul class="nav flex-column">
+</ul>
+</li>
+<li class="nav-item" data-level="2"><a class="nav-link" href="#recall-isolation">Recall Isolation</a>
+<ul class="nav flex-column">
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div></div>
+<div class="col-md-9" role="main">
+<h1 id="50043-transactions-and-concurrency-control">50.043 - Transactions and Concurrency Control</h1>
+<h2 id="learning-outcomes">Learning Outcomes</h2>
+<p>By the end of this unit, you should be able to</p>
+<ol>
+<li>Explain serializability, confict serializability.</li>
+<li>Apply conflict serializability check to schedule.</li>
+<li>Explain Strict 2PL and 2PL</li>
+<li>Apply Strict 2PL and 2PL to generate conflict serialiable schedules.</li>
+</ol>
+<h2 id="recall-isolation">Recall Isolation</h2>
+<p>Recall from the previous unit, we learn that the isoliation property ensures that multiple concurrent transactions must not be dependent on one another. In other words, if the DBMS executing these concurrent transactions by interleaving, the result be the same as executing them in a sequential order. </p>
+<h3 id="serializability">Serializability</h3>
+<p>Suppose we have a set of tasks <span class="arithmatex">\(t_1,...,t_n\)</span>, each task <span class="arithmatex">\(t_i\)</span> consists of a sequence of instructions <span class="arithmatex">\(c^i_1,..., c^i_{m_i}\)</span>. </p>
+<h4 id="schedule">Schedule</h4>
+<p>We call a sequence of distinct instructions <span class="arithmatex">\(c_1,...,c_k\)</span> a schedule of tasks <span class="arithmatex">\(t_1,...,t_n\)</span>, iff 
+1. for all <span class="arithmatex">\(i\in\{1,n\}\)</span>, for all <span class="arithmatex">\(p \in \{1, m_i\}\)</span>, we find <span class="arithmatex">\(c^i_p \in \{c_1,...,c_k\}\)</span>.
+2. for all <span class="arithmatex">\(q \in \{1,k\}\)</span>, there exist <span class="arithmatex">\(i\in\{1,n\}\)</span> and <span class="arithmatex">\(p \in  \{1, m_i\}\)</span> such that <span class="arithmatex">\(c_q = c^i_p\)</span>.
+3. for all  <span class="arithmatex">\(q \in \{1,k\}\)</span> and <span class="arithmatex">\(q' \in \{q,k\}\)</span>, there not exist <span class="arithmatex">\(i\in\{1,n\}\)</span> and <span class="arithmatex">\(p \in  \{1, m_i\}\)</span> and <span class="arithmatex">\(p' \in \{p, m_i\}\)</span> such that <span class="arithmatex">\(c_q = c^i_{p'}\)</span> and <span class="arithmatex">\(c_{q'} = c^i_p\)</span>.</p>
+<p>The first rule enforces all instructions in the tasks can be found in the schedule. 
+The second rule enforces all instructions in the schedule can be found in the tasks.
+The third rule enforce that the relative order between instructions from the same task are maintained in the schedule.</p>
+<h4 id="serial-schedule">Serial Schedule</h4>
+<p>Given tasks <span class="arithmatex">\(t_1,...,t_n\)</span> and a schedule  <span class="arithmatex">\(c_1,...,c_k\)</span>, we say <span class="arithmatex">\(c_1,...,c_k\)</span> is a <em>serial schedule</em> of <span class="arithmatex">\(t_1,...,t_n\)</span> iff
+1. there not exists a sub-sequence <span class="arithmatex">\(c_{q-1}, c_{q}, c_{q+1}\)</span> of <span class="arithmatex">\(c_1,...,c_k\)</span> such that <span class="arithmatex">\(c_{q-1}\)</span> and <span class="arithmatex">\(c_{q+1}\)</span> are instructions from task <span class="arithmatex">\(t_j\)</span> and <span class="arithmatex">\(c_q\)</span> is an instruction from task <span class="arithmatex">\(t_i\)</span>, for some <span class="arithmatex">\(i\)</span> and <span class="arithmatex">\(j\)</span> in <span class="arithmatex">\(\{1,n\}\)</span>.</p>
+<p>In other words, a schedule is <em>serial</em> iff there is no interleaving.</p>
+<p>Note that given a set of tasks <span class="arithmatex">\(t_1,...,t_n\)</span>, there are in total <span class="arithmatex">\(n!\)</span> serial schedules.</p>
+<h4 id="state-and-instruction">State and Instruction</h4>
+<p>Given two database states <span class="arithmatex">\(s_1\)</span> and <span class="arithmatex">\(s_2\)</span>, and an instruction <span class="arithmatex">\(c\)</span>, 
+we say <span class="arithmatex">\(s_1\vdash c \rightarrow s_2\)</span> to denote execution <span class="arithmatex">\(c\)</span> in the database with in state <span class="arithmatex">\(s_1\)</span> results in state <span class="arithmatex">\(s_2\)</span>. </p>
+<p>Inductively, we can define </p>
+<p><span class="arithmatex">\(s_1 \vdash c_1,c_2,...,c_n \rightarrow s_n\)</span> iff <span class="arithmatex">\(s_1 \vdash c_1 \rightarrow s_2\)</span> and  <span class="arithmatex">\(s_2 \vdash c_2,...,c_n \rightarrow s_n\)</span>.</p>
+<h4 id="serializable-schedule">Serializable Schedule</h4>
+<p>Given tasks <span class="arithmatex">\(t_1,...,t_n\)</span> and a schedule  <span class="arithmatex">\(c_1,...,c_k\)</span>, we say  <span class="arithmatex">\(c_1,...,c_k\)</span> is <em>serializable</em> iff there exists a serial schedule of  <span class="arithmatex">\(t_1,...,t_n\)</span>, i.e. <span class="arithmatex">\(c_1',...,c_k'\)</span> such that <span class="arithmatex">\(s_1 \vdash c_1,...,c_k \rightarrow s_2\)</span> and <span class="arithmatex">\(s_1 \vdash c_1',...,c_k' \rightarrow s_2'\)</span> and <span class="arithmatex">\(s_2 = s_2'\)</span>.</p>
+<p>In other words, a schedule is serializable if its effect is the same as a serial schedule after execution.</p>
+<p>For example, consider the following transaction</p>
+<pre><code class="language-sql">-- transaction 1
+begin;
+select @bal1 := bal from saving where id=1001;    -- c1
+update saving set bal = @bal1-100 where id=1001;  -- c2
+commit;
+</code></pre>
+<pre><code class="language-sql">-- transaction 2
+begin;
+select @bal2 := bal from saving where id=1001;    -- c1'
+update saving set bal = @bal2*1.05 where id=1001; -- c2'
+commit;
+</code></pre>
+<p>The schedules <code>c1,c2,c1',c2'</code> and <code>c1',c2',c1,c2</code> are serializable schedules, but <code>c1,c1',c2,c2'</code> is not a serializable schedule, we illustrate the state and instruction execution as follows</p>
+<table>
+<thead>
+<tr>
+<th>state before</th>
+<th>instruction</th>
+<th>state after</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>100</td>
+<td>c1</td>
+<td>100, bal1 = 100</td>
+</tr>
+<tr>
+<td>100,bal1 = 100</td>
+<td>c1'</td>
+<td>100, bal1 = 100, bal2 = 100</td>
+</tr>
+<tr>
+<td>100, bal1 = 100, bal2 = 100</td>
+<td>c2</td>
+<td>0, bal1 = 100, bal2 = 100</td>
+</tr>
+<tr>
+<td>0, bal1 = 100, bal2 = 100</td>
+<td>c2'</td>
+<td>105, bal1 = 100, bal2 = 100</td>
+</tr>
+</tbody>
+</table>
+<p>At the end of execution, we found the balance of account <code>1001</code> is 105 though we withdraw 100 from this account in transaction1.</p>
+<h3 id="serializability-check">Serializability Check</h3>
+<p>Our dream approach is to be able to check whether the given schedule is serializable without executing it. However such a check is very expensive because</p>
+<ol>
+<li>there are <span class="arithmatex">\(n!\)</span> possible serial schedules we need to verify the given one against.</li>
+<li>we need to model the set of possible operations and the value domains (without executing them).</li>
+</ol>
+<p>Our second best approach is to use a conservative approximation check, say <span class="arithmatex">\(C(s)\)</span> where <span class="arithmatex">\(C\)</span> is the approximation check and <span class="arithmatex">\(s\)</span> is a schedule, such that <span class="arithmatex">\(C(s)\)</span> yields true implies <span class="arithmatex">\(s\)</span> is serializable. </p>
+<p>Note that we don't need to guarantee the inverse direction still holds (since <span class="arithmatex">\(C\)</span> is a conservative approximation).</p>
+<h4 id="conflict-serializability-check">Conflict Serializability Check</h4>
+<p>One possible of consevative approximation is <em>Conflict Serializability Check</em>.</p>
+<h4 id="update-of-terminologies">Update of terminologies</h4>
+<p>From this point onwards, we sometimes refer</p>
+<ul>
+<li>an instruction <span class="arithmatex">\(c\)</span> as an operator, which could be <span class="arithmatex">\(R(A)\)</span> or <span class="arithmatex">\(W(A)\)</span> where <span class="arithmatex">\(R(\cdot)\)</span> stands for the read operator, and <span class="arithmatex">\(A\)</span> is the object that being read, <span class="arithmatex">\(W(\cdot)\)</span> denotes a write operator.</li>
+<li>a task <span class="arithmatex">\(t\)</span> as an transaction <span class="arithmatex">\(T\)</span>.</li>
+<li>a state <span class="arithmatex">\(s\)</span> is a mapping from objects, such as <span class="arithmatex">\(A\)</span>, <span class="arithmatex">\(B\)</span>, etc to values.</li>
+</ul>
+<h4 id="operator-conflict">Operator Conflict</h4>
+<p>Two instructions <span class="arithmatex">\(c_1\)</span> and <span class="arithmatex">\(c_2\)</span> are conflict iff</p>
+<ul>
+<li><span class="arithmatex">\(c_1\)</span> and <span class="arithmatex">\(c_2\)</span> belong to different transactions and </li>
+<li><span class="arithmatex">\((c_1 = R(A) \wedge c_2 = W(A))\)</span> or <span class="arithmatex">\((c_1 = W(A) \wedge c_2 = R(A))\)</span> or <span class="arithmatex">\((c_1 = W(A) \wedge c_2 = W(A))\)</span> for some common object <span class="arithmatex">\(A\)</span> in the state.</li>
+</ul>
+<h4 id="execution-order">Execution Order</h4>
+<p>Given a schedule <span class="arithmatex">\(X = c_1,...,c_n\)</span>, we say <span class="arithmatex">\(c_i \prec c_j\)</span> iff  <span class="arithmatex">\(1 \leq i \wedge  i &lt; j \wedge j \leq n\)</span></p>
+<p>Intuitively, <span class="arithmatex">\(c_i \prec c_j\)</span> means <span class="arithmatex">\(c_i\)</span> is executed before <span class="arithmatex">\(c_j\)</span> in a schedule <span class="arithmatex">\(X\)</span>.</p>
+<h4 id="conflict-equivalence">Conflict Equivalence</h4>
+<p>Given two schedules <span class="arithmatex">\(X = c_1,...,c_n\)</span> and <span class="arithmatex">\(X' = c_1',...,c_n'\)</span> are <em>conflict equivalent</em> iff</p>
+<ol>
+<li>both schedules belong to the same set of transactions. </li>
+<li>for any pair of conflicting operators <span class="arithmatex">\((c_i, c_j)\)</span> in <span class="arithmatex">\(X\)</span>, such that <span class="arithmatex">\(c_i \prec c_j\)</span>, we find <span class="arithmatex">\((c_k', c_l')\)</span> in <span class="arithmatex">\(X'\)</span> such that <span class="arithmatex">\(c_k' \prec c_l'\)</span> and <span class="arithmatex">\(c_i = c_k'\)</span> and <span class="arithmatex">\(c_j = c_l'\)</span>.</li>
+</ol>
+<p>In other words, the second condition in the above definition says that all conflicting operators in <span class="arithmatex">\(X\)</span> have the same relative execution order (within the conflicting pair) in <span class="arithmatex">\(X'\)</span>.</p>
+<h4 id="conflict-serializable">Conflict Serializable</h4>
+<p>Given a set of tasks <span class="arithmatex">\(t_1,...,t_n\)</span>, a schedule <span class="arithmatex">\(X\)</span> is conflict serializable iff it is conflict equivalent to some schedule <span class="arithmatex">\(X'\)</span> of tasks <span class="arithmatex">\(t_1,...,t_n\)</span> such that <span class="arithmatex">\(X'\)</span> is serial.</p>
+<h4 id="an-example">An example</h4>
+<p>Consider the following example with two transactions 
+* <code>T1: R(A), W(A), R(B), W(B)</code>
+* <code>T2: R(A), W(A), R(B), W(B)</code></p>
+<p>Let's say </p>
+<ul>
+<li><code>T1:R(A), W(A)</code> is to increment <code>A</code>'s value by 10.</li>
+<li><code>T1:R(B), W(B)</code> is to increment <code>B</code>'s value by 10.</li>
+<li><code>T2:R(A), W(A)</code> is to double <code>A</code>'s value.</li>
+<li><code>T2:R(B), W(B)</code> is to double <code>B</code>'s value.</li>
+</ul>
+<p>Note that there are 2! = 2 possible serial schedules.</p>
+<ul>
+<li>Serial schedule 1</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>T1</th>
+<th>T2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R(A)</td>
+<td></td>
+</tr>
+<tr>
+<td>W(A)</td>
+<td></td>
+</tr>
+<tr>
+<td>R(B)</td>
+<td></td>
+</tr>
+<tr>
+<td>W(B)</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>R(A)</td>
+</tr>
+<tr>
+<td></td>
+<td>W(A)</td>
+</tr>
+<tr>
+<td></td>
+<td>R(B)</td>
+</tr>
+<tr>
+<td></td>
+<td>W(B)</td>
+</tr>
+</tbody>
+</table>
+<p>assuming the initial state is <code>{A:10, B:10}</code>, the final state of the above is <code>{A:40, B:40}</code>.</p>
+<ul>
+<li>Serial schedule 2 </li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>T1</th>
+<th>T2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>R(A)</td>
+</tr>
+<tr>
+<td></td>
+<td>W(A)</td>
+</tr>
+<tr>
+<td></td>
+<td>R(B)</td>
+</tr>
+<tr>
+<td></td>
+<td>W(B)</td>
+</tr>
+<tr>
+<td>R(A)</td>
+<td></td>
+</tr>
+<tr>
+<td>W(A)</td>
+<td></td>
+</tr>
+<tr>
+<td>R(B)</td>
+<td></td>
+</tr>
+<tr>
+<td>W(B)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>assuming the initial state is <code>{A:10, B:10}</code>, the final state of the above is <code>{A:30, B:30}</code>.</p>
+<p>Now let's consider the following schedule (let's call it schedule 3)</p>
+<table>
+<thead>
+<tr>
+<th>T1</th>
+<th>T2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R(A)</td>
+<td></td>
+</tr>
+<tr>
+<td>W(A)</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>R(A)</td>
+</tr>
+<tr>
+<td></td>
+<td>W(A)</td>
+</tr>
+<tr>
+<td></td>
+<td>R(B)</td>
+</tr>
+<tr>
+<td></td>
+<td>W(B)</td>
+</tr>
+<tr>
+<td>R(B)</td>
+<td></td>
+</tr>
+<tr>
+<td>W(B)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Note that the above schedule is not conflict serializable, because 
+1. conflicting operator pair <span class="arithmatex">\(T2:W(B) \prec T1:R(B)\)</span> cannot be reordered to obtain serial schedule 1, and 
+2. conflicting pair <span class="arithmatex">\(T1:W(A) \prec T2:R(A)\)</span> cannot be reordered to obtain serial schedule 2.</p>
+<p>If we were to execute the above non-conflict serializable schedule with the init state <code>{A:10, B:10}</code>, we get <code>{A:40, B:30}</code>.</p>
+<p>Recall that conflict serialiability is a conservative approximation of serialzability. Suppose we change the operation of <code>T2</code> 
+* <code>T2:R(A), W(A)</code> is to increase <code>A</code>'s value by 20.
+* <code>T2:R(B), W(B)</code> is to increase <code>B</code>'s value by 20.</p>
+<p>Given the init state <code>{A:10, B:10}</code>,  serial schedule 1, serial schedule 2 and schedule 3 generate <code>{A:30, B:30}</code>, which means that after the change of the operation of <code>T2</code>, schedule 3 becomes serializable, but still not conflict serializable.</p>
+<h4 id="conflict-serializable-check-algorithm">Conflict Serializable Check Algorithm</h4>
+<p>In the above example, we illustrate the Conflict Serializable check via a table and manual checking. </p>
+<p>To implement the idea as an algorithm we could leverage on a directed graph, called precedence graph.</p>
+<p>The precedence graph is generated from a schedule <span class="arithmatex">\(X\)</span> as follow.</p>
+<ol>
+<li>For each transaction <span class="arithmatex">\(t\)</span>, create a node <span class="arithmatex">\(n_t\)</span>.</li>
+<li>For each pair of transactions <span class="arithmatex">\(t\)</span> and <span class="arithmatex">\(t'\)</span>, if there exists a conflicting pair of operators <span class="arithmatex">\(t:c \prec t':c'\)</span> in <span class="arithmatex">\(X\)</span>, we draw an directed arc from <span class="arithmatex">\(n_t\)</span> to <span class="arithmatex">\(n_{t'}\)</span>.</li>
+</ol>
+<p>A schedule <span class="arithmatex">\(X\)</span> is conflict serialzable if its precendence graph is acyclic.</p>
+<p>For instance, the precendence graph of the schedule 3 in the previous example is as follows</p>
+<div class="mermaid">graph
+T1 --&gt; T2
+T1 --&gt; T2
+T2 --&gt; T1
+T2 --&gt; T1
+</div>
+<h3 id="two-phase-locking">Two Phase Locking</h3>
+<p>Generate schedule in a bruteforce way then check for conflict serializablity is still impractical. DBMSes use <em>Two Phase Locking</em> (2PL) to generate conflict serializable schedule.</p>
+<h4 id="strict-2pl">Strict 2PL</h4>
+<p>Let's consider a strict version of two phase locking is called Strict 2PL. It is governed by the following two rules.</p>
+<ol>
+<li>When a transaction need to read an object <span class="arithmatex">\(A\)</span>, it needs to acquire a shared lock <span class="arithmatex">\(S(A)\)</span>; when it need to write an object <span class="arithmatex">\(A\)</span>, it needs to aquire an exclusive lock <span class="arithmatex">\(X(A)\)</span>. A shared lock can be shared by multiple reader transactions. An exclusive lock cannot be shared.</li>
+<li>All locks are only released <span class="arithmatex">\(U(A)\)</span>, when the transaction commit.</li>
+</ol>
+<p>The requests for lock <span class="arithmatex">\(S(A)\)</span>, <span class="arithmatex">\(X(A)\)</span> and release of lock <span class="arithmatex">\(U(A)\)</span> are inserted by the DBMSes as schedule being generated.</p>
+<p>Let's consider the earlier example with  with two transactions </p>
+<ul>
+<li><code>T1: R(A), W(A), R(B), W(B)</code></li>
+<li><code>T2: R(A), W(A), R(B), W(B)</code></li>
+</ul>
+<p>Suppose <code>T1</code> starts slightly earlier than <code>T2</code>. A schedule is generated with strict 2PL as follows</p>
+<table>
+<thead>
+<tr>
+<th>Timestep</th>
+<th>T1</th>
+<th>T2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>X(A)</td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>R(A)</td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td>W(A)</td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td>X(B)</td>
+<td></td>
+</tr>
+<tr>
+<td>5</td>
+<td>R(B)</td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
+<td>W(B)</td>
+<td></td>
+</tr>
+<tr>
+<td>7</td>
+<td>U(A), U(B), Commit</td>
+<td></td>
+</tr>
+<tr>
+<td>8</td>
+<td></td>
+<td>X(A)</td>
+</tr>
+<tr>
+<td>9</td>
+<td></td>
+<td>R(A)</td>
+</tr>
+<tr>
+<td>10</td>
+<td></td>
+<td>W(A)</td>
+</tr>
+<tr>
+<td>11</td>
+<td></td>
+<td>X(B)</td>
+</tr>
+<tr>
+<td>12</td>
+<td></td>
+<td>R(B)</td>
+</tr>
+<tr>
+<td>13</td>
+<td></td>
+<td>W(B)</td>
+</tr>
+<tr>
+<td>14</td>
+<td></td>
+<td>U(A), U(B), Commit</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>At timestep 1, <code>T1</code> acquires the exclusive lock on <code>A</code> since it needs to read and write to it. <code>T2</code> is blocked as it would also need to acquire an exclusive lock on <code>A</code> to start. </li>
+<li>At timestep 4, <code>T1</code> acquires the exclusive lock on <code>B</code>.</li>
+<li>At timestep 7, <code>T1</code> is commited, hence both locks are released.</li>
+<li>At timestep 8, <code>T2</code>  acquires lock on <code>A</code> and starts.  </li>
+</ol>
+<h4 id="2pl">2PL</h4>
+<p>Once issue with Strict 2PL is that a transaction holds on to the locks it acquires until it commits, this blocks off other possible concurrent execution opportunity, hence throughput might be affected.</p>
+<p>A variant of Strict 2PL, known as 2PL, is governed by the following two rules. (First rule is the same as Strict 2PL, the second rule is different).</p>
+<ol>
+<li>When a transaction needs to read an object <span class="arithmatex">\(A\)</span>, it needs to acquire a shared lock <span class="arithmatex">\(S(A)\)</span>; when it needs to write an object <span class="arithmatex">\(A\)</span>, it needs to aquire an exclusive lock <span class="arithmatex">\(X(A)\)</span>. A shared lock can be shared by multiple reader transactions. An exclusive lock cannot be shared.</li>
+<li>A transaction releases the lock right after usage. A transaction cannot acquire new lock once it releases some lock.</li>
+</ol>
+<p>The reason why this is called a two phase locking is that there is a phase of lock acquisition, the number of locks being acquired by a transaction grows until it starts to release some lock, then it will release all the locks gradually.</p>
+<p>Given the same example, a schedule is generated with 2PL as follows</p>
+<table>
+<thead>
+<tr>
+<th>Timestep</th>
+<th>T1</th>
+<th>T2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>X(A)</td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>R(A)</td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td>W(A)</td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td>X(B)</td>
+<td></td>
+</tr>
+<tr>
+<td>5</td>
+<td>U(A)</td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
+<td></td>
+<td>X(A)</td>
+</tr>
+<tr>
+<td>7</td>
+<td></td>
+<td>R(A)</td>
+</tr>
+<tr>
+<td>8</td>
+<td></td>
+<td>W(A)</td>
+</tr>
+<tr>
+<td>9</td>
+<td>R(B)</td>
+<td></td>
+</tr>
+<tr>
+<td>10</td>
+<td>W(B)</td>
+<td></td>
+</tr>
+<tr>
+<td>11</td>
+<td>U(B), Commit</td>
+<td></td>
+</tr>
+<tr>
+<td>12</td>
+<td></td>
+<td>X(B)</td>
+</tr>
+<tr>
+<td>13</td>
+<td></td>
+<td>U(A)</td>
+</tr>
+<tr>
+<td>14</td>
+<td></td>
+<td>R(B)</td>
+</tr>
+<tr>
+<td>15</td>
+<td></td>
+<td>W(B)</td>
+</tr>
+<tr>
+<td>16</td>
+<td></td>
+<td>U(B), Commit</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>At timestep 1, <code>T1</code> acquires an exclusive lock on <code>A</code> and starts, <code>T2</code> is blocked and waits.</li>
+<li>At timestep 4, <code>T1</code> is done with <code>A</code>, but needs to acquire an exclusive lock on <code>B</code> before releasing <code>A</code>.</li>
+<li>At timestep 6, <code>T2</code> acuiqres an exclusive lock on <code>A</code> and starts and runs until timestep 8, it needs to acquire an exclusive lock on <code>B</code> but it is blocked.</li>
+<li>At timesteps 9-10, <code>T1</code> operates on <code>B</code>.</li>
+<li>At timestep 11, <code>T1</code> releases lock on <code>B</code> and is commited.</li>
+<li>At timestep 12, <code>T2</code> is unblocked and acquires the exclusive lock on <code>B</code>, it then releases lock on <code>A</code> and continues with the rest of operations.</li>
+</ol>
+<p>Note that schedules generated by both Strict 2PL and 2PL are <em>conflict serializable</em>. (Proof omitted.)</p>
+<h4 id="strict-2pl-vs-2pl">Strict 2PL vs 2PL</h4>
+<p>2PL in general yields a better throughput compared to Strict 2PL by allowing some transaction to start early. Such gain comes with a price. 2PL might produce schedules that are harder to recover due to cascading abort.</p>
+<p>Consider the following schedule generated by 2PL, we keep the begin and commit explicit.</p>
+<table>
+<thead>
+<tr>
+<th>Timestep</th>
+<th>T1</th>
+<th>T2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>begin</td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>X(A)</td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td>A=10</td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td>X(B)</td>
+<td></td>
+</tr>
+<tr>
+<td>5</td>
+<td>U(A)</td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
+<td></td>
+<td>begin</td>
+</tr>
+<tr>
+<td>7</td>
+<td></td>
+<td>X(A)</td>
+</tr>
+<tr>
+<td>8</td>
+<td></td>
+<td>A=A+1</td>
+</tr>
+<tr>
+<td>9</td>
+<td></td>
+<td>U(A)</td>
+</tr>
+<tr>
+<td>10</td>
+<td></td>
+<td>commit</td>
+</tr>
+</tbody>
+</table>
+<p>Assume the initial state is <code>A=0</code>, executing the above schedule yields the following Undo/Redo Log</p>
+<pre><code>1.  &lt;T1 begin&gt;
+2.  &lt;T1 update A 0 10&gt;
+3.  &lt;T2 begin&gt;
+4.  &lt;T2 update A 10 11&gt;
+5.  &lt;T2 commit&gt;
+</code></pre>
+<p>After timestep 11, the database crashes.</p>
+<p>During the recovery phase, we start with undo phase, we find that T1 need to be undone and aborted.
+However, T2's effect of <code>A=A+1</code> is based on the assumption that <code>A=10</code> in T1 was successful. As a result, T2 has be to aborted and undone too. This is known as cascading abort.</p>
+<h4 id="conservative-2pl">Conservative 2PL</h4>
+<p>Another variant of Strict 2PL is called <em>Conservative 2PL</em>. It is same as Strick 2PL except that a transaction acquires all the locks it needs at the very begining. </p>
+<p>For instance, given the previous example, a schedule is generated with conservative 2PL as follows</p>
+<table>
+<thead>
+<tr>
+<th>Timestep</th>
+<th>T1</th>
+<th>T2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>X(A),X(B)</td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>R(A)</td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td>W(A)</td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td>R(B)</td>
+<td></td>
+</tr>
+<tr>
+<td>5</td>
+<td>W(B)</td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
+<td>U(A), U(B), Commit</td>
+<td></td>
+</tr>
+<tr>
+<td>7</td>
+<td></td>
+<td>X(A),X(B)</td>
+</tr>
+<tr>
+<td>8</td>
+<td></td>
+<td>R(A)</td>
+</tr>
+<tr>
+<td>9</td>
+<td></td>
+<td>W(A)</td>
+</tr>
+<tr>
+<td>10</td>
+<td></td>
+<td>X(B)</td>
+</tr>
+<tr>
+<td>11</td>
+<td></td>
+<td>R(B)</td>
+</tr>
+<tr>
+<td>12</td>
+<td></td>
+<td>W(B)</td>
+</tr>
+<tr>
+<td>13</td>
+<td></td>
+<td>U(A), U(B), Commit</td>
+</tr>
+</tbody>
+</table>
+<p>Note that all the locks are acquired by a transaction in an atomic operation, i.e. all or none. This is a way to prevent deadlock. </p>
+<h4 id="deadlock">Deadlock</h4>
+<p>Let's consider how deadlock can be caused by 2PL (and Strict 2PL).</p>
+<p>Consider the following transactions</p>
+<ul>
+<li><code>T1: R(A), W(A), R(B), W(B)</code></li>
+<li><code>T2: R(B), W(B), R(A), W(A)</code></li>
+</ul>
+<p>and a schedule</p>
+<table>
+<thead>
+<tr>
+<th>Timestep</th>
+<th>T1</th>
+<th>T2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>X(A)</td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>R(A)</td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td>W(A)</td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td></td>
+<td>X(B)</td>
+</tr>
+<tr>
+<td>5</td>
+<td></td>
+<td>R(B)</td>
+</tr>
+<tr>
+<td>6</td>
+<td></td>
+<td>W(B)</td>
+</tr>
+<tr>
+<td>7</td>
+<td>try X(B) but blocked</td>
+<td>try X(A) but blocked</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>At timestep 1, <code>T1</code> acquires an exclusive lock on <code>A</code> and starts</li>
+<li>At timestep 4, <code>T2</code> acquires an exclusive lock on <code>B</code> and starts</li>
+<li>AT timestep 7, <code>T1</code> tries to get a lock on <code>B</code> but it gets blocked. <code>T2</code> tries to get a lock on <code>A</code> but it is blocked too. A deadlock arises.</li>
+</ol>
+<h4 id="deadlock-detection">Deadlock detection</h4>
+<p>A way to detect deadlock is that when transactions waiting for locks, the lock manager (part of DBMS) generate a wait-for graph. </p>
+<p>In a wait for graph, </p>
+<ul>
+<li>each active transaction <span class="arithmatex">\(t\)</span> is a node <span class="arithmatex">\(n_t\)</span>.</li>
+<li>an arc going from <span class="arithmatex">\(n_t\)</span> to <span class="arithmatex">\(n_t'\)</span> if transaction <span class="arithmatex">\(t\)</span> is waiting for a lock which is being held by <span class="arithmatex">\(t'\)</span>.</li>
+</ul>
+<p>For insance, the wait-for graph from the previous example is </p>
+<div class="mermaid">graph
+T1 --&gt; T2
+T2 --&gt; T1
+</div>
+<h4 id="deadlock-prevention">Deadlock prevention</h4>
+<p>To prevent deadlock, there are several approaches</p>
+<ol>
+<li>Use conservative 2PL, but throughput will be affected.</li>
+<li>Set priorities. Transactions with higher priorty get the lock. Transaction wth lower prioerty get aborted and retry.</li>
+</ol></div>
+</div>
+</div>
+<footer class="col-md-12">
+<hr/>
+<p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+</footer>
+<script src="../../js/jquery-3.6.0.min.js"></script>
+<script src="../../js/bootstrap.min.js"></script>
+<script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+<script src="../../js/base.js"></script>
+<script src="../../javascripts/mathjax.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="../../search/main.js"></script>
+<div aria-hidden="true" aria-labelledby="searchModalLabel" class="modal" id="mkdocs_search_modal" role="dialog" tabindex="-1">
+<div class="modal-dialog modal-lg">
+<div class="modal-content">
+<div class="modal-header">
+<h4 class="modal-title" id="searchModalLabel">Search</h4>
+<button class="close" data-dismiss="modal" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+</div>
+<div class="modal-body">
+<p>From here you can search these documents. Enter your search terms below.</p>
+<form>
+<div class="form-group">
+<input class="form-control" id="mkdocs-search-query" placeholder="Search..." title="Type search term here" type="search"/>
+</div>
+</form>
+<div data-no-results-text="No results found" id="mkdocs-search-results"></div>
+</div>
+<div class="modal-footer">
+</div>
+</div>
+</div>
+</div><div aria-hidden="true" aria-labelledby="keyboardModalLabel" class="modal" id="mkdocs_keyboard_modal" role="dialog" tabindex="-1">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+<h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+<button class="close" data-dismiss="modal" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+</div>
+<div class="modal-body">
+<table class="table">
+<thead>
+<tr>
+<th style="width: 20%;">Keys</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="help shortcut"><kbd>?</kbd></td>
+<td>Open this help</td>
+</tr>
+<tr>
+<td class="next shortcut"><kbd>n</kbd></td>
+<td>Next page</td>
+</tr>
+<tr>
+<td class="prev shortcut"><kbd>p</kbd></td>
+<td>Previous page</td>
+</tr>
+<tr>
+<td class="search shortcut"><kbd>s</kbd></td>
+<td>Search</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="modal-footer">
+</div>
+</div>
+</div>
+</div>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>50.043 Query Operations - Database System and Big Data 50.043</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">Database System and Big Data 50.043</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../../project/" class="nav-link">Project</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../l1_course_handout/" class="nav-link">Handout</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#50043-query-operations" class="nav-link">50.043 Query Operations</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#learning-outcomes" class="nav-link">Learning Outcomes</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#recap-relational-algebra" class="nav-link">Recap Relational Algebra</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#selection-operation" class="nav-link">Selection Operation</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#sort-operation" class="nav-link">Sort Operation</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#join-operation" class="nav-link">Join Operation</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="50043-query-operations">50.043 Query Operations</h1>
+<h2 id="learning-outcomes">Learning Outcomes</h2>
+<p>By the end of this unit, you should be able to 
+* assess estimated cost of database operation, namely, select, sort and join
+* describe the external sort algorithm
+* describe nested loop join, block nested loop join, index nested join, sort merge join and hash join</p>
+<h2 id="recap-relational-algebra">Recap Relational Algebra</h2>
+<p>Recall that in week 2, we investigated into relation model and relational alegbra. We argue that relational algebra is a good abstraction to describe data processing operation over a relational model. </p>
+<p>Given that we know a bit more of the internal implementation of a physical database, (the data structure aspect) we start look into possible ways of implemeting the relational algebra operations in a physical datase (the algorithm aspect).</p>
+<h2 id="selection-operation">Selection Operation</h2>
+<p>Let <span class="arithmatex">\(R\)</span> denote a relation (or in other words, a table), we consider the selection operation <span class="arithmatex">\(\sigma_{C}(R)\)</span> where <span class="arithmatex">\(C\)</span> is a logical predicate. The result of this operation is a new relation whose tuples are those coming from <span class="arithmatex">\(R\)</span> and satisfying the predicate <span class="arithmatex">\(C\)</span>. </p>
+<p>There are several ways to implement this operation. </p>
+<h3 id="sequential-scanning">Sequential Scanning</h3>
+<p>Knowing that the data in <span class="arithmatex">\(R\)</span> are stored in a Heap file as a set of Heap pages, we could scan <span class="arithmatex">\(R\)</span> by reading the data from <span class="arithmatex">\(R\)</span> page by page. For each tuple in the page, we remove it when it does not satisfy <span class="arithmatex">\(C\)</span> and retain it otherwise. </p>
+<p>The cost (in terms of number of Disk I/Os) of using the sequential scanning approach is <span class="arithmatex">\(B(R)\)</span>,
+where <span class="arithmatex">\(B(R)\)</span> denotes the number of pages storing <span class="arithmatex">\(R\)</span>.</p>
+<h3 id="scanning-with-b-tree-index">Scanning with B+ Tree index</h3>
+<p>A <em>smarter</em> (but not always) way is to make use to the B+ tree index created over the attributes mentioned in <span class="arithmatex">\(C\)</span>. </p>
+<h4 id="case-1-clustered-index">Case 1: Clustered index</h4>
+<p>In this case the B+ Tree index is not clustered, i.e. the data in the pages are not stored according to the order of the index attribute. </p>
+<p>We have to traverse down the B+ Tree to find the boundaries of <span class="arithmatex">\(C\)</span>, and for each leaf node value (reference) we retrieve the page storing that tuple and check whether that tuple satisfies <span class="arithmatex">\(C\)</span>.</p>
+<p>Assuming each node in the B+ Tree occupies a page, the cost of this approach is </p>
+<div class="arithmatex">\[
+log_d(|R|/d) + \alpha(C,R) \cdot B(R)
+\]</div>
+<p>Where <span class="arithmatex">\(|R|\)</span> denotes the number of tuples in <span class="arithmatex">\(R\)</span>, <span class="arithmatex">\(d\)</span> denotes the order of the B+Tree. <span class="arithmatex">\((|R|/d)\)</span> is number of leaf nodes in the B+ Tree, which is the worst case, every node is just half-full. For simplicity, we assume root node is having at least <span class="arithmatex">\(d\)</span> entries. <span class="arithmatex">\(\alpha(C,R)\)</span> denotes the selectivity of the predicate <span class="arithmatex">\(C\)</span> over <span class="arithmatex">\(R\)</span>, i.e. the number of tuples <span class="arithmatex">\(R\)</span> satisfying <span class="arithmatex">\(C\)</span> divided by <span class="arithmatex">\(|R|\)</span>.</p>
+<p>The first term <span class="arithmatex">\(log_d(|R|/d)\)</span> estimates the cost of traversing the B+ Tree to find the correct starting leaf node. $ \alpha(C,R) \cdot B(R)$ estimates the cost of scanning the tuples of <span class="arithmatex">\(R\)</span>. Since the index is clustered, tuples that are stored in the order of the index attributes, we can fetch adjacient tuple w.r.t the attribute referred in <span class="arithmatex">\(C\)</span> in a single page.</p>
+<h4 id="case-2-unclustered-index">Case 2: Unclustered Index</h4>
+<p>When the B+ Tree is not clustered, the estimated cost becomes</p>
+<div class="arithmatex">\[
+log_d(|R|/d) + \alpha(C,R) \cdot | R |
+\]</div>
+<p>A page read is needed for every tuple (in the worst case). </p>
+<p>As we can see that when <span class="arithmatex">\(\alpha(C,R) &gt; (1 / pagesize)\)</span>, it is definitely more viable to abandon the index and go for the sequential scan.</p>
+<p>One possible improvement of using unclustered index is </p>
+<ol>
+<li>traverse down the B+ Tree to find the correct starting and ending tuple locations (i.e. page id and slot id), </li>
+<li>sort all the tuple locations by page ids before </li>
+<li>reading the sorted pages and filter.</li>
+</ol>
+<p>This will bring us back to the same estimated cost as the clustered index (modular the cost of sorting).</p>
+<h2 id="sort-operation">Sort Operation</h2>
+<p>Sorting is essential. </p>
+<p>From Data Driver World and Algorithms, we learned various sorting algorthms. All of these algorithms assumes that the data can fit in the RAM. In the settings of database operations, this assumption is no longer valid. </p>
+<h3 id="external-sort">External Sort</h3>
+<p>The external sorting algorithm is an instance of the merge sort. </p>
+<h4 id="recap-merge-sort">Recap Merge sort</h4>
+<p>The merge sort algorithm is as follows</p>
+<ol>
+<li>def merge_sort(input)<ol>
+<li>if input size &lt; 2<ol>
+<li>return input, it is already sorted</li>
+</ol>
+</li>
+<li>otherwise<ol>
+<li>divide input into halves, say, i1 and i2</li>
+<li>call merge_sort(i1) to get s1</li>
+<li>call merge_sort(i2) to get s2</li>
+<li>combine(s1,s2) to get sorted</li>
+<li>return sorted</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>def combine(s1, s2)<ol>
+<li>create an empty list out</li>
+<li>while s1 is not empty and s2 is not empty<ol>
+<li>let e1 be the first element of s1</li>
+<li>let e2 be the first element of s2</li>
+<li>if e1 &lt; e2<ol>
+<li>add e1 to out</li>
+<li>remove e1 from s1</li>
+</ol>
+</li>
+<li>otherwise<ol>
+<li>add e2 to out</li>
+<li>remove e2 from s2</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>if s1 is not empty<ol>
+<li>concatenate s1 to out</li>
+</ol>
+</li>
+<li>if s2 is not empty <ol>
+<li>concatentate s2 to out</li>
+</ol>
+</li>
+<li>return out </li>
+</ol>
+</li>
+</ol>
+<h4 id="external-sort_1">External sort</h4>
+<p>The external sort algorithm is a generalized version of merge sort, which operates without loading the full set of data into RAM.</p>
+<h5 id="external-sort-by-example">External sort by example</h5>
+<p>The algorithm makes use of the buffer pool.</p>
+<p>Let's consider an example. Suppose we have a buffer pool of 3 frames and would like to sort the following 8 pages of data. Each page contains two tuples. </p>
+<p><img alt="" src="../images/ext_sort1.png" /></p>
+<h6 id="phase-0">Phase 0</h6>
+<p>In this phase, we divide the input pages into $\lceil8/3 \rceil = 4 $ runs and sort each run.
+<img alt="" src="../images/ext_sort2.png" />  </p>
+<p>From the next phase onwards, we merge each the sorted runs into larger runs, until all are merged into a single one run.</p>
+<h6 id="phase-1">Phase 1</h6>
+<p>We merge 3 runs into two runs. </p>
+<p>Firstly we merge the two runs on the left into one.</p>
+<p><img alt="" src="../images/ext_sort3.png" /></p>
+<p>When merging two runs into one, we divide the buffer pool's frames into the input frames and output frame. There is only one output frame, the rest are inputs. </p>
+<p>In this running example, we have two input frames and one output frame. </p>
+<p><img alt="" src="../images/ext_sort4.png" /></p>
+<p>We merge the run <code>[(2,3), (4,6), (9,9)]</code> with <code>[(3,5), (6,7), (8,11)]</code>.
+We use list notation to denote a run, and a tuple to denote a page.
+1. We load the page <code>(2,3)</code> into an input frame and <code>(3,5)</code> into another input frame.
+2. We find the smallest leading tuple from both frames, i.e. <code>2</code> and move it in the output frame
+3. We repeat the same operation, and find <code>3</code>, which is moved to the output frame
+4. The output frame is full and write it to disk.
+5. The first input frame is not empty (because, we assume both <code>2</code> and  <code>3</code> are moved to the output frame). We load the second page <code>(4,6)</code> into this frame.
+6. The process is repeated until both runs are processed.</p>
+<p>The 3rd run <code>[(0,1), (2,)]</code> is alone, hence there is no merging required.</p>
+<p>At the end of phase 1, we have a new set of runs</p>
+<p><code>[ [(2,3), (3,4), (5,6), (6,7), (8,9), (9,11)],  [(0,1), (2,1)] ]</code></p>
+<h6 id="phase-2">Phase 2</h6>
+<p>In this phase we merge the output from the phase into a single run</p>
+<p><img alt="" src="../images/ext_sort5.png" /></p>
+<h5 id="external-sort-algorithm">External sort algorithm</h5>
+<p>We consider the pseudo-code of the exernal sort algorithm. 
+The algorithm is defined by a pseudo function ext_sort(in_pages, bpool), which has the following input and output.</p>
+<ul>
+<li>input <ul>
+<li>bpool - the buffer pool (in RAM)</li>
+<li>in_pages - the pages to be sorted (on disk)</li>
+</ul>
+</li>
+<li>output<ul>
+<li>sorted results (on disk)</li>
+</ul>
+</li>
+</ul>
+<p>We find the pseudo code as follows
+1. def ext_sort(in_pages, bpool)
+    1. let runs = divide_n_sort(in_pages, bpool)
+    2. while size_of(runs) &gt; 1
+        1. let runs = merge(runs, bpool)
+    3. return runs</p>
+<p>At step 1.1, we call a helper function divide_n_sort(in_pages, bpool) to generate the initial runs, (phase 0). 
+Steps 1.2 to 1.3 define the merging phases (phase 1, phase 2, .., etc). We repeatly call the helper function <code>merge(runs, run_size, bpool)</code> to merge the current runs set until all runs are merged into a single run.</p>
+<h6 id="helper-function-divide_n_sort">Helper function divide_n_sort</h6>
+<p>Next we consider the helper function divide_n_sort(in_pages, bpool), which has the following input and output
+- input
+    * bpool - the buffer pool (in RAM)
+    * in_pages - the pages to be sorted (on disk)
+- output
+    * runs - list of lists (on disk). Each inner list (a run) consists of a set of sorted data. (on disk)</p>
+<ol>
+<li>def divide_n_sort(in_pages, bpool)<ol>
+<li>let count = 0</li>
+<li>let m = size_of(bpool)</li>
+<li>initialize runs to be an empty list (on disk)</li>
+<li>while (m * count) &lt; size_of(in_pages)<ol>
+<li>load the m pages from in_pages at offset (m * count)</li>
+<li>sort data in bpool</li>
+<li>group these m sorted pages into one run (on disk)</li>
+<li>append run to runs (on disk)</li>
+<li>increase count by 1 </li>
+</ol>
+</li>
+<li>return runs</li>
+</ol>
+</li>
+</ol>
+<h6 id="helper-function-merge">Helper function merge</h6>
+<p>We consider the pseudo code of the function merge, merge(runs, bpool)
+- input 
+    * bpool - the buffer pool (in RAM)
+    * runs - the list of lists (on disk), each inner list (a run) consists of a set of sorted data. (on disk)
+- output
+    * next_runs - the runs in next phase (on disk)</p>
+<ol>
+<li>def merge(runs, bpool)<ol>
+<li>initialize next_runs to be an empty list (on disk)</li>
+<li>let m = size_of(bpool)</li>
+<li>let l = size_of(runs)</li>
+<li>divide bpool into m-1 and 1 frames<ol>
+<li>let in_frames = m-1 frames of bpool for input </li>
+<li>let out_frame = 1 frame of bpool for output</li>
+</ol>
+</li>
+<li>let count = 0</li>
+<li>while (m-1)*count &lt; l<ol>
+<li>let batch =  extract m-1 runs from runs at offset (m-1) * count</li>
+<li>let out_run  =  merge_one(batch, in_frames, out_frame)</li>
+<li>append out_run to next_runs</li>
+<li>increment count by 1</li>
+</ol>
+</li>
+<li>return next_runs</li>
+</ol>
+</li>
+</ol>
+<p>The merge function processes the runs by merging every batch (consist of b-1 runs) into a larger run for the next phase, where b is the size of the buffer pool. It utilizes another helper function merge_one(runs, bpool) to merge a batch, which has the following signature and definition
+- input
+    * batch - a segment from global runs. In variant, size_of(batch) &lt;= size_of(in_frames)
+    * in_frame - frames set aside for input pages
+    * out_frame - output frame set aside for output.
+- output
+    * output_run (on disk)</p>
+<ol>
+<li>def merge_one(batch, in_frames, out_frame)<ol>
+<li>initialize output_run to be an empty collection</li>
+<li>let m = size_of(in_frames)</li>
+<li>while (batch is not empty) and not (all in_frames isempty)<ol>
+<li>for i in (0 to m)<ol>
+<li>if in_frames[i] is empty and batch[i] is not empty <ol>
+<li>load a page batch[i] to in_frames[i]</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>find the smallest record from the leading tuples from in_frames[0] to in_frames[m], move it to out_frame</li>
+<li>if out_frame is full, write it to output_run</li>
+</ol>
+</li>
+<li>return output_run</li>
+</ol>
+</li>
+</ol>
+<h4 id="cost-estimation-for-external-sort">Cost estimation for External sort</h4>
+<p>Assuming the size of in_pages is <span class="arithmatex">\(n\)</span>, and the buffer pool size is <span class="arithmatex">\(m\)</span>, we consider the estimated cost (disk I/Os) of external sort algorithm.</p>
+<p>The ext_sort function has two main parts. The phase 0, the divide_n_sort function call and the while loop, i.e.  phase i where i&gt;0.
+* In divide_n_sort, we read each page to be sorted once and write back to disk once. Hence the cost is <span class="arithmatex">\(2 \cdot n\)</span>.
+*  In each iteration of the while loop in ext_sort function, we merge every <span class="arithmatex">\(m-1\)</span> runs into a single run, until all runs are merged. There should be <span class="arithmatex">\(\lceil log_{(m-1)}(\lceil n/m \rceil) \rceil\)</span> iterations. For each iteration, we read and write each page once. Hence the cost is <span class="arithmatex">\(2 \cdot  n \cdot  \lceil log_{(m-1)}(\lceil n/m \rceil)\rceil\)</span>.</p>
+<h2 id="join-operation">Join Operation</h2>
+<p>Lastly, we consider the implementation of the join operation.</p>
+<p>Let <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(S\)</span> be relations. There are several ways of implementing <span class="arithmatex">\(R \bowtie_{c} S\)</span>. 
+* The most naive implementation is to compute <span class="arithmatex">\(\sigma_{c}(R \times S)\)</span>. It is costly, because of the computation of cartesian product.
+* Alternatively, we may use a nested loop</p>
+<h3 id="nested-loop-join">Nested Loop Join</h3>
+<p>One possible approach is to use nested loop </p>
+<ol>
+<li>for each tuple <span class="arithmatex">\(t\)</span> in <span class="arithmatex">\(R\)</span><ol>
+<li>for each tuple <span class="arithmatex">\(u\)</span> in <span class="arithmatex">\(S\)</span><ol>
+<li>if <span class="arithmatex">\(t\)</span> and <span class="arithmatex">\(u\)</span> satisfy <span class="arithmatex">\(c\)</span>, output <span class="arithmatex">\(t\)</span> and <span class="arithmatex">\(u\)</span>.</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<p>The cost of this approach is <span class="arithmatex">\(B(R) + |R| \cdot B(S)\)</span>. The <span class="arithmatex">\(B(R)\)</span> is total cost of loading all tuples from <span class="arithmatex">\(R\)</span> once. For each tuple of <span class="arithmatex">\(R\)</span>, it will be compared with every tuple in <span class="arithmatex">\(S\)</span>, hence <span class="arithmatex">\(|R| \cdot B(S)\)</span>.</p>
+<p>If we flip the outter/inner relation roles of <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(S\)</span>, we get the following cost <span class="arithmatex">\(B(S) + |S| \cdot B(R)\)</span>.</p>
+<h3 id="block-nested-loop-join">Block Nested Loop Join</h3>
+<p>One obvious issue with the nested loop join is that it only utilizes three frames of the buffer pool, 1 frame for <span class="arithmatex">\(R\)</span> and 1 frame for <span class="arithmatex">\(S\)</span> and 1 frame for the output. The frame of <span class="arithmatex">\(S\)</span> is evicted everytime a tuple in <span class="arithmatex">\(R\)</span> is checked. </p>
+<p>We could speed up nested loop join by utilizing all frames of the buffer pool. </p>
+<p>Assuming the buffer pool is of size <span class="arithmatex">\(m\)</span>, we divide the buffer pool into <span class="arithmatex">\(m-2\)</span> frames for loading <span class="arithmatex">\(R\)</span> and 1 frame for loading <span class="arithmatex">\(S\)</span> and 1 frame for output
+1. for each <span class="arithmatex">\(m-2\)</span> pages in <span class="arithmatex">\(R\)</span>, we extract each tuple <span class="arithmatex">\(t\)</span>
+    1. for each page in S$, we extract each tuple <span class="arithmatex">\(u\)</span>.
+        1. if <span class="arithmatex">\(t\)</span> and <span class="arithmatex">\(u\)</span> satisfy <span class="arithmatex">\(c\)</span>, output <span class="arithmatex">\(t\)</span> and <span class="arithmatex">\(u\)</span>.</p>
+<p>The cost of this approach is <span class="arithmatex">\(B(R) + \lceil B(R) / (m - 2) \rceil \cdot B(S)\)</span>.
+The cost will be <span class="arithmatex">\(B(S) + \lceil B(S) / (m - 2) \rceil \cdot B(R)\)</span> if the outer/inner relations are swapped.</p>
+<h3 id="index-nested-loop-join">Index Nested Loop Join</h3>
+<p>If the join predicate <span class="arithmatex">\(c\)</span> is <span class="arithmatex">\(R.a = S.b\)</span> and an index attribute exists for <span class="arithmatex">\(S.b\)</span>, we can optimize the nested loop join by using the indexed relation as the inner relation. </p>
+<ol>
+<li>for each tuple <span class="arithmatex">\(t\)</span> in <span class="arithmatex">\(R\)</span><ol>
+<li>find the tuple <span class="arithmatex">\(u\)</span> in <span class="arithmatex">\(S\)</span> with <span class="arithmatex">\(u.b = t.c\)</span> using index <ol>
+<li>output <span class="arithmatex">\(t\)</span> and <span class="arithmatex">\(u\)</span>.</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<p>The cost of this approach is <span class="arithmatex">\(B(R) + |R| \cdot K\)</span> where <span class="arithmatex">\(K\)</span> is a constant dependent on the structure of the index or the height of the B+ Tree index. E.g. if the height of the B+ Tree is 3, then <span class="arithmatex">\(K = 4\)</span> assuming each node occupying a page. </p>
+<p>An exterem case where <span class="arithmatex">\(R\)</span> is sorted by <span class="arithmatex">\(a\)</span> and <span class="arithmatex">\(S.b\)</span> is a clustered index. The total cost is <span class="arithmatex">\(B(R) + B(S)\)</span>. </p>
+<h3 id="sort-merge-join">Sort Merge Join</h3>
+<p>The fourth alternative is to sort merge join. </p>
+<ol>
+<li>Sort <span class="arithmatex">\(R\)</span> by the attribute used in <span class="arithmatex">\(c\)</span></li>
+<li>Sort <span class="arithmatex">\(S\)</span> by the attribute used in <span class="arithmatex">\(c\)</span></li>
+<li>Merge the sorted <span class="arithmatex">\(R\)</span> and sorted <span class="arithmatex">\(S\)</span> like external sort</li>
+</ol>
+<p>The cost of step 1 is 
+<span class="arithmatex">\(<span class="arithmatex">\(2\cdot B(R) \cdot (1 + \lceil log_{m-1}(\lceil B(R) / m \rceil)\rceil)\)</span>\)</span></p>
+<p>The cost of step 2 is 
+<span class="arithmatex">\(<span class="arithmatex">\(2\cdot B(S) \cdot (1 + \lceil log_{m-1}(\lceil B(S) / m \rceil)\rceil)\)</span>\)</span></p>
+<p>The cost of step 3 is 
+<span class="arithmatex">\(<span class="arithmatex">\(B(R) +  B(S)\)</span>\)</span></p>
+<h3 id="hash-join">Hash Join</h3>
+<p>The fourth altenrative is to make use of a in memory hash table.</p>
+<p>Assuming we hash the join attribute used in <span class="arithmatex">\(c\)</span> of <span class="arithmatex">\(S\)</span> and stored it in a hash table, and the hash table is fitting in the RAM, (one big assumption), we can compute join by</p>
+<ol>
+<li>for each tuple <span class="arithmatex">\(u\)</span> in <span class="arithmatex">\(S\)</span><ol>
+<li>add <span class="arithmatex">\(u\)</span> (projected attributes) to HT</li>
+</ol>
+</li>
+<li>for each tupel <span class="arithmatex">\(t\)</span> in <span class="arithmatex">\(R\)</span><ol>
+<li>lookup <span class="arithmatex">\(t\)</span>'s attribute in HT<ol>
+<li>output <span class="arithmatex">\(t\)</span> and the value in HT</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<p>The cost of this approach is <span class="arithmatex">\(B(R) +B(S)\)</span> because we scan both tables exactly once.</p>
+<h3 id="grace-hash-join">Grace Hash Join</h3>
+<p>The Hash Join is perhaps impractical, as in most of the cases, the hash table can't fit in the RAM. </p>
+<p>The assumption - there exists a hash function <span class="arithmatex">\(h\)</span> such that 
+1. <span class="arithmatex">\(R\)</span> can be partitioned into <span class="arithmatex">\(n\)</span> partitions by <span class="arithmatex">\(h\)</span> and <span class="arithmatex">\(n \leq m - 1\)</span>, and none of the partitions have more than <span class="arithmatex">\(m-1\)</span> pages, or 
+1. <span class="arithmatex">\(S\)</span> can be partitioned into <span class="arithmatex">\(n\)</span> partitions by <span class="arithmatex">\(h\)</span> and <span class="arithmatex">\(n \leq m - 1\)</span>, and none of the partitions have more than <span class="arithmatex">\(m-1\)</span> pages.</p>
+<p>The algorithm works as follows</p>
+<ol>
+<li>partition <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(S\)</span> by <span class="arithmatex">\(h\)</span></li>
+<li>If <span class="arithmatex">\(S\)</span> is the relation that satisfies that assumption<ol>
+<li>for each partition <span class="arithmatex">\(p_i\)</span> in <span class="arithmatex">\(S\)</span>, <ol>
+<li>load pages in <span class="arithmatex">\(p_i\)</span> into the buffer pool, and build a in-memory hashtable using a different hash function <span class="arithmatex">\(h_2\)</span></li>
+<li>load data (page by page) from partition <span class="arithmatex">\(q_i\)</span> in <span class="arithmatex">\(R\)</span> (values in <span class="arithmatex">\(q_i\)</span> and <span class="arithmatex">\(p_i\)</span> should share the same hash values of <span class="arithmatex">\(h\)</span>)</li>
+<li>look up the data in the hash table with <span class="arithmatex">\(h_2\)</span>, output if a match is found.</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<p>The total cost of the Grace Hash Join is </p>
+<div class="arithmatex">\[ 3 \cdot (B(R) + B(S)) \]</div></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/jquery-3.6.0.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../javascripts/mathjax.js"></script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

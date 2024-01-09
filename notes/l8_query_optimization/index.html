@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="../../img/favicon.ico" rel="shortcut icon"/>
+<title>50.043 - Query Optimization - Database System and Big Data 50.043</title>
+<link href="../../css/bootstrap.min.css" rel="stylesheet"/>
+<link href="../../css/font-awesome.min.css" rel="stylesheet"/>
+<link href="../../css/base.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+</head>
+<body>
+<div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+<div class="container">
+<a class="navbar-brand" href="../..">Database System and Big Data 50.043</a>
+<!-- Expander button -->
+<button class="navbar-toggler" data-target="#navbar-collapse" data-toggle="collapse" type="button">
+<span class="navbar-toggler-icon"></span>
+</button>
+<!-- Expanded navigation -->
+<div class="navbar-collapse collapse" id="navbar-collapse">
+<!-- Main navigation -->
+<ul class="nav navbar-nav">
+<li class="navitem">
+<a class="nav-link" href="../..">Home</a>
+</li>
+<li class="navitem">
+<a class="nav-link" href="../../project/">Project</a>
+</li>
+<li class="navitem">
+<a class="nav-link" href="../l1_course_handout/">Handout</a>
+</li>
+</ul>
+<ul class="nav navbar-nav ml-auto">
+<li class="nav-item">
+<a class="nav-link" data-target="#mkdocs_search_modal" data-toggle="modal" href="#">
+<i class="fa fa-search"></i> Search
+                            </a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="container">
+<div class="row">
+<div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+<div class="navbar-header">
+<button class="navbar-toggler collapsed" data-target="#toc-collapse" data-toggle="collapse" title="Table of Contents" type="button">
+<span class="fa fa-angle-down"></span>
+</button>
+</div>
+<div class="navbar-collapse collapse card bg-secondary" id="toc-collapse">
+<ul class="nav flex-column">
+<li class="nav-item" data-level="1"><a class="nav-link" href="#50043-query-optimization">50.043 - Query Optimization</a>
+<ul class="nav flex-column">
+<li class="nav-item" data-level="2"><a class="nav-link" href="#learning-outcomes">Learning Outcomes</a>
+<ul class="nav flex-column">
+</ul>
+</li>
+<li class="nav-item" data-level="2"><a class="nav-link" href="#execution-model">Execution Model</a>
+<ul class="nav flex-column">
+</ul>
+</li>
+<li class="nav-item" data-level="2"><a class="nav-link" href="#query-planning">Query Planning</a>
+<ul class="nav flex-column">
+</ul>
+</li>
+<li class="nav-item" data-level="2"><a class="nav-link" href="#cost-estimation">Cost Estimation</a>
+<ul class="nav flex-column">
+</ul>
+</li>
+<li class="nav-item" data-level="2"><a class="nav-link" href="#search-algorithm">Search Algorithm</a>
+<ul class="nav flex-column">
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div></div>
+<div class="col-md-9" role="main">
+<h1 id="50043-query-optimization">50.043 - Query Optimization</h1>
+<h2 id="learning-outcomes">Learning Outcomes</h2>
+<p>By the end of this unit, you should be able to</p>
+<ol>
+<li>name the stages in a query life cycle</li>
+<li>identify the process involved in different stages of a query life cycle</li>
+<li>identify the different execution model</li>
+<li>explain the process of query optimization</li>
+<li>estimate the cost of complex query operations</li>
+</ol>
+<h3 id="query-life-cycle">Query Life Cycle</h3>
+<p>From the previous lessons, we learn how to implement the primitive relational algebra operation in a physical database system, namely, select, join and sort.</p>
+<p>However in real word applications, we often encounter queries far more complex. 
+Recall the article/book/publisher example</p>
+<ul>
+<li>article(<ins>id</ins>, name)</li>
+<li>book(<ins>id</ins>, name, date)</li>
+<li>publisher(<ins>id</ins>, name) </li>
+<li>publish(<ins>article_id, book_id, publisher_id</ins>)</li>
+</ul>
+<p>We would like to find out article names that are published in year <code>2010</code></p>
+<div class="arithmatex">\[
+\Pi_{article.name} (\sigma_{book.date = 2010}(article \bowtie_{article.id=publish.article\_id} (publish \bowtie_{publish.book\_id = book.id} book))) ~~~~ {\tt (E1)} 
+\]</div>
+<p>Note that the above relation algebra expression is equivalent to the following thanks to the associativity of the <span class="arithmatex">\(\bowtie\)</span> operator.</p>
+<div class="arithmatex">\[
+\Pi_{article.name} (\sigma_{book.date = 2010}((article \bowtie_{article.id=publish.article\_id} publish) \bowtie_{publish.book\_id = book.id} book)) ~~~~ {\tt (E2)}
+\]</div>
+<p>Besides these two alternatives, we also find the following expression producing the same result by "pushing" the selection operation down to the book relation, since it is only constrainted by the book's attribute.</p>
+<div class="arithmatex">\[
+\Pi_{article.name} (article \bowtie_{article.id=publish.article\_id} (publish \bowtie_{publish.book\_id = book.id} \sigma_{book.date = 2020}(book))) ~~~~ {\tt (E3)}
+\]</div>
+<p>We call them different <strong>logical query plans</strong> of the same query. We might argue that (E3) might perform better as we push down the selection operator and reduce the size of the joined relation. </p>
+<p>Sometimes for ease of reasoning we might consider representing the relational algbra expression in a tree structure, for instance, (E3) can be represented as</p>
+<div class="mermaid">graph
+a("&amp;Pi;&lt;sub&gt;article.name&lt;/sub&gt;") --- b("&amp;bowtie;&lt;sub&gt;article.id=publish.article_id&lt;/sub&gt;")
+b("&amp;bowtie;&lt;sub&gt;article.id=publish.article_id&lt;/sub&gt;") --- c("article")
+b("&amp;bowtie;&lt;sub&gt;article.id=publish.article_id&lt;/sub&gt;") --- d("&amp;bowtie;&lt;sub&gt;publish.book_id = book.id&lt;/sub&gt;")
+d("&amp;bowtie;&lt;sub&gt;publish.book_id = book.id&lt;/sub&gt;") --- e("publish") 
+d("&amp;bowtie;&lt;sub&gt;publish.book_id = book.id&lt;/sub&gt;") --- f("&amp;sigma;&lt;sub&gt;book.date = 2020&lt;/sub&gt;") 
+f("&amp;sigma;&lt;sub&gt;book.date = 2020&lt;/sub&gt;")  --- g("book")
+</div>
+<p>In reality, we also need to consider the selectivity of selection condition, the size of the relations,  the different join algorithms, availability of indices, as well as the sortedness of the relation. Each intermediate operation can be computed "on-the-fly" or "materalized." Each possible combination performs differently. We refer to these combinations as <strong>physical query plans</strong>. For instance,</p>
+<div class="mermaid">graph
+a("&amp;Pi;&lt;sub&gt;article.name&lt;/sub&gt;&lt;br/&gt;[iterator]") --- b("&amp;bowtie;&lt;sub&gt;article.id=publish.article_id&lt;/sub&gt;") 
+b("&amp;bowtie;&lt;sub&gt;article.id=publish.article_id&lt;/sub&gt;") --- c("article &lt;br/&gt; [heap scan]")
+b("&amp;bowtie;&lt;sub&gt;article.id=publish.article_id&lt;/sub&gt;&lt;br/&gt;[block nested loop]") --- d("&amp;bowtie;&lt;sub&gt;publish.book_id = book.id&lt;/sub&gt;")
+d("&amp;bowtie;&lt;sub&gt;publish.book_id = book.id&lt;/sub&gt;") --- e("publish &lt;br/&gt; [heap scan]") 
+d("&amp;bowtie;&lt;sub&gt;publish.book_id = book.id&lt;/sub&gt; &lt;br/&gt; [block nested loop]") --- f("&amp;sigma;&lt;sub&gt;book.date = 2020&lt;/sub&gt;") 
+f("&amp;sigma;&lt;sub&gt;book.date = 2020&lt;/sub&gt;")  --- g("book&lt;br/&gt;[heap scan]")
+</div>
+<p>The physical plan above scan the heap file to filter books with date = 2020, then a block nestd join is performed on publish and the immediate results coming from the filter. Finally, we apply another block nested loop to join the article with the immediate results coming from the nested join. The top level project is performed "on-the-fly". </p>
+<p>Alternatively, we might have a slightly different phyiscal query plan,</p>
+<div class="mermaid">graph
+a("&amp;Pi;&lt;sub&gt;article.name&lt;/sub&gt;&lt;br/&gt;[iterator]") --- b("&amp;bowtie;&lt;sub&gt;article.id=publish.article_id&lt;/sub&gt;") 
+b("&amp;bowtie;&lt;sub&gt;article.id=publish.article_id&lt;/sub&gt;") --- c("article &lt;br/&gt; [heap scan]")
+b("&amp;bowtie;&lt;sub&gt;article.id=publish.article_id&lt;/sub&gt;&lt;br/&gt;[index nested loop]") --- d("&amp;bowtie;&lt;sub&gt;publish.book_id = book.id&lt;/sub&gt;")
+d("&amp;bowtie;&lt;sub&gt;publish.book_id = book.id&lt;/sub&gt;") --- e("publish &lt;br/&gt; [heap scan]") 
+d("&amp;bowtie;&lt;sub&gt;publish.book_id = book.id&lt;/sub&gt; &lt;br/&gt; [block nested loop]") --- f("&amp;sigma;&lt;sub&gt;book.date = 2020&lt;/sub&gt;") 
+f("&amp;sigma;&lt;sub&gt;book.date = 2020&lt;/sub&gt;")  --- g("book&lt;br/&gt;[heap scan]")
+</div>
+<p>In the above physical query plan, we assume following indices are preesent
+* article.id (it's a primary key anyway)</p>
+<p>The physical plan applies the index nested loop to the outer join by using article as the inner relation. Though we preform a heap scan on the article relation, article is having primary key index on id, it is also a clustered index scan.</p>
+<p>Note that there could be many physical query plans generated from a logical plan. Given a set of physical query plans, we need to find the "best" one (with the lowest I/O cost). It turns out that it is very challenging problem, and we will discuss about this shortly. This step is called <strong>query optimization</strong>.</p>
+<p>Suppose we identify a good physical query plan, we translate it into actual code to be executed in the database host machine. This final step is called <strong>query execution</strong>.</p>
+<div class="mermaid">stateDiagram-v2
+s1 : query
+s2 : logical plans
+s1 --&gt; s2 : query rewriter
+s3 : physical plans
+s2 --&gt; s3 : plan generation / cost estimation
+s4 : result 
+s3 --&gt; s4 : execution 
+
+</div>
+<h2 id="execution-model">Execution Model</h2>
+<p>The input of an execution model is the logical query plan. Every operation in the query plan can be executed differently.</p>
+<p>There are several options</p>
+<ol>
+<li>Iterator Model (seen in our project!)</li>
+<li>Materialization Model</li>
+<li>Vector Model</li>
+</ol>
+<h3 id="iterator-model">Iterator Model</h3>
+<p>The main idea of the iterator model is "on the fly" or "lazy", i.e. tuples are not retrieved/computed until they are needed. The idea is actualized by implementing the physical access operation, filter operation, join operation and etc has iterators. One possible implementation in Java is to use the <code>Iterator</code> interface, in which </p>
+<div class="mermaid">classDiagram
+class Iterator~T~ {
+    bool hasNext()
+    T next()
+}
+&lt;&lt;interface&gt;&gt; Iterator
+</div>
+<p>The <code>hasNext()</code> method checks whether the iterator is currently not empty. The <code>next()</code> method advances the internal pointer and produces the next item.</p>
+<p>For instance <span class="arithmatex">\(\sigma_{book.date = 2020}(book)\)</span>, the table access of <code>book</code> is an instance of <code>Iterator&lt;Tuple&gt;</code>, The filter operator <span class="arithmatex">\(\sigma\)</span> takes the <code>book</code> iterator and returns an iterator instance <code>Iterator&lt;Tuple&gt;</code>, too. When the top most iterator is executed, it calls its children's iterators to produce the next value. </p>
+<p>One strong advantage of the iterator model is that it is memory efficient. For instance, in the running example, we don't need to load all the tuples from the book table into the buffer pool before the filtering takes place. There might be worst case scenarios in which the intermediate results are too huge for the RAM and needed to be written back to the disk and be reloaded when required.</p>
+<p>The downside of the iterator model is that sometimes we need to re-compute some common sub-queries, e.g. <span class="arithmatex">\((\sigma_{book.date = 2020}(book)) \bowtie (\sigma_{book.date = 2020}(book))\)</span>, we need to compute <span class="arithmatex">\(\sigma_{book.date = 2020}(book)\)</span> twice. </p>
+<p>We would be in the worst situation if an immediate result is needed as a whole, e.g. need to build a hash table, need to sort the immediate data first. In these situation, we have to block and consume all the children's data first.</p>
+<h3 id="materialization-model">Materialization Model</h3>
+<p>In materailization model, immediate results are fully computed and emit before the outer operation starts its computation. We can think of each operator having its own local storage holding the immediate results.</p>
+<p>The advantage of this model is that we can re-use immediate results if they needed more than once and we ca use the immediate results to build immediate index, hash table, etc. It performs better when the immediate results are eventually part of the final results.</p>
+<h3 id="vectorized-model">Vectorized Model</h3>
+<p>The vectorized model, (AKA the batch model) is a hybrid of iterator and materialization model. Every operator in the vectorized model implements the <code>next()</code> method. The <code>next()</code> method returns a batch of tuples instead of a single one. </p>
+<p>The advantage of this model is to strike a balance between iterator and materialization. It is memory efficient, as we don't compute and store the entire immediate result, yet we can compute Hash table (e.g. grace hash join) when needed.</p>
+<h2 id="query-planning">Query Planning</h2>
+<p>The process of query planning involves enumerating a large enough subset of all possible equivalent query given the input expression. </p>
+<p>Two relaional algebra expressions are consider equivalent if they produce the same set of results.</p>
+<h3 id="equivalence-rules">Equivalence rules</h3>
+<p>Let <span class="arithmatex">\(R\)</span>, <span class="arithmatex">\(R'\)</span> and <span class="arithmatex">\(R''\)</span> be relations, the subset of requivalence rules is as follows,</p>
+<ol>
+<li><span class="arithmatex">\(\sigma_{c_1}(\sigma_{c_2}(R)) \equiv \sigma_{c_1 \wedge c_2}(R)\)</span> </li>
+<li><span class="arithmatex">\(\sigma_{c_1}(\sigma_{c_2}(R)) \equiv \sigma_{c_2}(\sigma_{c_1}(R))\)</span></li>
+<li><span class="arithmatex">\(\Pi_{a_1}(\Pi_{a_2} ... (\Pi_{a_n}(R))) = \Pi_{a_1}(R)\)</span> if <span class="arithmatex">\(a_1 \subseteq a_2 \subseteq ... \subseteq a_n\)</span></li>
+<li><span class="arithmatex">\(\sigma_{c}(R \times R') \equiv R \bowtie_{c} R'\)</span>.</li>
+<li><span class="arithmatex">\(R \bowtie_{c} R' \equiv  R' \bowtie_{c} R\)</span>.</li>
+<li><span class="arithmatex">\(R \bowtie_{c_1} (R' \bowtie_{c_2} R'') \equiv (R \bowtie_{c_1} R') \bowtie_{c_2} R''\)</span></li>
+<li><span class="arithmatex">\(\sigma_{c}(R) \equiv R\)</span> if <span class="arithmatex">\(c \not \subseteq attr(R)\)</span></li>
+<li><span class="arithmatex">\(\sigma_{c_1}(R\bowtie_{c_2} R') \equiv \sigma_{c_1}(R) \bowtie_{c_2} \sigma_{c_1}(R')\)</span></li>
+<li><span class="arithmatex">\(R \cap R' \equiv R' \cap R\)</span></li>
+<li><span class="arithmatex">\(R \cup R' \equiv R \cup R\)</span></li>
+<li><span class="arithmatex">\(R \cap (R' \cap R'') \equiv (R \cap R') \cap R''\)</span></li>
+<li><span class="arithmatex">\(R \cup (R' \cup R'') \equiv (R \cup R') \cup R''\)</span></li>
+<li><span class="arithmatex">\(\Pi_{a_1 \cup a_2} (R \bowtie_{c} R') \equiv \Pi_{a_1}(R) \bowtie_{c} \Pi_{a_2}(R')\)</span>  if <span class="arithmatex">\(attr(c) \equiv a_1 \cup a_2\)</span>.</li>
+<li><span class="arithmatex">\(\Pi_{a_1 \cup a_2} (R \bowtie_{c} R') \equiv \Pi_{a_1 \cup a_2}(\Pi_{a_1\cup a_3}(R) \bowtie_{c} \Pi_{a_2\cup a_4}(R') )\)</span> if <span class="arithmatex">\(a_3 \cup a_4 \equiv attr(c)\)</span></li>
+<li><span class="arithmatex">\(\Pi_{a}(R \cup R') \equiv \Pi_{a}(R) \cup \Pi_{a}(R')\)</span></li>
+<li><span class="arithmatex">\(\Pi_{a}(\sigma_{c}(R)) \equiv \sigma_{c}(\Pi_{a}(R))\)</span> if <span class="arithmatex">\(attr(c) \subseteq a\)</span></li>
+<li><span class="arithmatex">\(\sigma_{c}(R - R') \equiv \sigma_{c}(R) - \sigma_{c}(R') \equiv \sigma_{c}(R) - R'\)</span></li>
+<li><span class="arithmatex">\(\sigma_{c}(R \cap R') \equiv \sigma_{c}(R) \cap \sigma_{c}(R')\)</span></li>
+<li><span class="arithmatex">\(\sigma_{c}(R \cup R') \equiv \sigma_{c}(R) \cup \sigma_{c}(R')\)</span></li>
+</ol>
+<p>With this subset of rules, we can already enumerate a substantially large set of alternative logical query plans from the original plan.</p>
+<h2 id="cost-estimation">Cost Estimation</h2>
+<p>Recall that given a logical query plan, there are still multiple alternatives of physical query plans depending on the choice of access method, execution model, index and etc.</p>
+<p>The ultimate goal is to find the physical plan that has the lowest I/O cost. Without running the plans, we could only estimate the cost.</p>
+<p>From the previous lesson, we learned how to estimate the I/O cost for different access methods, selection, join and etc. The cost is subject to two extra information.</p>
+<ol>
+<li>the sizes of the relations</li>
+<li>the selectivity of the predicate.</li>
+</ol>
+<p>In DBMS, the sizes of the relations are recorded periodically in the catalog. The catalog sub-system keeps track of the following the statistics which can be used to approximate the selectivity.
+1. <span class="arithmatex">\(N(R)\)</span> the number of tuples in <span class="arithmatex">\(R\)</span>
+2. <span class="arithmatex">\(V(a,R)\)</span> the number of unique values of attribute <span class="arithmatex">\(a\)</span> in <span class="arithmatex">\(R\)</span>.
+3. <span class="arithmatex">\(min(a,R)\)</span> the minumum value of attribute <span class="arithmatex">\(a\)</span> in <span class="arithmatex">\(R\)</span>
+4. <span class="arithmatex">\(max(a,R)\)</span> the maximum value of attribtue <span class="arithmatex">\(a\)</span> in <span class="arithmatex">\(R\)</span>.</p>
+<h3 id="cardinality-estimation">Cardinality Estimation</h3>
+<p>Given the above catalog statistics, we can estimate the selectivity ratio, <span class="arithmatex">\(\alpha(c, R)\)</span>.</p>
+<h4 id="equality-predicate">Equality Predicate</h4>
+<p>In case <span class="arithmatex">\(c\)</span> is <span class="arithmatex">\(a = v\)</span> where <span class="arithmatex">\(a\)</span> is an attribute of <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(v\)</span> is a value, <span class="arithmatex">\(\alpha(a = v, R) = 1 / V(a,R)\)</span>.</p>
+<h4 id="range-equality-predicate">Range Equality Predicate</h4>
+<p>In case <span class="arithmatex">\(c\)</span> is <span class="arithmatex">\(a &gt; v\)</span> where <span class="arithmatex">\(a\)</span> is an attribute of <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(v\)</span> is a value, <span class="arithmatex">\(\alpha(a &gt; v, R) = (max(a,R) - v) / (max(a,R) - min(a,R) + 1)\)</span> assuming values of <span class="arithmatex">\(a\)</span> in <span class="arithmatex">\(R\)</span> follow a uniform distribution.</p>
+<p>In case the distribution is not uniform, we may use a histogram with binning to obtain a better estimation. However building historgram for a large table could be expenive. In case of large data set, DBMS often collect a small sample to build the histogram.</p>
+<h4 id="conjunction-predicate">Conjunction Predicate</h4>
+<p>In case <span class="arithmatex">\(c\)</span> is <span class="arithmatex">\(c_1 \wedge c_2\)</span>, assuming values constrained by <span class="arithmatex">\(c_1\)</span> are independent of those constrained by <span class="arithmatex">\(c_2\)</span>, <span class="arithmatex">\(\alpha(c_1 \wedge c_2, R) = \alpha(c_1, R) \cdot \alpha(c_2, R)\)</span>. </p>
+<h2 id="search-algorithm">Search Algorithm</h2>
+<p>The last piece of the query optimization is to search for the best physical plan given 
+* a method to enumerate alternative
+* a way to estimate the I/O cost given a plan</p>
+<h3 id="the-challenge">The challenge</h3>
+<p>A naive approach would generate all possible plans, apply estimation to all of them and find the best one. However enumerating all possible plans could be expensive. For instance, enumerating all plan of a <span class="arithmatex">\(n\)</span>-way join will yield <span class="arithmatex">\(4^{n}\)</span> possibilities. </p>
+<p>Recall from our algorithm class that the number of possible Binary Search Trees with <span class="arithmatex">\(n\)</span> different keys is catalan number </p>
+<div class="arithmatex">\[C_n = (2\cdot n)! / ((n + 1)! \cdot n!)\]</div>
+<p>As <span class="arithmatex">\(n\)</span> grows, catalan numbers grow as </p>
+<div class="arithmatex">\[4^n / (n^{3/2} \cdot \sqrt{\pi}) \]</div>
+<p>A set of possible query plans with <span class="arithmatex">\(n\)</span>-way join shares the same size!</p>
+<h3 id="selinger-algorithm">Selinger Algorithm</h3>
+<p>The selinger algorithm is one of the classic algorthm for searching for optimal plan. </p>
+<p>The idea behind is to apply the following heuristics
+1. Only consider the left-skew trees.
+    1. This is because in many different physical plans, we need to scan the right sub-tree multiple times in join. It is better to keep the right sub-tree as simple as possible.
+    2. If we apply this heuristic, we cut down the search base to </p>
+<div class="arithmatex">\[
+    \left (\begin{array}{c}
+            n \\
+            n - 1
+            \end{array}
+    \right ) \cdot
+    \left (\begin{array}{c}
+            n - 1 \\
+            n - 2
+            \end{array}
+    \right ) \cdot ... \cdot  
+    \left (\begin{array}{c}
+            2\\
+            1
+            \end{array}
+    \right ) =       n!
+\]</div>
+<ol>
+<li>Considering the left-skew trees with <span class="arithmatex">\(n\)</span> relations still computing <span class="arithmatex">\(n!\)</span> possible plans. To further cut down the search, the algorithm assumes the best overall plan consists of best sub-plans. It proceeds by finding the best plans for leaf nodes, then "walk-up" the trees by finding the best plans to combine intermediate steps.  For example, <ul>
+<li>Pass 1. find the best plans for each relations (leaf nodes)</li>
+<li>Pass 2. find the best plans to join any 2 relations</li>
+<li>Pass 3. find the best plans to join any 3 relations</li>
+<li>...
+For each pass <span class="arithmatex">\(i\)</span> where <span class="arithmatex">\(i&gt;1\)</span>, the best plans are computed based on the result from pass <span class="arithmatex">\(i-1\)</span>. Overall this cut down the final search space of an <span class="arithmatex">\(n\)</span>-way join to</li>
+</ul>
+</li>
+</ol>
+<div class="arithmatex">\[
+\left (\begin{array}{c}
+ n \\
+ n-1
+ \end{array}
+\right ) 
+\]</div>
+<p>And the overall time-complexity of </p>
+<div class="arithmatex">\[
+\left (\begin{array}{c}
+            n \\
+            n - 1
+            \end{array}
+    \right ) +
+    \left (\begin{array}{c}
+            n  \\
+            n - 2
+            \end{array}
+    \right ) + ... +  
+    \left (\begin{array}{c}
+            n\\
+            1
+            \end{array}
+    \right ) = O(2^n) 
+\]</div>
+<p>For instance, recall our running example, </p>
+<div class="arithmatex">\[
+\Pi_{article.name} (article \bowtie_{article.id=publish.article\_id} publish \bowtie_{publish.book\_id = book.id} \sigma_{book.date = 2020}(book))
+\]</div>
+<p>For simplicity, we only focus on the join expression</p>
+<div class="arithmatex">\[
+article \bowtie_{article.id=publish.article\_id} publish \bowtie_{publish.book\_id = book.id} \sigma_{book.date = 2020}(book)
+\]</div>
+<p>Assuming there is no index created on <span class="arithmatex">\(book.date\)</span>.</p>
+<ul>
+<li>Pass 1 <ul>
+<li>we find the cheapest way to access <span class="arithmatex">\(\sigma_{book.date = 2020}(book)\)</span>, (because <span class="arithmatex">\(\sigma\)</span> is not a join), is an heap scan.</li>
+<li>the cheapest way to acccess <span class="arithmatex">\(publish\)</span> is heap scan.</li>
+<li>the cheapest way to accesss <span class="arithmatex">\(artcle\)</span> is heap scan.</li>
+</ul>
+</li>
+<li>Pass 2 <ul>
+<li>immediate relation 1: <ul>
+<li>we join <span class="arithmatex">\(publish\)</span> and <span class="arithmatex">\(article\)</span> by taking the cheapest access methods from Pass 1, hence the cheapest way to join <span class="arithmatex">\(publish\)</span> and <span class="arithmatex">\(article\)</span> is an index nested join on <span class="arithmatex">\(article.id\)</span>, let's say the cost is 1000.</li>
+</ul>
+</li>
+<li>immediate relation 2:<ul>
+<li>we join <span class="arithmatex">\(publish\)</span> and <span class="arithmatex">\(\sigma_{book.date = 2020}(book)\)</span>, let's say the cheapest way to join is an block nested join with <span class="arithmatex">\(\sigma_{book.date = 2020}(book)\)</span> materialized, the cost is 2750.</li>
+</ul>
+</li>
+<li>immediate  relation 3:<ul>
+<li>we join <span class="arithmatex">\(article\)</span> and <span class="arithmatex">\(\sigma_{book.date = 2020}(book)\)</span>. There is no common attribute, hence it is a cross product. The cost is 25000.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Pass 3<ul>
+<li>alternative 1:<ul>
+<li>we join <span class="arithmatex">\(\sigma_{book.date = 2020}(book)\)</span> with immediate relation 1 from Pass 2. Let's say the cheapest cost is 5000 with a block nested loop.</li>
+</ul>
+</li>
+<li>alternative 2:<ul>
+<li>we join <span class="arithmatex">\(article\)</span> with immediate relation 2 from Pass 2. Let's say the cheapest cost is 6000 with an index nested loop.</li>
+</ul>
+</li>
+<li>alternative 3:<ul>
+<li>we join <span class="arithmatex">\(publish\)</span> with the immediate rlation 3, with an index nested loop, the cost is 50000.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Overall, the cheapest plan is alterantive 1. </p>
+<p>Note that in real world DBMS, the query optimizer would prepare two best plans for each relation for all passes, an unordered plan and a best index plan. With these adjustment, we have double the size of the top-level search space and the overall time complexity.</p>
+<h3 id="optional-reading-translating-sql-into-relational-algebra">Optional Reading - Translating SQL into relational algebra</h3>
+<ul>
+<li><a href="https://cs.ulb.ac.be/public/_media/teaching/infoh417/sql2alg_eng.pdf">Translating SQL into the Relational Algebra</a></li>
+</ul></div>
+</div>
+</div>
+<footer class="col-md-12">
+<hr/>
+<p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+</footer>
+<script src="../../js/jquery-3.6.0.min.js"></script>
+<script src="../../js/bootstrap.min.js"></script>
+<script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+<script src="../../js/base.js"></script>
+<script src="../../javascripts/mathjax.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="../../search/main.js"></script>
+<div aria-hidden="true" aria-labelledby="searchModalLabel" class="modal" id="mkdocs_search_modal" role="dialog" tabindex="-1">
+<div class="modal-dialog modal-lg">
+<div class="modal-content">
+<div class="modal-header">
+<h4 class="modal-title" id="searchModalLabel">Search</h4>
+<button class="close" data-dismiss="modal" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+</div>
+<div class="modal-body">
+<p>From here you can search these documents. Enter your search terms below.</p>
+<form>
+<div class="form-group">
+<input class="form-control" id="mkdocs-search-query" placeholder="Search..." title="Type search term here" type="search"/>
+</div>
+</form>
+<div data-no-results-text="No results found" id="mkdocs-search-results"></div>
+</div>
+<div class="modal-footer">
+</div>
+</div>
+</div>
+</div><div aria-hidden="true" aria-labelledby="keyboardModalLabel" class="modal" id="mkdocs_keyboard_modal" role="dialog" tabindex="-1">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+<h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+<button class="close" data-dismiss="modal" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+</div>
+<div class="modal-body">
+<table class="table">
+<thead>
+<tr>
+<th style="width: 20%;">Keys</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="help shortcut"><kbd>?</kbd></td>
+<td>Open this help</td>
+</tr>
+<tr>
+<td class="next shortcut"><kbd>n</kbd></td>
+<td>Next page</td>
+</tr>
+<tr>
+<td class="prev shortcut"><kbd>p</kbd></td>
+<td>Previous page</td>
+</tr>
+<tr>
+<td class="search shortcut"><kbd>s</kbd></td>
+<td>Search</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="modal-footer">
+</div>
+</div>
+</div>
+</div>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>

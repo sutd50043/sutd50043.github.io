@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>50.043 Transactions and Crash Recovery - Database System and Big Data 50.043</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">Database System and Big Data 50.043</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../../project/" class="nav-link">Project</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../l1_course_handout/" class="nav-link">Handout</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#50043-transactions-and-crash-recovery" class="nav-link">50.043 Transactions and Crash Recovery</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#learning-outcomes" class="nav-link">Learning Outcomes</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#acid-properties" class="nav-link">ACID properties</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#transaction-and-acid" class="nav-link">Transaction and ACID</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#transaction-and-crash-recovery" class="nav-link">Transaction and Crash recovery</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="50043-transactions-and-crash-recovery">50.043 Transactions and Crash Recovery</h1>
+<h2 id="learning-outcomes">Learning Outcomes</h2>
+<p>By the end of this unit, you should be able to</p>
+<ol>
+<li>describe the ACID properties of database system.</li>
+<li>describe how atomicity is guaranteed by using transaction and log.</li>
+<li>explain write ahead log with different policies.</li>
+<li>explain recovery process with undo, redo, undo/redo logging.</li>
+<li>explain quiescent and nonquiescent checkpoints.</li>
+</ol>
+<h2 id="acid-properties">ACID properties</h2>
+<p>To ensure data correctness, modern DBMSes often ensure certain properties.</p>
+<h3 id="atomicity">Atomicity</h3>
+<p>The atomicity property allows users of DBMSes to define a sequence of operations to be performed as none or all, there is no in-between. 
+For example, consider the following sequence of database operations represent a balance transfer of $100 from account A to account B.</p>
+<ol>
+<li>debit $100 from account A</li>
+<li>credit $100 into account B</li>
+</ol>
+<p>These two operations must be performed altogether but not partially. </p>
+<h3 id="consistency">Consistency</h3>
+<p>The consistency property ensures the data integrity constraints are not violated. This property has two levels.</p>
+<h4 id="data-consistency">Data consistency</h4>
+<p>The data consistency refers to the overall constraint (aka business logic) needs to be maintained by the database. DBMS ensures data consistency if the user's operations (in terms of transactions) are consistent.</p>
+<h4 id="operation-consistency">Operation consistency</h4>
+<p>This refers to database operations issued by the users to the database as a single transaction must not violate the business constraint, e.g. the total sum of balance of all accounts in a bank must remain unchanged, and the user operations given in earlier example is  of consistent.</p>
+<p>Esnuring operation consistency has to be user's responsibility.</p>
+<h3 id="isolation">Isolation</h3>
+<p>The isoliation property ensures that multiple concurrent transactions must not be dependent on one another. In other words, if the DBMS executing these concurrent transactions by interleaving, the result be the same as executing them in a sequential order.</p>
+<p>Note that isolation does not entail determinism.</p>
+<h3 id="durability">Durability</h3>
+<p>The durability property ensures the effect of transaction operations will stay permanently upon commit.</p>
+<h2 id="transaction-and-acid">Transaction and ACID</h2>
+<p>Transaction is one of the popular techniques in ensuring ACID properties. </p>
+<p>In SQL, one can enclose the operations between <code>BEGIN</code> and <code>COMMIT</code></p>
+<pre><code class="language-sql">begin;
+select @bal := bal from saving where id=1001;
+update saving set bal = @bal-100 where id=1001;
+select @bal := bal from saving where id=2001;
+update saving set bal = @bal+100 where id=2001;
+commit;
+</code></pre>
+<p>In the above transaction, we transfer $100 from account with id <code>1001</code> to another account with id <code>2001</code>. The debit from account <code>1001</code> and the credit to account <code>2001</code> will take effect altogether or none.</p>
+<p>In the following section, we first study how to apply transaction with logs to ensure atomicity. Then we consider how to apply transaction to ensure isolation.</p>
+<p>Durability follows from atomicty and crash recovery process if page flush operation is atomic (as an assumption we take).</p>
+<p>Consistency is ensured if transactions operations are consistent.</p>
+<h2 id="transaction-and-crash-recovery">Transaction and Crash recovery</h2>
+<p>Let's consider the running example of of debitting account <code>1001</code> and crediting account <code>2001</code>.</p>
+<p>There are a few possible program points where a crash could occur</p>
+<ol>
+<li>before the first update statement </li>
+<li>after the first update statement and before the second update statement</li>
+<li>after the second update statement before the commit</li>
+<li>after the commit</li>
+</ol>
+<h3 id="force-and-no-stealing">Force and no stealing</h3>
+<p>One way to simplify the crash recovery is to assume that </p>
+<ul>
+<li>A dirty page in the buffer pool is written to disk when the transaction is committed. This is known as the <em>Force</em> policy</li>
+<li>A page in the buffer pool belonging to an uncommitted transaction will not be evicted. This is known is the <em>No-stealing</em> policy</li>
+</ul>
+<p>With force and no stealing policy in-place, there is little work to do for recovery, as a committed transaction must have been written to disk. Uncommit transactions have not be written to disk. Note we assume that the commit and page flushing are atomically performed altogether. </p>
+<p>However such a policy is not very practical. Forcing increases unncessary page I/Os, e.g. when multiple records from the same page get updated in consecutive transactions. No-stealing policy disallows concurrent transaction activities in the event the transaction involves larger set of pages.</p>
+<h3 id="stealing-and-undo-logging">Stealing and undo logging</h3>
+<p>Let's relax our policy to allow page stealing (but forcing is still enforced). 
+Now the issue is that some of the pages in the buffer pool belonging to an uncommitted transaction could have been written to the disk due to stealing before the commit. When the crash occurs before the commit, we need to undo the page write. To enable recovery, the system maintains a write ahead log with undo information. Each entry in this log has the following fields</p>
+<ul>
+<li>transaction_id</li>
+<li>entry_type</li>
+<li>file_id</li>
+<li>page_id</li>
+<li>offset</li>
+<li>old_value</li>
+</ul>
+<p>where <code>entry_type</code> could be <code>begin</code>, <code>commit</code>, <code>update</code> and <code>abort</code>. For now we assume <code>abort</code> is issued only by the DBMS but not the user for simplicity. In case of <code>begin</code>, <code>abort</code>, and <code>commit</code>, the <code>file id</code>, <code>page id</code>, <code>offset</code> and <code>old_value</code> fields are null.</p>
+<p>The undo logging is governed by the following two rules. </p>
+<ol>
+<li>In a transaction <code>T</code>, before writing the updated page <code>X</code> containing changes <code>V</code> to disk, we must append <code>&lt;T, update, X.file_id, X.page_id, V.offset, V.old_value&gt;</code> to the log. (<code>V.offset</code> denotes where <code>V</code> is located in the page <code>X</code>.)</li>
+<li>When <code>T</code> is being committed, to make sure all log entries are written to disk, all updated pages are written to disk. Then append <code>&lt;T, commit&gt;</code> to the log on the disk.</li>
+</ol>
+<p>For instance, from our running example, let's say the transaction id is <code>t1</code>, the balance of account <code>1001</code> was <code>2000</code> in page <code>p1</code> with offset <code>0</code>, and the account <code>2001</code> balance was <code>500</code> in page <code>p2</code> with offset <code>40</code>. Both pages belong to file <code>f0</code>. When the transaction committing, we should have the following in the log</p>
+<pre><code>&lt;t1 begin&gt;
+&lt;t1 update f0 p1 0 2000&gt;
+&lt;t1 update f0 p2 40 500&gt;
+&lt;t1 commit&gt;
+</code></pre>
+<p>Now let's imagine the crash occurs after the second update statement, but we are unsure whether all the dirty pages have been written to disk. In that scenario, the recovery manager scans the log backwards (from the tail of the log to the start of the log) to look for transactions that have a <code>begin</code> but without <code>commit</code> (and without <code>abort</code>) and it finds the following entries at the tail.</p>
+<pre><code>&lt;t1 begin&gt;
+&lt;t1 update f0 p1 0 2000&gt;
+&lt;t1 update f0 p2 40 500&gt;
+</code></pre>
+<p>With the above information the recovery manager can (conservatively) restore pages <code>p1</code> and <code>p2</code> back to the origin state before the transaction <code>t1</code> started. Finally it marks the transaction has been undone correctly with <code>&lt;t1, abort&gt;</code> log entry, so that the future recovery routine should not bother about this "chunk of history".</p>
+<h3 id="no-force-and-redo-logging">No force and redo logging</h3>
+<p>If we relax the policy by lifting force (but no stealing is enforced), we need another kind of logging. </p>
+<p>Now the issue we face is that all the dirty pages in the buffer pool might have not been flushed off the disk even after the transaction has been committed. When the crash occurs after the transaction commit, we need to find a way to check and "redo" these page writes during the crash recovery phase.</p>
+<p>To enable recovery, the system maintains a write ahead log with redo information. Each entry in this log has the following fields</p>
+<ul>
+<li>transaction_id</li>
+<li>entry_type</li>
+<li>file_id</li>
+<li>page_id</li>
+<li>offset</li>
+<li>new_value</li>
+</ul>
+<p>the fields are almost the same as the one we saw in undo logging except for <code>new_value</code>, in which it captures the new value that the update operation is trying to write.</p>
+<p>The redo logging is governed by the following rules</p>
+<ol>
+<li>In a transaction <code>T</code>, before writing the updated page <code>X</code> containing changes <code>V</code> to disk, we must have appended <code>&lt;T, update, X.file_id, X.page_id, V.offset, V.new_value&gt;</code> to the log and appended <code>&lt;T, commit&gt;</code> to the log. (i.e. update and commit to log before flushing).</li>
+<li>When <code>T</code> is being committed, to make sure all log entries are written to disk. Then append <code>&lt;T, commit&gt;</code> to the log on the disk.</li>
+</ol>
+<p>Next, let's reuse the same running example and imagine the crash occurs after the commit statement, but we are unsure whether all the dirty pages have been flushed to disk. In that scenario, the recovery manager scans the log from the very begining of the log to the end, for every transaction with <code>begin</code> and <code>commit</code>, apply the redo operation.</p>
+<p>For instance,</p>
+<pre><code>...
+&lt;t1 begin&gt;
+&lt;t1 update f0 p1 0 2100&gt;
+&lt;t1 update f0 p2 40 600&gt;
+&lt;t1 commit&gt;
+</code></pre>
+<p>given the above entry, the recovery algorithm re-applies the updates though they could have been written to disk. It needs start from the begining, i.e. it has to look at all log entries of committed transaction including those <em>older than</em> <code>t1</code>. </p>
+<h3 id="a-quick-summary-so-far-undo-vs-redo">A Quick Summary so far - Undo vs Redo</h3>
+<p>Let's contrast Undo logging with Redo logging.</p>
+<p>Undo logging assumes force and stealing. Dirty pages must be flushed before committing the transaction, hence the commit is slower (more work to do). On the other hand, the recovery process is easier, as we only need to look for uncommitted transaction logs by scanning backward from the tail of the log till the start of the log. Very often we only need to small fraction of the log entries (by heuristics we often find very small numbers of uncommited transaction near the tail).</p>
+<p>Redo logging assumes no-force and no-stealing. Dirty pages live in the buffer pool beyond transaction committing point, however, pages belonging to an active transaction must not be evicted (written to disk). Hence the commit is faster (no need to make sure dirty pages are flushed). On the other hand, the recovery process overhaul all the transaction entries in the log.</p>
+<h3 id="undoredo-logging">Undo/Redo Logging</h3>
+<p>Let's further relax the policy to allow no-force and stealing. To support this liberal policy, we combine both Undo and Redo into a single logging mechannism. </p>
+<p>Each entry of the Undo/Redo logging has the following fields</p>
+<ul>
+<li>transaction_id</li>
+<li>entry_type</li>
+<li>file_id</li>
+<li>page_id</li>
+<li>offset</li>
+<li>old_value</li>
+<li>new_value</li>
+</ul>
+<p>The Undo/Redo logging is governed by the following rules.</p>
+<ol>
+<li>In a transaction <code>T</code>, before writing the updated page <code>X</code> containing changes <code>V</code> to disk, we must have appended <code>&lt;T, update, X.file_id, X.page_id, V.offset, V.old_value, V.new_value&gt;</code> to the log.</li>
+<li>When <code>T</code> is being committed, to make sure all log entries are written to disk. Then append <code>&lt;T, commit&gt;</code> to the log on the disk.</li>
+</ol>
+<p>The recovery is carried out in two phases.</p>
+<h4 id="phase-1-backward-pass">Phase 1 - backward pass</h4>
+<p>Since stealing is allowed, in the first pass, like undo logging, we scan the log backwards from the tail, to search for open transactions (i.e. transactions without commit or abort), and perform the undo steps.</p>
+<h4 id="phase-2-forward-pass">Phase 2 - forward pass</h4>
+<p>Since no force is in placed, during the second pass, like redo logging, we scan the log forward from the begining. For each committed transaction, we redo the update.</p>
+<h3 id="checkpoint">Checkpoint</h3>
+<p>To reduce the recovery overhead (especially the redo step), we could insert checkpoints into the log.</p>
+<h4 id="quiescent-checkpoint">Quiescent checkpoint</h4>
+<p>One naive approach is to </p>
+<ol>
+<li>pause the system by preventing new transactions to be initiated</li>
+<li>wait for the active transactions to be committed and flushed.</li>
+<li>insert a <code>checkpoint</code> entry to the log, (<code>checkpoint</code> is a special log entry).</li>
+<li>unpause the system.</li>
+</ol>
+<p>During the undo recovery phase, we scan the log backward upto the checkpoint.
+During the redo recovery phase, we scan the log forward starting from the checkpoint.</p>
+<p>For instance, consider the tail fragment of some log (simplified). For the ease of referencing, we added line number to each entry.</p>
+<pre><code>1. ...
+2.  &lt;t0 commit&gt;
+3.  &lt;t1 begin&gt;
+4.  &lt;t1 update f1 p1 0 10 20&gt;
+5.  &lt;t2 begin&gt;
+6.  &lt;t2 update f2 p3 0 200 300&gt;
+7.  &lt;start_checkpoint t1,t2&gt; # sys pauses, no more new transaction
+8.  &lt;t1 commit&gt;
+9.  &lt;t2 commit&gt;
+10. &lt;end_checkpoint t1,t2&gt;  # sys resumes, new transaction can be added
+11. &lt;t3 begin&gt;
+12. &lt;t3 update f3 p2 0 30 40&gt;
+</code></pre>
+<p>For undo, we scan the log backwards until line 10, we undo the update at line 12.
+For redo, we start from line 10 and scan forward, but we find nothing to re-do because there is nothing to re-do.</p>
+<h4 id="nonquiescent-checkpoint">Nonquiescent checkpoint</h4>
+<p>A major disadvantage of quiescent checkpoing is during the pause, no new transactions is initiated, it hurts the overall performance. </p>
+<p>A nonquiescent checkpoint overcomes this drawback by capturing the uncommitted active transactions when the checkpoint is started.</p>
+<h5 id="nonquiescent-checkpoint-with-undo-logging-with-stealing-and-force">Nonquiescent checkpoint with undo-logging (with stealing and force)</h5>
+<p>The main idea is to flush all uncommitted tranactions' dirty pages during the checkpoint and commit them.</p>
+<ol>
+<li>find all the active (and uncommitted) transactions ids, <code>T1</code>, ..., <code>Tn</code>.</li>
+<li>insert a <code>&lt;start_checkpoint T1,...,Tn&gt;</code> entry to the log.</li>
+<li>when all the dirty pages belonging to <code>T1,...,Tn</code> are flushed and committed, insert <code>&lt;end_checkpoint T1,...,Tn&gt;</code> entry to the log.</li>
+</ol>
+<p>During the undo recovery phase, we start from the last completed checkpoint's  <code>start_checkpoint</code> entry and scan for uncommitted transactions in the log and undo the page write if there is any. This is because during the checkpoint, there might be new transaction initiated. Note that that undo operations are applied backwards starting from the tail.</p>
+<p>For instance, consider the tail fragment of some log (simplified).</p>
+<pre><code>1. ...
+2.  &lt;t0 commit&gt;
+3.  &lt;t1 begin&gt;
+4.  &lt;t1 update f1 p1 0 10&gt;
+5.  &lt;t2 begin&gt;
+6.  &lt;t2 update f2 p3 0 200&gt;
+7.  &lt;start_checkpoint t1,t2&gt;
+8.  &lt;t3 begin&gt;
+9.  &lt;t1 commit&gt;
+10. &lt;t2 commit&gt;
+11. &lt;t3 update f3 p2 0 30&gt;
+12. &lt;end_checkpoint t1,t2&gt;
+</code></pre>
+<p>During the recovery, we start from line 7 <code>&lt;start_checkpoint t1,t2&gt;</code> and look for uncommitted transaction, which is <code>t3</code> in this case, and undo the update at line 11.</p>
+<h5 id="nonquiescent-checkpoint-with-redo-logging-with-no-force-and-no-stealing">Nonquiescent checkpoint with redo-logging (with no force and no stealing)</h5>
+<p>The main idea is to flush all committed transactions (the dirty pages) during the check point.</p>
+<ol>
+<li>find all the active (and uncommitted) transactions ids, <code>T1</code>, ..., <code>Tn</code>.</li>
+<li>insert a <code>&lt;start_checkpoint T1,...,Tn&gt;</code> entry to the log.</li>
+<li>flush any dirty pages belonging to some committed transactions (committed before the start of the check point.) </li>
+<li>insert a <code>&lt;end_checkpoint T1,...,Tn&gt;</code>.</li>
+</ol>
+<p>During the redo recovery phase, we start from the last completed checkpoint's <code>start_checkpoint</code> entry and search for transactions being committed  after this point, and redo these transactions. Note that some of these transactions (to be redone) could have been started before the starting of the check point (but still active during the check point).</p>
+<p>For instance, consider the tail fragment of some log (simplified).</p>
+<pre><code>1.  ...
+2.  &lt;t0 commit&gt;
+3.  &lt;t1 begin&gt;
+4.  &lt;t1 update f1 p1 0 20&gt;
+5.  &lt;t2 begin&gt;
+6.  &lt;t2 update f2 p3 0 300&gt;
+7.  &lt;start_checkpoint t1,t2&gt; 
+8.  &lt;t3 begin&gt;
+9.  &lt;t1 commit&gt;
+10. &lt;t3 update f3 p2 0 40&gt;
+11. &lt;end_checkpoint t1,t2&gt; # dirty pages belong to t0 have been flushed
+12. &lt;t2 commit&gt;
+</code></pre>
+<p>We start from line 7 <code>&lt;start_checkpoint t1,t2&gt;</code> and search for committed transactions, i.e. <code>t1</code> and <code>t2</code>, we need to re-do the updates at lines 4 and 6.</p>
+<h5 id="nonquiescent-checkpoint-with-undoredo-logging-with-no-force-and-stealing">Nonquiescent checkpoint with undo/redo-logging (with no force and stealing)</h5>
+<p>The most complicated checkpoint so far. The main idea is to flush all dirty pages being updated before the check point start.</p>
+<ol>
+<li>find all the active (and uncommitted) transactions ids, <code>T1</code>, ..., <code>Tn</code>.</li>
+<li>insert a <code>&lt;start_checkpoint T1,...,Tn&gt;</code> entry to the log.</li>
+<li>flush any dirty pages belonging to some update entries made before the start of the check point.</li>
+<li>insert a <code>&lt;end_checkpoint T1,...,Tn&gt;</code>.</li>
+</ol>
+<p>During the undo recovery phase, we start from the last completed checkpoint's <code>start_checkpoint</code> entry and search for uncommitted transactions and undo the update, some of these transaction could have been started before the <code>start_checkpoint</code>.
+During the redo recovery phase, we start from the last completed checkpoint's <code>start_checkpoint</code> entry and search for transactions being committed  after this point, and redo these transactions (the same as the redo-logging case).</p>
+<p>For instance, consider the tail fragment of some log (simplified).</p>
+<pre><code>1.  ...
+2.  &lt;t0 commit&gt;
+3.  &lt;t1 begin&gt;
+4.  &lt;t1 update f1 p1 0 10 20&gt;
+5.  &lt;t2 begin&gt;
+6.  &lt;t2 update f2 p3 0 200 300&gt;
+7.  &lt;start_checkpoint t1,t2&gt; 
+8.  &lt;t3 begin&gt;
+9.  &lt;t1 update f1 p10 0 5 7&gt;
+10. &lt;t1 commit&gt;
+11. &lt;t3 update f3 p2 0 30 40&gt;
+12. &lt;end_checkpoint t1,t2&gt; # p1, p3 and other dirty pages belong to t0 have been flushed
+13. &lt;t2 commit&gt;
+</code></pre>
+<p>For undo-phase, we start from line 7 <code>&lt;start_checkpoint t1,t2&gt;</code> and search for uncommitted transactions, i.e. <code>t3</code>, we undo the update at line 11.</p>
+<p>For redo-phase, we start from line 7 <code>&lt;start_checkpoint t1,t2&gt;</code> and search for committed transactions, i.e. <code>t1</code> and <code>t2</code>, we need to re-do the updates at lines 4, 6 and 9.</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/jquery-3.6.0.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../javascripts/mathjax.js"></script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>50.043 Yarn - Database System and Big Data 50.043</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">Database System and Big Data 50.043</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../../project/" class="nav-link">Project</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../l1_course_handout/" class="nav-link">Handout</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#50043-yarn" class="nav-link">50.043 Yarn</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#learning-outcomes" class="nav-link">Learning Outcomes</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#hadoop-and-eco-system" class="nav-link">Hadoop and Eco System</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#yarn" class="nav-link">YARN</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#yarn-scheduler" class="nav-link">YARN Scheduler</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="50043-yarn">50.043 Yarn</h1>
+<h2 id="learning-outcomes">Learning Outcomes</h2>
+<p>By the end of this lesson, you are able to</p>
+<ul>
+<li>Articulate the purpose of Hadoop YARN</li>
+<li>Identify the shortcoming of JobTracker and TaskTracker in Hadoop V1</li>
+<li>Describe how YARN addresses the above issues</li>
+<li>List and differentiate the different YARN schedulers</li>
+</ul>
+<h2 id="hadoop-and-eco-system">Hadoop and Eco System</h2>
+<p>We have many tools in the big data tool box</p>
+<ul>
+<li>Hadoop HDFS - Main Storage</li>
+<li>Hadoop MapReduce - Low CPU / Low RAM consumption batch job </li>
+<li>Spark Job - High CPU / GPU / RAM batch job</li>
+<li>Spark Stream - Realtime stream</li>
+<li>...</li>
+</ul>
+<p>Spark and Hadoop v1 have incompatible resource managers, they don't understand each other. It is crictical to have a unified resource management tool for all kinds of jobs. </p>
+<h3 id="hadoop-v1-resource-management-system">Hadoop v1 Resource Management System</h3>
+<p>Hadoop v1 Resource Management System has many issues. </p>
+<p>The namenode acts as the master node and the job tracker. It is overloaded with 
+* Resource Management
+* Scheduling
+* Job monitoring
+* Job lifecycle
+* Fault-tolerence</p>
+<p>It soon becomes the bottle neck of the system. It does not scale more than 4000 nodes and 40,000 tasks.</p>
+<p>The datanodes acts as the taskers. They have static task slots, for instance, 2 slots for mapper task and 2 slots for reducer task. The mapper slots cannot be used for reducer tasks. This leads to additional constraints in task schedules and limitation for load balancing. </p>
+<h2 id="yarn">YARN</h2>
+<p>YARN is a general resource management system shipped with Hadoop V2 on wards. It is designed with Hadoop and its eco system. It overcomes most of the limitations found in Hadoop V1. It provides an extensible APIs for non-Hadoop tasks. </p>
+<p><img alt="" src="../images/yarn.png" /></p>
+<h3 id="hadoop-v1-vs-yarn">Hadoop V1 vs YARN</h3>
+<p>In the following diagram we find the correspondence between Hadoop V1 resource manager and YARN</p>
+<p><img alt="Correspondent between Hadoop V1 and Hadoop V2 Resource Mgmt" src="../images/hadoopv1toyarn.png" />{width=80%}</p>
+<p>On the topmost leve, the JobTracker is replaced by an application master which in charge of managing an application running on the cluster. The Application master it is not running on the namenode, instead it runs in one of the task slots in a worker node. The resource managemer which coordinates among the hardware resources and many application masters and node managers, is running on namenode. This addresses the "jack-of-all-trades" problem with Hadoop V1 namenode. </p>
+<p>The task trackers in v1 are replaced by node managers. Each worker node has a node manager running. The node manager manages the resource and task status for the worker node. </p>
+<p>The fixed number of mapper slots and reducer slots are replaced by a container in the worker node, which has the flexibility of running any task (mapper, reducer, application master, and etc), scheduled by the scheduler. </p>
+<h3 id="yarn-job-submission-work-flow">Yarn Job submission work flow</h3>
+<p>When a client needs to submit an application to YARN, the following steps are taken. </p>
+<p><img alt="" src="../images/yarnflow.png" /></p>
+<ol>
+<li>Client submits an application</li>
+<li>Application Manager (RM) allocates a container to start Application Master</li>
+<li>Application Master registers with Resource Manager</li>
+<li>Application Master asks containers from Resource Manager</li>
+<li>Application Master notifies Node Manager to launch containers</li>
+<li>Application code is executed in the container</li>
+<li>Client contacts Application Master to monitor application status</li>
+<li>Application Master unregisters with Resource Manager</li>
+</ol>
+<h2 id="yarn-scheduler">YARN Scheduler</h2>
+<p>Next we consider how YARN schedule jobs. </p>
+<p>Job scheduling is tough multiple objective optimization problem. It often needs to meet all or most of the following requirement </p>
+<ul>
+<li>It needs to offer the capacity guarantee to the cluster users</li>
+<li>It needs to fulfill the service level agreement, if the cluster is in subscription model</li>
+<li>It needs to be fairn.</li>
+<li>It needs to ensure the utilization level of the cluster</li>
+<li>... </li>
+</ul>
+<p>Things get trickier when the applicaiton masters are allowed to request for resource up-front statically or dynamically during the execution. </p>
+<p>YARN is shipped with a few scheduler templates, namely 
+* FIFO - Single queue, first in first out
+* Capacity - optimize for capacity and resources by different queues
+* FairScheduler - similar to Capacity, but allows applications to move between queues during execution </p>
+<p>Besides these, users are allowed to define their own scheduler policy for their own clusters.</p>
+<p>However to ensure faireness in general is a hard problem too. One of the popular approach is to define a standard metric for multi-resource request for all the incoming application so that an order can be fixed. For instance Dominant Resource Fairness. </p>
+<pre><code>https://cs.stanford.edu/~matei/papers/2011/nsdi_drf.pdf
+</code></pre></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/jquery-3.6.0.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../javascripts/mathjax.js"></script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

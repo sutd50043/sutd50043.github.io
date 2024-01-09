@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>50.043 Entity Relationship Model - Database System and Big Data 50.043</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">Database System and Big Data 50.043</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../../project/" class="nav-link">Project</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../l1_course_handout/" class="nav-link">Handout</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#50043-entity-relationship-model" class="nav-link">50.043 Entity Relationship Model</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#learning-outcomes" class="nav-link">Learning Outcomes</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#components-of-an-er-diagram" class="nav-link">Components of an ER Diagram</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="50043-entity-relationship-model">50.043 Entity Relationship Model</h1>
+<h2 id="learning-outcomes">Learning Outcomes</h2>
+<p>By this end of this unit, you should be able to </p>
+<ol>
+<li>Identify components of an Entity Relationship Diagram</li>
+<li>Interpret the design requirements given an ER diagram</li>
+<li>Draw ER diagrams based on user requirements</li>
+</ol>
+<h2 id="components-of-an-er-diagram">Components of an ER Diagram</h2>
+<p>In the most common scenario, an Entity Relationship Model is described in a form a diagram, AKA ER Diagram. </p>
+<p>An ER Diagram may consists of some of the following</p>
+<ol>
+<li>Entity set. An entity set captures a set of objects or items to be stored. It is represented as a rectangular box with the entity name inside. </li>
+<li>Attribute. An attribute describe a property of an entity. An attribute is represented as an oval shape with the attribute name inside. Attribute serves as (part of) the primary key of the entity will be underlined.</li>
+<li>Relationship. A relationship defines the relationship between entities. It is represented as a diamond shape with the relationship name inside. Relationships are often annotated with cardinality constraints. We will discuss it shortly.</li>
+</ol>
+<p><img alt="" src="../images/student_class_er.png" /></p>
+<p>For example in the above ER diagram, we find two entities, i.e. <code>Student</code> and <code>Class</code>. Each <code>Student</code> entity has three attributes, <code>NRIC</code>, <code>Name</code> and <code>DoB</code>, with <code>NRIC</code> as the primary key. Likewise, each <code>Class</code> entity has three attributes, <code>Number</code> (as primary key), <code>Name</code> and <code>Location</code>. </p>
+<p>There exists a binary relationship between <code>Student</code> and <code>Class</code> entities, <code>Enrolled in</code>. It describes a business constraints that students can be enrolled into classes.  The annotation <code>N</code> describes that each class may have more than 1 students. The annotation <code>M</code> defines that each student may take more than one modules.  Note that in this module, for simplicity, we only require the upper bound to be specified in cardinality constraints, which could be either <code>1</code> or <code>N</code> (or <code>M</code>). Note that <code>N</code> and <code>M</code> are just meta terms to represent "many". </p>
+<h3 id="self-referencing-relationship">Self-referencing relationship</h3>
+<p>There is an edge case in which a relationship may be self-rerencing w.r.t to an entity. </p>
+<p><img alt="" src="../images/self_ref_er.png" /></p>
+<p>In the above ER diagram, we omit the attributes of the Article entity for simplicity. Each article can be referenced by many other articles. Each article can reference many other articles. The extra annotation <code>Citing</code> and <code>Cited</code> label the role of the article involved in the relationship.</p>
+<h3 id="tertiary-relationship">Tertiary relationship</h3>
+<p>There are situations in which a relationship involves more than two entities. </p>
+<p><img alt="" src="../images/tertiary_er.png" /></p>
+<p>In the above ER diagram, the <code>publish</code> relationship involves three entities, <code>Article</code>, <code>Book</code> and <code>Publisher</code>.
+The cardinality constraints should be interpeted by pairing up two <em>source</em> entities and one <em>taret</em> entity. In the above example, we have </p>
+<ol>
+<li>Given an article and a book, they can only be published by 1 publisher. </li>
+<li>Given an article and a publisher, the article can only appeared one book (published by that publisher).</li>
+<li>Given a book and a publisher, the book may contain many different articles.</li>
+</ol></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/jquery-3.6.0.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../javascripts/mathjax.js"></script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

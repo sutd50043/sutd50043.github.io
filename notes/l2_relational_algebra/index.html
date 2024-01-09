@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>50.043 -  Relational Algebra - Database System and Big Data 50.043</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">Database System and Big Data 50.043</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../../project/" class="nav-link">Project</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../l1_course_handout/" class="nav-link">Handout</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#50043-relational-algebra" class="nav-link">50.043 -  Relational Algebra</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#learning-outcomes" class="nav-link">Learning Outcomes</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#relational-algebra" class="nav-link">Relational Algebra</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="50043-relational-algebra">50.043 -  Relational Algebra</h1>
+<h2 id="learning-outcomes">Learning Outcomes</h2>
+<p>By the end of this unit, you should be able to </p>
+<ol>
+<li>Interpret relational algebra terms (queries)</li>
+<li>Define relational algebra terms to query a relational model</li>
+</ol>
+<h2 id="relational-algebra">Relational Algebra</h2>
+<p>Given that relational model is a logical model (abstracting away the implementation details), we need something operations defined on the same layout to manupulate the data in a relational model. (So that we don't need to deal with the implementation details yet.)</p>
+<p>Like math algebra, Relational Algebra is a way to express data operation through symbols and relation manipulations. 
+1. The data manipulation operations are defined in terms of a sequence of operation applications.
+2. Each symbolic operator takes one or more relation(s) (or intermediate relations) as operands and produces one result relation.</p>
+<p>For example, given a relation of 
+Publish(<ins>article_id, book_id, publisher_id</ins>)</p>
+<p>The instance of a Publish relation is given</p>
+<table>
+<thead>
+<tr>
+<th>article_id</th>
+<th>book_id</th>
+<th>publisher_id</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a1</td>
+<td>b1</td>
+<td>p1</td>
+</tr>
+<tr>
+<td>a2</td>
+<td>b1</td>
+<td>p1</td>
+</tr>
+<tr>
+<td>a1</td>
+<td>b2</td>
+<td>p2</td>
+</tr>
+</tbody>
+</table>
+<p>The query "finding all articles that are published by both publishers p1 and p2" can be expressed as the following relational algebra term.</p>
+<div class="arithmatex">\[
+\Pi_{article\_id}(\sigma_{(publisher\_id='p1')}(Publish)) \cap \Pi_{article\_id}(\sigma_{(publisher\_id='p2')}(Publish)) \]</div>
+<h3 id="selection">Selection</h3>
+<p>A selection operator, <span class="arithmatex">\(\sigma_{P}(R)\)</span>, takes a logical predicate <span class="arithmatex">\(P\)</span> and a relation <span class="arithmatex">\(R\)</span> and returns all the tuple in <span class="arithmatex">\(R\)</span> that satisfy <span class="arithmatex">\(P\)</span>. </p>
+<p>Note that <span class="arithmatex">\(P\)</span> can be 
+1. a simple predicate such as a equality test $name = "tom" or 
+2. a conjunction or disjunction of predicates, e.g. <span class="arithmatex">\(name = "tom"\ {\tt AND} \ age &gt; 21\)</span>.</p>
+<p>For example, the following relational algebra expression returns a relation with all tuples from <span class="arithmatex">\(Publish\)</span> with <span class="arithmatex">\(publisher\_id\)</span> equals to <code>p1</code>.</p>
+<div class="arithmatex">\[\sigma_{(publisher\_id='p1')}(Publish)\]</div>
+<h3 id="projection">Projection</h3>
+<p>A projection operator <span class="arithmatex">\(\Pi_{A_1,A_2,...}(R)\)</span>, takes a set of attribute names <span class="arithmatex">\(A_1,...,A_n\)</span> and a relation <span class="arithmatex">\(R\)</span>, and returns a relation that contains the data of columns <span class="arithmatex">\(A_1,...,A_n\)</span> in <span class="arithmatex">\(R\)</span>.</p>
+<p>For example, the following expression returns a relation all all <span class="arithmatex">\(article\_id\)</span>s from <span class="arithmatex">\(Publish\)</span> with <span class="arithmatex">\(publisher\_id\)</span> equals to <code>p1</code>.</p>
+<div class="arithmatex">\[\Pi_{article\_id}(\sigma_{(publisher\_id='p1')}(Publish))\]</div>
+<h3 id="intersection">Intersection</h3>
+<p>An intersection operation  <span class="arithmatex">\(R \cap S\)</span> finds all common tuples from <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(S\)</span>, assuming <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(S\)</span> sharing a common schema.</p>
+<p>We have seen an example of this earlier.</p>
+<h3 id="union">Union</h3>
+<p>A union operation <span class="arithmatex">\(R \cup S\)</span> returns a relation containing all tuples from <span class="arithmatex">\(R\)</span> and all thetuples from <span class="arithmatex">\(S\)</span>, assuming <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(S\)</span> sharing a common schema.</p>
+<h3 id="difference">Difference</h3>
+<p>A difference operation <span class="arithmatex">\(R - S\)</span> returns a relation containing all tuples from <span class="arithmatex">\(R\)</span> that are not in <span class="arithmatex">\(S\)</span>, assuming <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(S\)</span> sharing a common schema.</p>
+<h3 id="cartesian-product">Cartesian Product</h3>
+<p>A cartesian product operation <span class="arithmatex">\(R \times S\)</span> returns a relation containing all possible combination of some tuple from <span class="arithmatex">\(R\)</span> and some tuple from <span class="arithmatex">\(S\)</span>. (Note that <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(S\)</span> might have different schema.)</p>
+<p>For example, consider </p>
+<p><span class="arithmatex">\(R(A,B)\)</span> and <span class="arithmatex">\(S(C,D)\)</span></p>
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a1</td>
+<td>101</td>
+</tr>
+<tr>
+<td>a2</td>
+<td>102</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>C</th>
+<th>D</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a3</td>
+<td>103</td>
+</tr>
+<tr>
+<td>a4</td>
+<td>104</td>
+</tr>
+</tbody>
+</table>
+<p><span class="arithmatex">\(R\times S\)</span> yields</p>
+<table>
+<thead>
+<tr>
+<th>R.A</th>
+<th>R.B</th>
+<th>S.C</th>
+<th>S.D</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a1</td>
+<td>101</td>
+<td>a3</td>
+<td>103</td>
+</tr>
+<tr>
+<td>a1</td>
+<td>101</td>
+<td>a4</td>
+<td>104</td>
+</tr>
+<tr>
+<td>a2</td>
+<td>102</td>
+<td>a3</td>
+<td>103</td>
+</tr>
+<tr>
+<td>a2</td>
+<td>102</td>
+<td>a4</td>
+<td>104</td>
+</tr>
+</tbody>
+</table>
+<p>Cartesian Product is one of the four possible join operators.</p>
+<p>Let's discuss the other three.</p>
+<h3 id="inner-join">Inner Join</h3>
+<p>The inner join operator <span class="arithmatex">\((R \bowtie_{R.A = S.B, R.C=S.D,...} S)\)</span>, returns a relation that containing tuples from <span class="arithmatex">\(R\times S\)</span> that satisfy <span class="arithmatex">\(R.A = S.B, R.C=S.D,...\)</span>.</p>
+<p>Let <span class="arithmatex">\(R(A,B,C)\)</span> and <span class="arithmatex">\(S(D,E,F)\)</span> be relations.</p>
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a1</td>
+<td>101</td>
+<td>0</td>
+</tr>
+<tr>
+<td>a2</td>
+<td>102</td>
+<td>1</td>
+</tr>
+<tr>
+<td>a3</td>
+<td>103</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>D</th>
+<th>E</th>
+<th>F</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a3</td>
+<td>103</td>
+<td>'a'</td>
+</tr>
+<tr>
+<td>a1</td>
+<td>107</td>
+<td>'b'</td>
+</tr>
+<tr>
+<td>a5</td>
+<td>105</td>
+<td>'c'</td>
+</tr>
+</tbody>
+</table>
+<p><span class="arithmatex">\(R \bowtie_{R.A =S.D} S\)</span> produces</p>
+<table>
+<thead>
+<tr>
+<th>R.A</th>
+<th>R.B</th>
+<th>R.C</th>
+<th>S.D</th>
+<th>S.E</th>
+<th>S.F</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a1</td>
+<td>101</td>
+<td>0</td>
+<td>a1</td>
+<td>107</td>
+<td>'b'</td>
+</tr>
+<tr>
+<td>a3</td>
+<td>103</td>
+<td>0</td>
+<td>a3</td>
+<td>103</td>
+<td>'a'</td>
+</tr>
+</tbody>
+</table>
+<h3 id="natural-join">Natural Join</h3>
+<p>The natural join operator <span class="arithmatex">\((R \bowtie S)\)</span>, returns a relation that containing tuples from <span class="arithmatex">\(R\times S\)</span> that satisfy <span class="arithmatex">\(R.A = S.A, R.B=S.B,...\)</span>, where <span class="arithmatex">\(A\)</span>, <span class="arithmatex">\(B\)</span>, ... are the common attributes between <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(S\)</span>.</p>
+<p>Note that the common column are merged after natural join.</p>
+<p>Let <span class="arithmatex">\(R(A,B,C)\)</span> and <span class="arithmatex">\(S(D,E,F)\)</span> be relations.</p>
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a1</td>
+<td>101</td>
+<td>0</td>
+</tr>
+<tr>
+<td>a2</td>
+<td>102</td>
+<td>1</td>
+</tr>
+<tr>
+<td>a3</td>
+<td>103</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>E</th>
+<th>F</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a3</td>
+<td>103</td>
+<td>'a'</td>
+</tr>
+<tr>
+<td>a1</td>
+<td>107</td>
+<td>'b'</td>
+</tr>
+<tr>
+<td>a5</td>
+<td>105</td>
+<td>'c'</td>
+</tr>
+</tbody>
+</table>
+<p><span class="arithmatex">\(R \bowtie S\)</span> produces</p>
+<table>
+<thead>
+<tr>
+<th>R.A</th>
+<th>R.B</th>
+<th>R.C</th>
+<th>S.E</th>
+<th>S.F</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a1</td>
+<td>101</td>
+<td>0</td>
+<td>107</td>
+<td>'b'</td>
+</tr>
+<tr>
+<td>a3</td>
+<td>103</td>
+<td>0</td>
+<td>103</td>
+<td>'a'</td>
+</tr>
+</tbody>
+</table>
+<h3 id="right-outer-join">Right outer join</h3>
+<p>Right outer join <span class="arithmatex">\(R ⟖_{R.A=S.B} S\)</span> produces a relation containing all entries from the inner join and all the remaining tupel from <span class="arithmatex">\(S\)</span> which we could not find a match from <span class="arithmatex">\(R\)</span>, whose attributes will be filled up with NULL.</p>
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a1</td>
+<td>101</td>
+<td>0</td>
+</tr>
+<tr>
+<td>a2</td>
+<td>102</td>
+<td>1</td>
+</tr>
+<tr>
+<td>a3</td>
+<td>103</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>D</th>
+<th>E</th>
+<th>F</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a3</td>
+<td>103</td>
+<td>'a'</td>
+</tr>
+<tr>
+<td>a1</td>
+<td>107</td>
+<td>'b'</td>
+</tr>
+<tr>
+<td>a5</td>
+<td>105</td>
+<td>'c'</td>
+</tr>
+</tbody>
+</table>
+<p><span class="arithmatex">\(R ⟖_{R.A =S.D} S\)</span> produces</p>
+<table>
+<thead>
+<tr>
+<th>R.A</th>
+<th>R.B</th>
+<th>R.C</th>
+<th>S.D</th>
+<th>S.E</th>
+<th>S.F</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a1</td>
+<td>101</td>
+<td>0</td>
+<td>a1</td>
+<td>107</td>
+<td>'b'</td>
+</tr>
+<tr>
+<td>a3</td>
+<td>103</td>
+<td>0</td>
+<td>a3</td>
+<td>103</td>
+<td>'a'</td>
+</tr>
+<tr>
+<td>NULL</td>
+<td>NULL</td>
+<td>NULL</td>
+<td>a5</td>
+<td>105</td>
+<td>'c'</td>
+</tr>
+</tbody>
+</table>
+<p>Likewise for left outer join.</p>
+<h3 id="renaming">Renaming</h3>
+<p>Renaming operation <span class="arithmatex">\(\rho_{R'(A_1,...,A_n)}(R)\)</span> produces a new relation <span class="arithmatex">\(R'(A_1,...,A_n)\)</span> containing all tuples from <span class="arithmatex">\(R\)</span>, assuming the <span class="arithmatex">\(S_R\)</span> and <span class="arithmatex">\(S_{R'}\)</span> share the same types.</p>
+<p>We omit the attribute name <span class="arithmatex">\(A_1,...,A_n\)</span> when we only want to rename the relation name. Likewise we omit the relation name if we only want to rename the attributes.</p>
+<h3 id="aggregation">Aggregation</h3>
+<p>Aggregation operation <sub><span class="arithmatex">\(A\)</span><sub>1</sub>,..., <span class="arithmatex">\(A\)</span><sub>n</sub></sub> <span class="arithmatex">\(\gamma_{F_1(B_1),F_2(B_2),...} (R))\)</span> produces a new relation <span class="arithmatex">\(R'\)</span> which contains
+* <span class="arithmatex">\(A_1,...,A_n\)</span> as the attribute names to group by
+* <span class="arithmatex">\(F_1(B_1),...,F_m(B_m)\)</span> as the aggregated values 
+where
+* <span class="arithmatex">\(F_1, ..., F_m\)</span> are aggregation functions such as <code>SUM()</code>, <code>AVG()</code>, <code>MIN()</code>, <code>MAX()</code>, <code>COUNT()</code>.
+* <span class="arithmatex">\(A_1, ..., A_n\)</span>, <span class="arithmatex">\(B_1, ..., B_m\)</span> are attributes from <span class="arithmatex">\(R\)</span>.</p>
+<p>For example, given <span class="arithmatex">\(R(A,B,C)\)</span></p>
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a1</td>
+<td>101</td>
+<td>0</td>
+</tr>
+<tr>
+<td>a2</td>
+<td>102</td>
+<td>1</td>
+</tr>
+<tr>
+<td>a3</td>
+<td>103</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p><span class="arithmatex">\(\rho_{(C,CNT)}(\)</span><sub><span class="arithmatex">\(C\)</span></sub><span class="arithmatex">\(\gamma_{{\tt COUNT}(B)}(R))\)</span> produces</p>
+<table>
+<thead>
+<tr>
+<th>C</th>
+<th>CNT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>2</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>Sometimes we can rewrite the above expression as 
+<span class="arithmatex">\(<span class="arithmatex">\(_{C} \gamma_{{\tt COUNT}(B)\ {\tt as}\ CNT}(R)\)</span>\)</span>
+ without using the renaming operator</p>
+<p>### Alternatives</p>
+<p>Alternative to relational algebra, relational calculus is designed to serve a similiar idea. The difference between them is that relational algebra is more procedural (like C, Java and Python) where relational calculus is more declarative (like CSS and SQL). If you are interested to find out more please refer to the text books. Note that relational calculus will not be assessed in this module.</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/jquery-3.6.0.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../javascripts/mathjax.js"></script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
