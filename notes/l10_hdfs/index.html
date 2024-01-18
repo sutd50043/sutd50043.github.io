@@ -267,16 +267,12 @@ Hence, it would be wise not to store replicas of a data block in servers located
 <td>1</td>
 <td>0</td>
 </tr>
-<tr>
-<td>having some nice properties</td>
-<td></td>
-<td></td>
-</tr>
 </tbody>
 </table>
-<div class="arithmatex">\[ X \bigoplus Y = Y \bigoplus X $$
-$$ (X \bigoplus Y) \bigoplus Z = X \bigoplus (Y \bigoplus Z) $$
-$$ X \bigoplus Y = Z \Rightarrow X \bigoplus Z = Y \]</div>
+<p>having some nice properties</p>
+<div class="arithmatex">\[ X \bigoplus Y = Y \bigoplus X \]</div>
+<div class="arithmatex">\[ (X \bigoplus Y) \bigoplus Z = X \bigoplus (Y \bigoplus Z) \]</div>
+<div class="arithmatex">\[ X \bigoplus Y = Z \Rightarrow X \bigoplus Z = Y \]</div>
 <p>We can use the result of XOR to recover if one of the inputs is lost.</p>
 <p>We are trying to transfer this idea to increase the recoverability of the HDFS data. Let one of the input to be the actual data, the other input is a special key, the output is the data with the parity.</p>
 <p>One issue remained is that we are dealing with more than bit of actual data, and we want to keep the special key and the data parity relatively small.</p>
