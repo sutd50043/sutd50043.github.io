@@ -157,15 +157,15 @@ R \subseteq D_1 \times D_2 \times ... \times D_n
 <h4 id="definition-schema">Definition (Schema)</h4>
 <p>Let <span class="arithmatex">\(R\)</span> be a relation <span class="arithmatex">\(R \subseteq D_1 \times D_2 \times ... \times D_n\)</span>. Then the schema of <span class="arithmatex">\(R\)</span>, denoted as <span class="arithmatex">\(S_R\)</span> is a mapping of attribute names to domains (i.e. <span class="arithmatex">\(D_1, ..., D_n\)</span>)</p>
 <p>For instance, recall the earlier example, the student profile relation <span class="arithmatex">\(R \subseteq (Int \times String \times String \times Date)\)</span>. where <span class="arithmatex">\(S_R = \{Student Number : Int, Name : String, Email : String, DoB : Date \}\)</span>.
-The tuples in the above example forms an <strong>instance</strong> of the student profile relation. 
-$$
+The tuples in the above example forms an <strong>instance</strong> of the student profile relation. </p>
+<div class="arithmatex">\[
 I_R = 
-\left { \begin{array}{cccc} 
-    (1234,&amp; James,&amp; james@istd,&amp; 1/1/2000 ), \ 
-    (5678,&amp; Vanessa,&amp; vanessa@epd, &amp; 2/4/1999), \ 
+\left \{ \begin{array}{cccc} 
+    (1234,&amp; James,&amp; james@istd,&amp; 1/1/2000 ), \\ 
+    (5678,&amp; Vanessa,&amp; vanessa@epd, &amp; 2/4/1999), \\ 
     (3093,&amp; David, &amp; david@esd, &amp;3/7/2000) 
-    \end{array} \right } 
-$$</p>
+    \end{array} \right \} 
+\]</div>
 <h4 id="mapping-relational-model-to-tables">Mapping Relational Model to Tables</h4>
 <p>There are many ways of translating a relatonal model into a set of database tables (from logical model to phyiscal model).</p>
 <p>One simplest way is to 
