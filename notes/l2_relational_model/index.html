@@ -181,12 +181,16 @@ I_R =
 <p>The translation is iteratively defined by the following rules.</p>
 <ul>
 <li>Rule 1: map an entity set to a relation and preserve its primary key and fields.</li>
-<li>Rule 2: translate a relationship to a relation by </li>
+<li>Rule 2: translate a relationship to a relation by <ul>
 <li>combining all keys from entity sets to make the new primary key for the result relation.</li>
 <li>the final composite primary key is determined by the cardinality constraints of the relationship.</li>
-<li>Rule 3: merge multiple relations with the same key into a single relation</li>
-<li>It avoids data redundancy</li>
-<li>It introduces NULL values</li>
+</ul>
+</li>
+<li>Rule 3: merge multiple relations with the same key into a single relation<ul>
+<li>Pros: avoids data redundancy</li>
+<li>Cons: introduces NULL values</li>
+</ul>
+</li>
 </ul>
 <p>Let's consider an example, recall the following ER diagram</p>
 <p><img alt="" src="../images/tertiary_er.png" /></p>
