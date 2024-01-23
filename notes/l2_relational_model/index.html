@@ -168,12 +168,14 @@ I_R =
 \]</div>
 <h4 id="mapping-relational-model-to-tables">Mapping Relational Model to Tables</h4>
 <p>There are many ways of translating a relatonal model into a set of database tables (from logical model to phyiscal model).</p>
-<p>One simplest way is to 
-1. translate each relation into a table
-2. translate each domain into a table column, having the domain constraint being satisfied by the table column type.
-3. traslate tuples of the relation instance into a row of a table.
-4. relationa schema can be converted into table schema (directly derived from step 2).
-5. translate additional constraints into table constraints or foreign key constraints.</p>
+<p>One simplest way is to </p>
+<ol>
+<li>translate each relation into a table</li>
+<li>translate each domain into a table column, having the domain constraint being satisfied by the table column type.</li>
+<li>traslate tuples of the relation instance into a row of a table.</li>
+<li>relationa schema can be converted into table schema (directly derived from step 2).</li>
+<li>translate additional constraints into table constraints or foreign key constraints.</li>
+</ol>
 <h2 id="er-to-relational-translation">ER to Relational translation</h2>
 <p>Converting an ER model (conceptual) to a relation model (logical) is more invovled.  </p>
 <p>The translation is iteratively defined by the following rules.</p>
