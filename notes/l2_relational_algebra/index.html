@@ -91,9 +91,11 @@
 </ol>
 <h2 id="relational-algebra">Relational Algebra</h2>
 <p>Given that relational model is a logical model (abstracting away the implementation details), we need something operations defined on the same layout to manupulate the data in a relational model. (So that we don't need to deal with the implementation details yet.)</p>
-<p>Like math algebra, Relational Algebra is a way to express data operation through symbols and relation manipulations. 
-1. The data manipulation operations are defined in terms of a sequence of operation applications.
-2. Each symbolic operator takes one or more relation(s) (or intermediate relations) as operands and produces one result relation.</p>
+<p>Like math algebra, Relational Algebra is a way to express data operation through symbols and relation manipulations. </p>
+<ol>
+<li>The data manipulation operations are defined in terms of a sequence of operation applications.</li>
+<li>Each symbolic operator takes one or more relation(s) (or intermediate relations) as operands and produces one result relation.</li>
+</ol>
 <p>For example, given a relation of 
 Publish(<ins>article_id, book_id, publisher_id</ins>)</p>
 <p>The instance of a Publish relation is given</p>
@@ -491,12 +493,15 @@ Publish(<ins>article_id, book_id, publisher_id</ins>)</p>
 <p>Renaming operation <span class="arithmatex">\(\rho_{R'(A_1,...,A_n)}(R)\)</span> produces a new relation <span class="arithmatex">\(R'(A_1,...,A_n)\)</span> containing all tuples from <span class="arithmatex">\(R\)</span>, assuming the <span class="arithmatex">\(S_R\)</span> and <span class="arithmatex">\(S_{R'}\)</span> share the same types.</p>
 <p>We omit the attribute name <span class="arithmatex">\(A_1,...,A_n\)</span> when we only want to rename the relation name. Likewise we omit the relation name if we only want to rename the attributes.</p>
 <h3 id="aggregation">Aggregation</h3>
-<p>Aggregation operation <sub><span class="arithmatex">\(A\)</span><sub>1</sub>,..., <span class="arithmatex">\(A\)</span><sub>n</sub></sub> <span class="arithmatex">\(\gamma_{F_1(B_1),F_2(B_2),...} (R))\)</span> produces a new relation <span class="arithmatex">\(R'\)</span> which contains
-* <span class="arithmatex">\(A_1,...,A_n\)</span> as the attribute names to group by
-* <span class="arithmatex">\(F_1(B_1),...,F_m(B_m)\)</span> as the aggregated values 
-where
-* <span class="arithmatex">\(F_1, ..., F_m\)</span> are aggregation functions such as <code>SUM()</code>, <code>AVG()</code>, <code>MIN()</code>, <code>MAX()</code>, <code>COUNT()</code>.
-* <span class="arithmatex">\(A_1, ..., A_n\)</span>, <span class="arithmatex">\(B_1, ..., B_m\)</span> are attributes from <span class="arithmatex">\(R\)</span>.</p>
+<p>Aggregation operation <sub><span class="arithmatex">\(A\)</span><sub>1</sub>,..., <span class="arithmatex">\(A\)</span><sub>n</sub></sub> <span class="arithmatex">\(\gamma_{F_1(B_1),F_2(B_2),...} (R))\)</span> produces a new relation <span class="arithmatex">\(R'\)</span> which contains</p>
+<ul>
+<li><span class="arithmatex">\(A_1,...,A_n\)</span> as the attribute names to group by</li>
+<li><span class="arithmatex">\(F_1(B_1),...,F_m(B_m)\)</span> as the aggregated values where<ul>
+<li><span class="arithmatex">\(F_1, ..., F_m\)</span> are aggregation functions such as <code>SUM()</code>, <code>AVG()</code>, <code>MIN()</code>, <code>MAX()</code>, <code>COUNT()</code>.</li>
+<li><span class="arithmatex">\(A_1, ..., A_n\)</span>, <span class="arithmatex">\(B_1, ..., B_m\)</span> are attributes from <span class="arithmatex">\(R\)</span>.</li>
+</ul>
+</li>
+</ul>
 <p>For example, given <span class="arithmatex">\(R(A,B,C)\)</span></p>
 <table>
 <thead>
@@ -543,10 +548,10 @@ where
 </tr>
 </tbody>
 </table>
-<p>Sometimes we can rewrite the above expression as 
-<span class="arithmatex">\(<span class="arithmatex">\(_{C} \gamma_{{\tt COUNT}(B)\ {\tt as}\ CNT}(R)\)</span>\)</span>
- without using the renaming operator</p>
-<p>### Alternatives</p>
+<p>Sometimes we can rewrite the above expression as </p>
+<div class="arithmatex">\[_{C} \gamma_{{\tt COUNT}(B)\ {\tt as}\ CNT}(R)\]</div>
+<p>without using the renaming operator.</p>
+<h3 id="alternatives">Alternatives</h3>
 <p>Alternative to relational algebra, relational calculus is designed to serve a similiar idea. The difference between them is that relational algebra is more procedural (like C, Java and Python) where relational calculus is more declarative (like CSS and SQL). If you are interested to find out more please refer to the text books. Note that relational calculus will not be assessed in this module.</p></div>
             </div>
         </div>
