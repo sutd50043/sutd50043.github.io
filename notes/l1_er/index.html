@@ -102,14 +102,14 @@
 <p>For example in the above ER diagram, we find two entities, i.e. <code>Student</code> and <code>Class</code>. Each <code>Student</code> entity has three attributes, <code>NRIC</code>, <code>Name</code> and <code>DoB</code>, with <code>NRIC</code> as the primary key. Likewise, each <code>Class</code> entity has three attributes, <code>Number</code> (as primary key), <code>Name</code> and <code>Location</code>. </p>
 <p>There exists a binary relationship between <code>Student</code> and <code>Class</code> entities, <code>Enrolled in</code>. It describes a business constraints that students can be enrolled into classes.  The annotation <code>N</code> describes that each class may have more than 1 students. The annotation <code>M</code> defines that each student may take more than one modules.  Note that in this module, for simplicity, we only require the upper bound to be specified in cardinality constraints, which could be either <code>1</code> or <code>N</code> (or <code>M</code>). Note that <code>N</code> and <code>M</code> are just meta terms to represent "many". </p>
 <h3 id="self-referencing-relationship">Self-referencing relationship</h3>
-<p>There is an edge case in which a relationship may be self-referencing w.r.t to an entity. </p>
+<p>There is an edge case in which a relationship may be self-rerencing w.r.t to an entity. </p>
 <p><img alt="" src="../images/self_ref_er.png" /></p>
 <p>In the above ER diagram, we omit the attributes of the Article entity for simplicity. Each article can be referenced by many other articles. Each article can reference many other articles. The extra annotation <code>Citing</code> and <code>Cited</code> label the role of the article involved in the relationship.</p>
 <h3 id="tertiary-relationship">Tertiary relationship</h3>
 <p>There are situations in which a relationship involves more than two entities. </p>
 <p><img alt="" src="../images/tertiary_er.png" /></p>
 <p>In the above ER diagram, the <code>publish</code> relationship involves three entities, <code>Article</code>, <code>Book</code> and <code>Publisher</code>.
-The cardinality constraints should be interpreted by pairing up two <em>source</em> entities and one <em>target</em> entity. In the above example, we have </p>
+The cardinality constraints should be interpeted by pairing up two <em>source</em> entities and one <em>taret</em> entity. In the above example, we have </p>
 <ol>
 <li>Given an article and a book, they can only be published by 1 publisher. </li>
 <li>Given an article and a publisher, the article can only appeared one book (published by that publisher).</li>
