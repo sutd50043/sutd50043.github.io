@@ -195,20 +195,18 @@ I_R =
 <p>Let's consider an example, recall the following ER diagram</p>
 <p><img alt="" src="../images/tertiary_er.png" /></p>
 <p>Let's assume each entity has a primary key id, and a non-primary-key attribute name. All fields are of type String.</p>
-<p>We apply the first rule to obtain relations</p>
+<p>We apply the first rule to obtain the first 3 relations in the following,</p>
 <ol>
 <li>Article(<ins>id</ins>, name) </li>
 <li>Book(<ins>id</ins>,name)</li>
 <li>Publisher(<ins>id</ins>, name)</li>
-</ol>
-<p>Next we apply the second rule to translation the <code>publish</code> relationship to </p>
-<ol start="4">
 <li>Publish(<ins>article_id, book_id, publisher_id</ins>)</li>
 </ol>
+<p>The 4th relation is obtained by applying the second rule to translation the <code>publish</code> relationship.</p>
 <p>Note that by default we take all three ids to form a composite primary key. </p>
 <p>The cardinality constraint suggests that</p>
 <ul>
-<li>an article_id and a book_id can determine a publisher_id</li>
+<li>an article_id and a book_id can determine a publisher_id </li>
 <li>an article_id and a publisher_id can determine a book_id </li>
 </ul>
 <p>Hence we can reduce the primary key composition of 4. to be </p>
