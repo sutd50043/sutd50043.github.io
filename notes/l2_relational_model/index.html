@@ -105,7 +105,7 @@
 <li>Each <code>Relation</code> is an unordered set containing relationship of attributes. Attributes in Relational Model are sometimes referred to as <em>fields</em>.</li>
 <li>Note that we should not confuse them with the relationship and attributes mentioned in ER model. <ul>
 <li>Relational model is a logical model, describing how data are stored and queried. ER model is a conceptual model, describing what data the application have / need.</li>
-<li><code>Relation</code> in Relational model is mathmatical relation, while the relationship in ER model is the connection in business domain. </li>
+<li><code>Relation</code> in Relational model is mathematical relation, while the relationship in ER model is the connection in business domain. </li>
 </ul>
 </li>
 <li><code>Relation</code> is an set of <code>Tuple</code>s. Each <code>Tuple</code> is a sequence of attribute values in the <code>Relation</code>. </li>
@@ -167,17 +167,17 @@ I_R =
     \end{array} \right \} 
 \]</div>
 <h4 id="mapping-relational-model-to-tables">Mapping Relational Model to Tables</h4>
-<p>There are many ways of translating a relatonal model into a set of database tables (from logical model to phyiscal model).</p>
+<p>There are many ways of translating a relational model into a set of database tables (from logical model to physical model).</p>
 <p>One simplest way is to </p>
 <ol>
 <li>translate each relation into a table</li>
 <li>translate each domain into a table column, having the domain constraint being satisfied by the table column type.</li>
-<li>traslate tuples of the relation instance into a row of a table.</li>
-<li>relationa schema can be converted into table schema (directly derived from step 2).</li>
+<li>translate tuples of the relation instance into a row of a table.</li>
+<li>relational schema can be converted into table schema (directly derived from step 2).</li>
 <li>translate additional constraints into table constraints or foreign key constraints.</li>
 </ol>
 <h2 id="er-to-relational-translation">ER to Relational translation</h2>
-<p>Converting an ER model (conceptual) to a relation model (logical) is more invovled.  </p>
+<p>Converting an ER model (conceptual) to a relation model (logical) is more involved.  </p>
 <p>The translation is iteratively defined by the following rules.</p>
 <ul>
 <li>Rule 1: map an entity set to a relation and preserve its primary key and fields.</li>
@@ -202,19 +202,21 @@ I_R =
 <li>Publisher(<ins>id</ins>, name)</li>
 </ol>
 <p>Next we apply the second rule to translation the <code>publish</code> relationship to </p>
-<ol>
+<ol start="4">
 <li>Publish(<ins>article_id, book_id, publisher_id</ins>)</li>
 </ol>
 <p>Note that by default we take all three ids to form a composite primary key. </p>
-<p>The cardinality constraint suggests that
-* an article_id and a book_id can determine a publisher_id 
-* an article_id and a publisher_id can determine a book_id </p>
+<p>The cardinality constraint suggests that</p>
+<ul>
+<li>an article_id and a book_id can determine a publisher_id</li>
+<li>an article_id and a publisher_id can determine a book_id </li>
+</ul>
 <p>Hence we can reduce the primary key composition of 4. to be </p>
 <ul>
 <li>Publish(<ins>article_id, book_id</ins>, publisher_id); or</li>
 <li>Publish(<ins>article_id</ins>, book_id, <ins>publisher_id</ins>)</li>
 </ul>
-<p>It is a common mistake to think of fixing article_id as a primary key would suffice. Note that the above ER diagram provides no cardinaltiy information between Book and Publisher alone. And the following instance is a counter example to the argument</p>
+<p>It is a common mistake to think of fixing article_id as a primary key would suffice. Note that the above ER diagram provides no cardinality information between Book and Publisher alone. And the following instance is a counter example to the argument</p>
 <table>
 <thead>
 <tr>
