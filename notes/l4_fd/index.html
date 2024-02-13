@@ -186,9 +186,11 @@ X_1,...,X_m \rightarrow Y_1, ..., Y_n
 <h2 id="functional-dependency-closure">Functional Dependency Closure</h2>
 <p>Given a relation <span class="arithmatex">\(R\)</span> and a set of FDs <span class="arithmatex">\(F\)</span> that holds on <span class="arithmatex">\(R\)</span>. There are many other sets of FDs that are equivalent to <span class="arithmatex">\(F\)</span>.</p>
 <p>For instance, let <span class="arithmatex">\(F = \{ X \rightarrow YZ \}\)</span>, we find that <span class="arithmatex">\(F' = \{ X \rightarrow Y, X \rightarrow Z\}\)</span> and <span class="arithmatex">\(F \equiv F'\)</span>. </p>
-<p>Some points to take note. 
-* For brevity, we omit the commas when there is no confusion, i.e. <span class="arithmatex">\(YZ\)</span> is a short hand of <span class="arithmatex">\(Y,Z\)</span>. 
-* Informally, we say <span class="arithmatex">\(F \equiv F'\)</span> if <span class="arithmatex">\(F\)</span> and <span class="arithmatex">\(F'\)</span> impose the same set constraint on the values in <span class="arithmatex">\(R\)</span>.</p>
+<p>Some points to take note. </p>
+<ul>
+<li>For brevity, we omit the commas when there is no confusion, i.e. <span class="arithmatex">\(YZ\)</span> is a short hand of <span class="arithmatex">\(Y,Z\)</span>. </li>
+<li>Informally, we say <span class="arithmatex">\(F \equiv F'\)</span> if <span class="arithmatex">\(F\)</span> and <span class="arithmatex">\(F'\)</span> impose the same set constraint on the values in <span class="arithmatex">\(R\)</span>.</li>
+</ul>
 <p>Similarly, if we let <span class="arithmatex">\(F'' = F \cup F'\)</span>, we have <span class="arithmatex">\(F \equiv F' \equiv F''\)</span>. </p>
 <p>Now we consider finding the greatest <em>superset</em> <span class="arithmatex">\(F^+\)</span> such that <span class="arithmatex">\(F \equiv F\)</span>  and for any other <span class="arithmatex">\(G\)</span> that is <span class="arithmatex">\(F \equiv G\)</span>, we have <span class="arithmatex">\(G \subseteq F^+\)</span>. <span class="arithmatex">\(F^+\)</span> is called the <em>closure</em> of <span class="arithmatex">\(F\)</span>.</p>
 <h3 id="computing-f">Computing <span class="arithmatex">\(F^+\)</span></h3>
