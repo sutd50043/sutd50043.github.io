@@ -190,11 +190,13 @@
 </ol>
 <h4 id="dealing-with-collision">Dealing with collision</h4>
 <p>In reality, collision can't be eliminated. </p>
-<p>To deal with collision, there are two approaches on the storage level
-1. Open Hashing (a.k.a. separate chaining) we store collided objects in linked-list pointed by the same key. 
+<p>To deal with collision, there are two approaches on the storage level</p>
+<ol>
+<li>Open Hashing (a.k.a. separate chaining) we store collided objects in linked-list pointed by the same key. 
 <img alt="" src="../images/openhash.png"/>
-In the above diagram the values 1000 and 9530 are hashed into the same cell of the hash table, hence 9530 is stored in a chain. 
-2. Closed Hashing (a.k.a. open addressing) we try to store collided objects in the same hash table.</p>
+In the above diagram the values 1000 and 9530 are hashed into the same cell of the hash table, hence 9530 is stored in a chain. </li>
+<li>Closed Hashing (a.k.a. open addressing) we try to store collided objects in the same hash table.</li>
+</ol>
 <p>We discuss a few more alternatives of closed hasing</p>
 <h4 id="linear-probing">Linear Probing</h4>
 <p>Linear Probing is a close hashing collision resolution. The idea is that if both values are hashed to the same cell of the hash table, one of them will be stored in the next available slot. </p>
