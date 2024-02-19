@@ -122,9 +122,11 @@
 <h4 id="option-2-heap-page-with-bit-array-header">Option 2 - Heap Page with bit array header</h4>
 <p>In this version we improve over the previous version of Heap Page by including a header. The header is an array of bits whose size equals to the maximum number of tuples in a page (with the meta-data discounted). The i-th bit is 0 implies the i-th tuple slot is unused, otherwise, the slot is used.</p>
 <p>With this approach we address the deletion issue. To insert a tuple, we need to scan through the header array to look for free slot.</p>
-<p>There are still some issues to be addressed. 
-1. we have to assume that tuples are all in a single fixed size 
-2. it is hard to search for a particular tuple except sequential scan.</p>
+<p>There are still some issues to be addressed. </p>
+<ol>
+<li>we have to assume that tuples are all in a single fixed size </li>
+<li>it is hard to search for a particular tuple except sequential scan.</li>
+</ol>
 <p>The first issue can be addressed by allowing long tuple spanning across multiple slots. We need to store extra header information.</p>
 <p>The second issue will be addressed altogther when we consider the internal layout of a database file</p>
 <h2 id="file-internal">File Internal</h2>
