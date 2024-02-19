@@ -175,7 +175,7 @@
 </table>
 <p>One issue yet to be addressed is to enable searching for a tuple without resort to sequential scanning which is expensive.</p>
 <h2 id="index">Index</h2>
-<p>A way to resolve to search issue with Heap file is to incorporate indices.  For instance, we want to search for books that are publish in the year of 2019. </p>
+<p>A way to resolve to search issue with Heap file is to incorporate indices.</p>
 <p>An index maps values of the searching criteria into a set of record ids. Each record id stores the exact location of a tuple, i.e. page id and tuple slot number.</p>
 <p>A table may have multiple indices. </p>
 <p>The idea of indices is similar to adding labels to a thick phyiscal text book. The labels enable us to quickly "jump" to a section of interest. </p>
@@ -304,7 +304,8 @@ For example, it works well with query </p>
 <pre><code class="language-sql">select * from book where book_id = 'b1';
 </code></pre>
 <p>because we could hash <code>book_id</code>.</p>
-<p>Hashing does not help to speed up range search query</p>
+<p>Hashing does not help to speed up range search query. </p>
+<p>For instance, we want to search for books that are publish in the year of 2019. </p>
 <pre><code class="language-sql">select * from book where date &gt;= '2019-01-01' and date &lt;= '2019-12-31';
 </code></pre>
 <p>Even if we hash all <code>date</code>, there is no guarantee the values are store in the same bucket/page/block.</p>
