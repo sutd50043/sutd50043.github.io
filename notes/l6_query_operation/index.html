@@ -194,7 +194,7 @@ log_d(|R|/d) + \alpha(C,R) \cdot | R |
 <p>Let's consider an example. Suppose we have a buffer pool of 3 frames and would like to sort the following 8 pages of data. Each page contains two tuples. </p>
 <p><img alt="" src="../images/ext_sort1.png" /></p>
 <h6 id="phase-0">Phase 0</h6>
-<p>In this phase, we divide the input pages into $\lceil8/3 \rceil = 4 $ runs and sort each run.
+<p>In this phase, we divide the input pages into <span class="arithmatex">\(\lceil8/3 \rceil = 4\)</span> runs and sort each run.
 <img alt="" src="../images/ext_sort2.png" />  </p>
 <p>From the next phase onwards, we merge each the sorted runs into larger runs, until all are merged into a single one run.</p>
 <h6 id="phase-1">Phase 1</h6>
