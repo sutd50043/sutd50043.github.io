@@ -205,13 +205,15 @@ log_d(|R|/d) + \alpha(C,R) \cdot | R |
 <p>In this running example, we have two input frames and one output frame. </p>
 <p><img alt="" src="../images/ext_sort4.png" /></p>
 <p>We merge the run <code>[(2,3), (4,6), (9,9)]</code> with <code>[(3,5), (6,7), (8,11)]</code>.
-We use list notation to denote a run, and a tuple to denote a page.
-1. We load the page <code>(2,3)</code> into an input frame and <code>(3,5)</code> into another input frame.
-2. We find the smallest leading tuple from both frames, i.e. <code>2</code> and move it in the output frame
-3. We repeat the same operation, and find <code>3</code>, which is moved to the output frame
-4. The output frame is full and write it to disk.
-5. The first input frame is not empty (because, we assume both <code>2</code> and  <code>3</code> are moved to the output frame). We load the second page <code>(4,6)</code> into this frame.
-6. The process is repeated until both runs are processed.</p>
+We use list notation to denote a run, and a tuple to denote a page.</p>
+<ol>
+<li>We load the page <code>(2,3)</code> into an input frame and <code>(3,5)</code> into another input frame.</li>
+<li>We find the smallest leading tuple from both frames, i.e. <code>2</code> and move it in the output frame</li>
+<li>We repeat the same operation, and find <code>3</code>, which is moved to the output frame</li>
+<li>The output frame is full and write it to disk.</li>
+<li>The first input frame is not empty (because, we assume both <code>2</code> and  <code>3</code> are moved to the output frame). We load the second page <code>(4,6)</code> into this frame.</li>
+<li>The process is repeated until both runs are processed.</li>
+</ol>
 <p>The 3rd run <code>[(0,1), (2,)]</code> is alone, hence there is no merging required.</p>
 <p>At the end of phase 1, we have a new set of runs</p>
 <p><code>[ [(2,3), (3,4), (5,6), (6,7), (8,9), (9,11)],  [(0,1), (2,1)] ]</code></p>
@@ -232,23 +234,37 @@ The algorithm is defined by a pseudo function ext_sort(in_pages, bpool), which h
 </ul>
 </li>
 </ul>
-<p>We find the pseudo code as follows
-1. def ext_sort(in_pages, bpool)
-    1. let runs = divide_n_sort(in_pages, bpool)
-    2. while size_of(runs) &gt; 1
-        1. let runs = merge(runs, bpool)
-    3. return runs</p>
+<p>We find the pseudo code as follows</p>
+<ol>
+<li>def ext_sort(in_pages, bpool)<ol>
+<li>let runs = divide_n_sort(in_pages, bpool)</li>
+<li>while size_of(runs) &gt; 1<ol>
+<li>let runs = merge(runs, bpool)</li>
+</ol>
+</li>
+<li>return runs</li>
+</ol>
+</li>
+</ol>
 <p>At step 1.1, we call a helper function divide_n_sort(in_pages, bpool) to generate the initial runs, (phase 0). 
 Steps 1.2 to 1.3 define the merging phases (phase 1, phase 2, .., etc). We repeatly call the helper function <code>merge(runs, run_size, bpool)</code> to merge the current runs set until all runs are merged into a single run.</p>
 <h6 id="helper-function-divide_n_sort">Helper function divide_n_sort</h6>
-<p>Next we consider the helper function divide_n_sort(in_pages, bpool), which has the following input and output
-- input
-    * bpool - the buffer pool (in RAM)
-    * in_pages - the pages to be sorted (on disk)
-- output
-    * runs - list of lists (on disk). Each inner list (a run) consists of a set of sorted data. (on disk)</p>
+<p>Next we consider the helper function divide_n_sort(in_pages, bpool), which has the following input and output</p>
+<ul>
+<li>input<ul>
+<li>bpool - the buffer pool (in RAM)</li>
+<li>in_pages - the pages to be sorted (on disk)</li>
+</ul>
+</li>
+<li>
+<p>output</p>
+<ul>
+<li>runs - list of lists (on disk). Each inner list (a run) consists of a set of sorted data. (on disk)</li>
+</ul>
+</li>
+<li>
+<p>def divide_n_sort(in_pages, bpool)</p>
 <ol>
-<li>def divide_n_sort(in_pages, bpool)<ol>
 <li>let count = 0</li>
 <li>let m = size_of(bpool)</li>
 <li>initialize runs to be an empty list (on disk)</li>
@@ -263,16 +279,24 @@ Steps 1.2 to 1.3 define the merging phases (phase 1, phase 2, .., etc). We repea
 <li>return runs</li>
 </ol>
 </li>
-</ol>
+</ul>
 <h6 id="helper-function-merge">Helper function merge</h6>
-<p>We consider the pseudo code of the function merge, merge(runs, bpool)
-- input 
-    * bpool - the buffer pool (in RAM)
-    * runs - the list of lists (on disk), each inner list (a run) consists of a set of sorted data. (on disk)
-- output
-    * next_runs - the runs in next phase (on disk)</p>
+<p>We consider the pseudo code of the function merge, merge(runs, bpool)</p>
+<ul>
+<li>input <ul>
+<li>bpool - the buffer pool (in RAM)</li>
+<li>runs - the list of lists (on disk), each inner list (a run) consists of a set of sorted data. (on disk)</li>
+</ul>
+</li>
+<li>
+<p>output</p>
+<ul>
+<li>next_runs - the runs in next phase (on disk)</li>
+</ul>
+</li>
+<li>
+<p>def merge(runs, bpool)</p>
 <ol>
-<li>def merge(runs, bpool)<ol>
 <li>initialize next_runs to be an empty list (on disk)</li>
 <li>let m = size_of(bpool)</li>
 <li>let l = size_of(runs)</li>
@@ -292,7 +316,7 @@ Steps 1.2 to 1.3 define the merging phases (phase 1, phase 2, .., etc). We repea
 <li>return next_runs</li>
 </ol>
 </li>
-</ol>
+</ul>
 <p>The merge function processes the runs by merging every batch (consist of b-1 runs) into a larger run for the next phase, where b is the size of the buffer pool. It utilizes another helper function merge_one(runs, bpool) to merge a batch, which has the following signature and definition
 - input
     * batch - a segment from global runs. In variant, size_of(batch) &lt;= size_of(in_frames)
@@ -327,9 +351,11 @@ Steps 1.2 to 1.3 define the merging phases (phase 1, phase 2, .., etc). We repea
 *  In each iteration of the while loop in ext_sort function, we merge every <span class="arithmatex">\(m-1\)</span> runs into a single run, until all runs are merged. There should be <span class="arithmatex">\(\lceil log_{(m-1)}(\lceil n/m \rceil) \rceil\)</span> iterations. For each iteration, we read and write each page once. Hence the cost is <span class="arithmatex">\(2 \cdot  n \cdot  \lceil log_{(m-1)}(\lceil n/m \rceil)\rceil\)</span>.</p>
 <h2 id="join-operation">Join Operation</h2>
 <p>Lastly, we consider the implementation of the join operation.</p>
-<p>Let <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(S\)</span> be relations. There are several ways of implementing <span class="arithmatex">\(R \bowtie_{c} S\)</span>. 
-* The most naive implementation is to compute <span class="arithmatex">\(\sigma_{c}(R \times S)\)</span>. It is costly, because of the computation of cartesian product.
-* Alternatively, we may use a nested loop</p>
+<p>Let <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(S\)</span> be relations. There are several ways of implementing <span class="arithmatex">\(R \bowtie_{c} S\)</span>. </p>
+<ul>
+<li>The most naive implementation is to compute <span class="arithmatex">\(\sigma_{c}(R \times S)\)</span>. It is costly, because of the computation of cartesian product.</li>
+<li>Alternatively, we may use a nested loop</li>
+</ul>
 <h3 id="nested-loop-join">Nested Loop Join</h3>
 <p>One possible approach is to use nested loop </p>
 <ol>
@@ -346,10 +372,16 @@ Steps 1.2 to 1.3 define the merging phases (phase 1, phase 2, .., etc). We repea
 <h3 id="block-nested-loop-join">Block Nested Loop Join</h3>
 <p>One obvious issue with the nested loop join is that it only utilizes three frames of the buffer pool, 1 frame for <span class="arithmatex">\(R\)</span> and 1 frame for <span class="arithmatex">\(S\)</span> and 1 frame for the output. The frame of <span class="arithmatex">\(S\)</span> is evicted everytime a tuple in <span class="arithmatex">\(R\)</span> is checked. </p>
 <p>We could speed up nested loop join by utilizing all frames of the buffer pool. </p>
-<p>Assuming the buffer pool is of size <span class="arithmatex">\(m\)</span>, we divide the buffer pool into <span class="arithmatex">\(m-2\)</span> frames for loading <span class="arithmatex">\(R\)</span> and 1 frame for loading <span class="arithmatex">\(S\)</span> and 1 frame for output
-1. for each <span class="arithmatex">\(m-2\)</span> pages in <span class="arithmatex">\(R\)</span>, we extract each tuple <span class="arithmatex">\(t\)</span>
-    1. for each page in S$, we extract each tuple <span class="arithmatex">\(u\)</span>.
-        1. if <span class="arithmatex">\(t\)</span> and <span class="arithmatex">\(u\)</span> satisfy <span class="arithmatex">\(c\)</span>, output <span class="arithmatex">\(t\)</span> and <span class="arithmatex">\(u\)</span>.</p>
+<p>Assuming the buffer pool is of size <span class="arithmatex">\(m\)</span>, we divide the buffer pool into <span class="arithmatex">\(m-2\)</span> frames for loading <span class="arithmatex">\(R\)</span> and 1 frame for loading <span class="arithmatex">\(S\)</span> and 1 frame for output</p>
+<ol>
+<li>for each <span class="arithmatex">\(m-2\)</span> pages in <span class="arithmatex">\(R\)</span>, we extract each tuple <span class="arithmatex">\(t\)</span><ol>
+<li>for each page in S$, we extract each tuple <span class="arithmatex">\(u\)</span>.<ol>
+<li>if <span class="arithmatex">\(t\)</span> and <span class="arithmatex">\(u\)</span> satisfy <span class="arithmatex">\(c\)</span>, output <span class="arithmatex">\(t\)</span> and <span class="arithmatex">\(u\)</span>.</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
 <p>The cost of this approach is <span class="arithmatex">\(B(R) + \lceil B(R) / (m - 2) \rceil \cdot B(S)\)</span>.
 The cost will be <span class="arithmatex">\(B(S) + \lceil B(S) / (m - 2) \rceil \cdot B(R)\)</span> if the outer/inner relations are swapped.</p>
 <h3 id="index-nested-loop-join">Index Nested Loop Join</h3>
@@ -397,9 +429,11 @@ The cost will be <span class="arithmatex">\(B(S) + \lceil B(S) / (m - 2) \rceil 
 <p>The cost of this approach is <span class="arithmatex">\(B(R) +B(S)\)</span> because we scan both tables exactly once.</p>
 <h3 id="grace-hash-join">Grace Hash Join</h3>
 <p>The Hash Join is perhaps impractical, as in most of the cases, the hash table can't fit in the RAM. </p>
-<p>The assumption - there exists a hash function <span class="arithmatex">\(h\)</span> such that 
-1. <span class="arithmatex">\(R\)</span> can be partitioned into <span class="arithmatex">\(n\)</span> partitions by <span class="arithmatex">\(h\)</span> and <span class="arithmatex">\(n \leq m - 1\)</span>, and none of the partitions have more than <span class="arithmatex">\(m-1\)</span> pages, or 
-1. <span class="arithmatex">\(S\)</span> can be partitioned into <span class="arithmatex">\(n\)</span> partitions by <span class="arithmatex">\(h\)</span> and <span class="arithmatex">\(n \leq m - 1\)</span>, and none of the partitions have more than <span class="arithmatex">\(m-1\)</span> pages.</p>
+<p>The assumption - there exists a hash function <span class="arithmatex">\(h\)</span> such that </p>
+<ol>
+<li><span class="arithmatex">\(R\)</span> can be partitioned into <span class="arithmatex">\(n\)</span> partitions by <span class="arithmatex">\(h\)</span> and <span class="arithmatex">\(n \leq m - 1\)</span>, and none of the partitions have more than <span class="arithmatex">\(m-1\)</span> pages, or </li>
+<li><span class="arithmatex">\(S\)</span> can be partitioned into <span class="arithmatex">\(n\)</span> partitions by <span class="arithmatex">\(h\)</span> and <span class="arithmatex">\(n \leq m - 1\)</span>, and none of the partitions have more than <span class="arithmatex">\(m-1\)</span> pages.</li>
+</ol>
 <p>The algorithm works as follows</p>
 <ol>
 <li>partition <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(S\)</span> by <span class="arithmatex">\(h\)</span></li>
