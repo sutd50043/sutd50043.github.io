@@ -122,7 +122,7 @@ where <span class="arithmatex">\(B(R)\)</span> denotes the number of pages stori
 log_d(|R|/d) + \alpha(C,R) \cdot B(R)
 \]</div>
 <p>Where <span class="arithmatex">\(|R|\)</span> denotes the number of tuples in <span class="arithmatex">\(R\)</span>, <span class="arithmatex">\(d\)</span> denotes the order of the B+Tree. <span class="arithmatex">\((|R|/d)\)</span> is number of leaf nodes in the B+ Tree, which is the worst case, every node is just half-full. For simplicity, we assume root node is having at least <span class="arithmatex">\(d\)</span> entries. <span class="arithmatex">\(\alpha(C,R)\)</span> denotes the selectivity of the predicate <span class="arithmatex">\(C\)</span> over <span class="arithmatex">\(R\)</span>, i.e. the number of tuples <span class="arithmatex">\(R\)</span> satisfying <span class="arithmatex">\(C\)</span> divided by <span class="arithmatex">\(|R|\)</span>.</p>
-<p>The first term <span class="arithmatex">\(log_d(|R|/d)\)</span> estimates the cost of traversing the B+ Tree to find the correct starting leaf node. $ \alpha(C,R) \cdot B(R)$ estimates the cost of scanning the tuples of <span class="arithmatex">\(R\)</span>. Since the index is clustered, tuples that are stored in the order of the index attributes, we can fetch adjacient tuple w.r.t the attribute referred in <span class="arithmatex">\(C\)</span> in a single page.</p>
+<p>The first term <span class="arithmatex">\(log_d(|R|/d)\)</span> estimates the cost of traversing the B+ Tree to find the correct starting leaf node. <span class="arithmatex">\(\alpha(C,R) \cdot B(R)\)</span> estimates the cost of scanning the tuples of <span class="arithmatex">\(R\)</span>. Since the index is clustered, tuples that are stored in the order of the index attributes, we can fetch adjacient tuple w.r.t the attribute referred in <span class="arithmatex">\(C\)</span> in a single page.</p>
 <h4 id="case-2-unclustered-index">Case 2: Unclustered Index</h4>
 <p>When the B+ Tree is not clustered, the estimated cost becomes</p>
 <div class="arithmatex">\[
@@ -139,7 +139,7 @@ log_d(|R|/d) + \alpha(C,R) \cdot | R |
 <p>This will bring us back to the same estimated cost as the clustered index (modular the cost of sorting).</p>
 <h2 id="sort-operation">Sort Operation</h2>
 <p>Sorting is essential. </p>
-<p>From Data Driver World and Algorithms, we learned various sorting algorthms. All of these algorithms assumes that the data can fit in the RAM. In the settings of database operations, this assumption is no longer valid. </p>
+<p>From Data Driven World and Algorithms, we learned various sorting algorthms. All of these algorithms assumes that the data can fit in the RAM. In the settings of database operations, this assumption is no longer valid. </p>
 <h3 id="external-sort">External Sort</h3>
 <p>The external sorting algorithm is an instance of the merge sort. </p>
 <h4 id="recap-merge-sort">Recap Merge sort</h4>
@@ -196,7 +196,7 @@ log_d(|R|/d) + \alpha(C,R) \cdot | R |
 <p>Let's consider an example. Suppose we have a buffer pool of 3 frames and would like to sort the following 8 pages of data. Each page contains two tuples. </p>
 <p><img alt="" src="../images/ext_sort1.png" /></p>
 <h6 id="phase-0">Phase 0</h6>
-<p>In this phase, we divide the input pages into <span class="arithmatex">\(\lceil8/3 \rceil = 4\)</span> runs and sort each run.
+<p>In this phase, we divide the input pages into <span class="arithmatex">\(\lceil8/3 \rceil = 3\)</span> runs and sort each run.
 <img alt="" src="../images/ext_sort2.png" />  </p>
 <p>From the next phase onwards, we merge each the sorted runs into larger runs, until all are merged into a single one run.</p>
 <h6 id="phase-1">Phase 1</h6>
@@ -224,7 +224,7 @@ We use list notation to denote a run, and a tuple to denote a page.</p>
 <p><img alt="" src="../images/ext_sort5.png" /></p>
 <h5 id="external-sort-algorithm">External sort algorithm</h5>
 <p>We consider the pseudo-code of the exernal sort algorithm. 
-The algorithm is defined by a pseudo function ext_sort(in_pages, bpool), which has the following input and output.</p>
+The algorithm is defined by a pseudo function <code>ext_sort(in_pages, bpool)</code>, which has the following input and output.</p>
 <ul>
 <li>input <ul>
 <li>bpool - the buffer pool (in RAM)</li>
@@ -248,10 +248,10 @@ The algorithm is defined by a pseudo function ext_sort(in_pages, bpool), which h
 </ol>
 </li>
 </ol>
-<p>At step 1.1, we call a helper function divide_n_sort(in_pages, bpool) to generate the initial runs, (phase 0). 
+<p>At step 1.1, we call a helper function <code>divide_n_sort(in_pages, bpool)</code> to generate the initial runs (phase 0). 
 Steps 1.2 to 1.3 define the merging phases (phase 1, phase 2, .., etc). We repeatly call the helper function <code>merge(runs, run_size, bpool)</code> to merge the current runs set until all runs are merged into a single run.</p>
-<h6 id="helper-function-divide_n_sort">Helper function divide_n_sort</h6>
-<p>Next we consider the helper function divide_n_sort(in_pages, bpool), which has the following input and output</p>
+<h6 id="helper-function-divide_n_sort">Helper function <code>divide_n_sort</code></h6>
+<p>Next we consider the helper function <code>divide_n_sort(in_pages, bpool)</code>, which has the following input and output</p>
 <ul>
 <li>input<ul>
 <li>bpool - the buffer pool (in RAM)</li>
@@ -282,8 +282,8 @@ Steps 1.2 to 1.3 define the merging phases (phase 1, phase 2, .., etc). We repea
 </ol>
 </li>
 </ul>
-<h6 id="helper-function-merge">Helper function merge</h6>
-<p>We consider the pseudo code of the function merge, merge(runs, bpool)</p>
+<h6 id="helper-function-merge">Helper function <code>merge</code></h6>
+<p>We consider the pseudo code of the function merge, <code>merge(runs, bpool)</code></p>
 <ul>
 <li>input <ul>
 <li>bpool - the buffer pool (in RAM)</li>
@@ -319,7 +319,7 @@ Steps 1.2 to 1.3 define the merging phases (phase 1, phase 2, .., etc). We repea
 </ol>
 </li>
 </ul>
-<p>The merge function processes the runs by merging every batch (consist of b-1 runs) into a larger run for the next phase, where b is the size of the buffer pool. It utilizes another helper function merge_one(runs, bpool) to merge a batch, which has the following signature and definition</p>
+<p>The merge function processes the runs by merging every batch (consist of b-1 runs) into a larger run for the next phase, where b is the size of the buffer pool. It utilizes another helper function <code>merge_one(runs, bpool)</code> to merge a batch, which has the following signature and definition</p>
 <ul>
 <li>input<ul>
 <li>batch - a segment from global runs. In variant, size_of(batch) &lt;= size_of(in_frames)</li>
@@ -355,10 +355,10 @@ Steps 1.2 to 1.3 define the merging phases (phase 1, phase 2, .., etc). We repea
 </li>
 </ul>
 <h4 id="cost-estimation-for-external-sort">Cost estimation for External sort</h4>
-<p>Assuming the size of in_pages is <span class="arithmatex">\(n\)</span>, and the buffer pool size is <span class="arithmatex">\(m\)</span>, we consider the estimated cost (disk I/Os) of external sort algorithm.</p>
-<p>The ext_sort function has two main parts. The phase 0, the divide_n_sort function call and the while loop, i.e.  phase i where i&gt;0.</p>
+<p>Assuming the size of <code>in_pages</code> is <span class="arithmatex">\(n\)</span>, and the buffer pool size is <span class="arithmatex">\(m\)</span>, we consider the estimated cost (disk I/Os) of external sort algorithm.</p>
+<p>The <code>ext_sort</code> function has two main parts. The phase 0, the <code>divide_n_sort</code> function call and the while loop, i.e.  phase i where i&gt;0.</p>
 <ul>
-<li>In divide_n_sort, we read each page to be sorted once and write back to disk once. Hence the cost is <span class="arithmatex">\(2 \cdot n\)</span>.</li>
+<li>In <code>divide_n_sort</code>, we read each page to be sorted once and write back to disk once. Hence the cost is <span class="arithmatex">\(2 \cdot n\)</span>.</li>
 <li>In each iteration of the while loop in ext_sort function, we merge every <span class="arithmatex">\(m-1\)</span> runs into a single run, until all runs are merged. There should be <span class="arithmatex">\(\lceil log_{(m-1)}(\lceil n/m \rceil) \rceil\)</span> iterations. For each iteration, we read and write each page once. Hence the cost is <span class="arithmatex">\(2 \cdot  n \cdot  \lceil log_{(m-1)}(\lceil n/m \rceil)\rceil\)</span>.</li>
 </ul>
 <h2 id="join-operation">Join Operation</h2>
@@ -380,14 +380,14 @@ Steps 1.2 to 1.3 define the merging phases (phase 1, phase 2, .., etc). We repea
 </li>
 </ol>
 <p>The cost of this approach is <span class="arithmatex">\(B(R) + |R| \cdot B(S)\)</span>. The <span class="arithmatex">\(B(R)\)</span> is total cost of loading all tuples from <span class="arithmatex">\(R\)</span> once. For each tuple of <span class="arithmatex">\(R\)</span>, it will be compared with every tuple in <span class="arithmatex">\(S\)</span>, hence <span class="arithmatex">\(|R| \cdot B(S)\)</span>.</p>
-<p>If we flip the outter/inner relation roles of <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(S\)</span>, we get the following cost <span class="arithmatex">\(B(S) + |S| \cdot B(R)\)</span>.</p>
+<p>If we flip the outer/inner relation roles of <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(S\)</span>, we get the following cost <span class="arithmatex">\(B(S) + |S| \cdot B(R)\)</span>.</p>
 <h3 id="block-nested-loop-join">Block Nested Loop Join</h3>
 <p>One obvious issue with the nested loop join is that it only utilizes three frames of the buffer pool, 1 frame for <span class="arithmatex">\(R\)</span> and 1 frame for <span class="arithmatex">\(S\)</span> and 1 frame for the output. The frame of <span class="arithmatex">\(S\)</span> is evicted everytime a tuple in <span class="arithmatex">\(R\)</span> is checked. </p>
 <p>We could speed up nested loop join by utilizing all frames of the buffer pool. </p>
 <p>Assuming the buffer pool is of size <span class="arithmatex">\(m\)</span>, we divide the buffer pool into <span class="arithmatex">\(m-2\)</span> frames for loading <span class="arithmatex">\(R\)</span> and 1 frame for loading <span class="arithmatex">\(S\)</span> and 1 frame for output</p>
 <ol>
 <li>for each <span class="arithmatex">\(m-2\)</span> pages in <span class="arithmatex">\(R\)</span>, we extract each tuple <span class="arithmatex">\(t\)</span><ol>
-<li>for each page in S$, we extract each tuple <span class="arithmatex">\(u\)</span>.<ol>
+<li>for each page in <span class="arithmatex">\(S\)</span>, we extract each tuple <span class="arithmatex">\(u\)</span>.<ol>
 <li>if <span class="arithmatex">\(t\)</span> and <span class="arithmatex">\(u\)</span> satisfy <span class="arithmatex">\(c\)</span>, output <span class="arithmatex">\(t\)</span> and <span class="arithmatex">\(u\)</span>.</li>
 </ol>
 </li>
@@ -408,7 +408,7 @@ The cost will be <span class="arithmatex">\(B(S) + \lceil B(S) / (m - 2) \rceil 
 </li>
 </ol>
 <p>The cost of this approach is <span class="arithmatex">\(B(R) + |R| \cdot K\)</span> where <span class="arithmatex">\(K\)</span> is a constant dependent on the structure of the index or the height of the B+ Tree index. E.g. if the height of the B+ Tree is 3, then <span class="arithmatex">\(K = 4\)</span> assuming each node occupying a page. </p>
-<p>An exterem case where <span class="arithmatex">\(R\)</span> is sorted by <span class="arithmatex">\(a\)</span> and <span class="arithmatex">\(S.b\)</span> is a clustered index. The total cost is <span class="arithmatex">\(B(R) + B(S)\)</span>. </p>
+<p>An extreme case where <span class="arithmatex">\(R\)</span> is sorted by <span class="arithmatex">\(a\)</span> and <span class="arithmatex">\(S.b\)</span> is a clustered index. The total cost is <span class="arithmatex">\(B(R) + B(S)\)</span>. </p>
 <h3 id="sort-merge-join">Sort Merge Join</h3>
 <p>The fourth alternative is to sort merge join. </p>
 <ol>
@@ -417,20 +417,20 @@ The cost will be <span class="arithmatex">\(B(S) + \lceil B(S) / (m - 2) \rceil 
 <li>Merge the sorted <span class="arithmatex">\(R\)</span> and sorted <span class="arithmatex">\(S\)</span> like external sort</li>
 </ol>
 <p>The cost of step 1 is 
-<span class="arithmatex">\(<span class="arithmatex">\(2\cdot B(R) \cdot (1 + \lceil log_{m-1}(\lceil B(R) / m \rceil)\rceil)\)</span>\)</span></p>
+<span class="arithmatex">\(2\cdot B(R) \cdot (1 + \lceil log_{m-1}(\lceil B(R) / m \rceil)\rceil)\)</span></p>
 <p>The cost of step 2 is 
-<span class="arithmatex">\(<span class="arithmatex">\(2\cdot B(S) \cdot (1 + \lceil log_{m-1}(\lceil B(S) / m \rceil)\rceil)\)</span>\)</span></p>
+<span class="arithmatex">\(2\cdot B(S) \cdot (1 + \lceil log_{m-1}(\lceil B(S) / m \rceil)\rceil)\)</span></p>
 <p>The cost of step 3 is 
-<span class="arithmatex">\(<span class="arithmatex">\(B(R) +  B(S)\)</span>\)</span></p>
+<span class="arithmatex">\(B(R) +  B(S)\)</span></p>
 <h3 id="hash-join">Hash Join</h3>
-<p>The fourth altenrative is to make use of a in memory hash table.</p>
+<p>The fourth alternative is to make use of an in memory hash table.</p>
 <p>Assuming we hash the join attribute used in <span class="arithmatex">\(c\)</span> of <span class="arithmatex">\(S\)</span> and stored it in a hash table, and the hash table is fitting in the RAM, (one big assumption), we can compute join by</p>
 <ol>
 <li>for each tuple <span class="arithmatex">\(u\)</span> in <span class="arithmatex">\(S\)</span><ol>
 <li>add <span class="arithmatex">\(u\)</span> (projected attributes) to HT</li>
 </ol>
 </li>
-<li>for each tupel <span class="arithmatex">\(t\)</span> in <span class="arithmatex">\(R\)</span><ol>
+<li>for each tuple <span class="arithmatex">\(t\)</span> in <span class="arithmatex">\(R\)</span><ol>
 <li>lookup <span class="arithmatex">\(t\)</span>'s attribute in HT<ol>
 <li>output <span class="arithmatex">\(t\)</span> and the value in HT</li>
 </ol>
