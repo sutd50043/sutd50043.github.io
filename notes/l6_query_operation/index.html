@@ -411,7 +411,7 @@ The cost will be <span class="arithmatex">\(B(S) + \lceil B(S) / (m - 2) \rceil 
 <p>When the index is not clustered, the cost will become <span class="arithmatex">\(B(R) + |R| \cdot K \cdot j\)</span> where <span class="arithmatex">\(j\)</span> is the maximum number of tuples of <span class="arithmatex">\(S\)</span> sharing one key. </p>
 <p>An extreme case where <span class="arithmatex">\(R\)</span> is sorted by <span class="arithmatex">\(a\)</span> and <span class="arithmatex">\(S.b\)</span> is a clustered index. The total cost is <span class="arithmatex">\(B(R) + B(S)\)</span>. </p>
 <h3 id="sort-merge-join">Sort Merge Join</h3>
-<p>The fourth alternative is to sort merge join. </p>
+<p>The fourth alternative is sort merge join. </p>
 <ol>
 <li>Sort <span class="arithmatex">\(R\)</span> by the attribute used in <span class="arithmatex">\(c\)</span></li>
 <li>Sort <span class="arithmatex">\(S\)</span> by the attribute used in <span class="arithmatex">\(c\)</span></li>
