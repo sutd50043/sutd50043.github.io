@@ -185,7 +185,7 @@ class Iterator~T~ {
 <p>The downside of the iterator model is that sometimes we need to re-compute some common sub-queries, e.g. <span class="arithmatex">\((\sigma_{book.date = 2020}(book)) \bowtie (\sigma_{book.date = 2020}(book))\)</span>, we need to compute <span class="arithmatex">\(\sigma_{book.date = 2020}(book)\)</span> twice. </p>
 <p>We would be in the worst situation if an immediate result is needed as a whole, e.g. need to build a hash table, need to sort the immediate data first. In these situation, we have to block and consume all the children's data first.</p>
 <h3 id="materialization-model">Materialization Model</h3>
-<p>In materailization model, immediate results are fully computed and emit before the outer operation starts its computation. We can think of each operator having its own local storage holding the immediate results.</p>
+<p>In materialization model, immediate results are fully computed and emit before the outer operation starts its computation. We can think of each operator having its own local storage holding the immediate results.</p>
 <p>The advantage of this model is that we can re-use immediate results if they needed more than once and we ca use the immediate results to build immediate index, hash table, etc. It performs better when the immediate results are eventually part of the final results.</p>
 <h3 id="vectorized-model">Vectorized Model</h3>
 <p>The vectorized model, (AKA the batch model) is a hybrid of iterator and materialization model. Every operator in the vectorized model implements the <code>next()</code> method. The <code>next()</code> method returns a batch of tuples instead of a single one. </p>
