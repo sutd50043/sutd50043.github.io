@@ -112,7 +112,7 @@ Recall the article/book/publisher example</p>
 <div class="arithmatex">\[
 \Pi_{article.name} (\sigma_{book.date = 2010}((article \bowtie_{article.id=publish.article\_id} publish) \bowtie_{publish.book\_id = book.id} book)) ~~~~ {\tt (E2)}
 \]</div>
-<p>Besides these two alternatives, we also find the following expression producing the same result by "pushing" the selection operation down to the book relation, since it is only constrainted by the book's attribute.</p>
+<p>Besides these two alternatives, we also find the following expression producing the same result by "pushing" the selection operation down to the <code>book</code> relation, since it is only constrainted by the <code>book</code>'s attribute.</p>
 <div class="arithmatex">\[
 \Pi_{article.name} (article \bowtie_{article.id=publish.article\_id} (publish \bowtie_{publish.book\_id = book.id} \sigma_{book.date = 2020}(book))) ~~~~ {\tt (E3)}
 \]</div>
@@ -135,7 +135,7 @@ d("&amp;bowtie;&lt;sub&gt;publish.book_id = book.id&lt;/sub&gt;") --- e("publish
 d("&amp;bowtie;&lt;sub&gt;publish.book_id = book.id&lt;/sub&gt; &lt;br/&gt; [block nested loop]") --- f("&amp;sigma;&lt;sub&gt;book.date = 2020&lt;/sub&gt;") 
 f("&amp;sigma;&lt;sub&gt;book.date = 2020&lt;/sub&gt;")  --- g("book&lt;br/&gt;[heap scan]")
 </div>
-<p>The physical plan above scan the heap file to filter books with date = 2020, then a block nestd join is performed on publish and the immediate results coming from the filter. Finally, we apply another block nested loop to join the article with the immediate results coming from the nested join. The top level project is performed "on-the-fly". </p>
+<p>The physical plan above scan the heap file to filter books with <code>date = 2020</code>, then a block nested join is performed on the <code>publish</code> relation and the immediate results coming from the filter. Finally, we apply another block nested loop to join the <code>article</code> relation with the immediate results coming from the nested join. The top level project is performed "on-the-fly". </p>
 <p>Alternatively, we might have a slightly different phyiscal query plan,</p>
 <div class="mermaid">graph
 a("&amp;Pi;&lt;sub&gt;article.name&lt;/sub&gt;&lt;br/&gt;[iterator]") --- b("&amp;bowtie;&lt;sub&gt;article.id=publish.article_id&lt;/sub&gt;") 
@@ -149,7 +149,7 @@ f("&amp;sigma;&lt;sub&gt;book.date = 2020&lt;/sub&gt;")  --- g("book&lt;br/&gt;[
 <ul>
 <li>article.id (it's a primary key anyway)</li>
 </ul>
-<p>The physical plan applies the index nested loop to the outer join by using article as the inner relation. Though we preform a heap scan on the article relation, article is having primary key index on id, it is also a clustered index scan.</p>
+<p>The physical plan applies the index nested loop to the outer join by using <code>article</code> as the inner relation. Though we preform a heap scan on the <code>article</code> relation, the operation is also a clustered index scan, since <code>article</code> is having primary key index on <code>id</code>.</p>
 <p>Note that there could be many physical query plans generated from a logical plan. Given a set of physical query plans, we need to find the "best" one (with the lowest I/O cost). It turns out that it is very challenging problem, and we will discuss about this shortly. This step is called <strong>query optimization</strong>.</p>
 <p>Suppose we identify a good physical query plan, we translate it into actual code to be executed in the database host machine. This final step is called <strong>query execution</strong>.</p>
 <div class="mermaid">stateDiagram-v2
