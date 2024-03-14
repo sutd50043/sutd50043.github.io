@@ -169,11 +169,9 @@ they want to include the date of publish whenever an article is published. Hence
 <p>Functional dependencies define a relationship among data in a relation. It is a representation of certain business requirement as we encountered in the earlier example.</p>
 <p>Formally speaking, a functional dependency is a <em>constraint</em> between two sets of attributes. </p>
 <h3 id="definition-of-fd">Definition of FD</h3>
-<p>Let <span class="arithmatex">\(X_1,...,X_m\)</span>, <span class="arithmatex">\(Y_1, ..., Y_n\)</span> be attributes. we write </p>
-<div class="arithmatex">\[
-X_1,...,X_m \rightarrow Y_1, ..., Y_n
-\]</div>
-<p>to denote a functional dependency between <span class="arithmatex">\(X_1, ..., X_m\)</span> and <span class="arithmatex">\(Y_1, ..., Y_n\)</span>. </p>
+<p>Let <span class="arithmatex">\(X_1,...,X_m\)</span>, <span class="arithmatex">\(Y_1, ..., Y_n\)</span> be attributes. we write 
+<span class="arithmatex">\(<span class="arithmatex">\(X_1,...,X_m \rightarrow Y_1, ..., Y_n\)</span>\)</span> 
+to denote a functional dependency between <span class="arithmatex">\(X_1, ..., X_m\)</span> and <span class="arithmatex">\(Y_1, ..., Y_n\)</span>. </p>
 <p>We refer <span class="arithmatex">\(X_1,...,X_m\)</span> as the <em>antecedent</em> and <span class="arithmatex">\(Y_1, ..., Y_n\)</span> as the <em>consequent</em>.</p>
 <h3 id="mathematic-meaning-of-fd">Mathematic Meaning of FD</h3>
 <p>Given a FD <span class="arithmatex">\(X_1,...,X_m \rightarrow Y_1, ..., Y_n\)</span>, we conclude that values of <span class="arithmatex">\(X_1,...,X_m\)</span> functionally determine the values of <span class="arithmatex">\(Y_1, ..., Y_n\)</span>. </p>
@@ -186,11 +184,9 @@ X_1,...,X_m \rightarrow Y_1, ..., Y_n
 <h2 id="functional-dependency-closure">Functional Dependency Closure</h2>
 <p>Given a relation <span class="arithmatex">\(R\)</span> and a set of FDs <span class="arithmatex">\(F\)</span> that holds on <span class="arithmatex">\(R\)</span>. There are many other sets of FDs that are equivalent to <span class="arithmatex">\(F\)</span>.</p>
 <p>For instance, let <span class="arithmatex">\(F = \{ X \rightarrow YZ \}\)</span>, we find that <span class="arithmatex">\(F' = \{ X \rightarrow Y, X \rightarrow Z\}\)</span> and <span class="arithmatex">\(F \equiv F'\)</span>. </p>
-<p>Some points to take note. </p>
-<ul>
-<li>For brevity, we omit the commas when there is no confusion, i.e. <span class="arithmatex">\(YZ\)</span> is a short hand of <span class="arithmatex">\(Y,Z\)</span>. </li>
-<li>Informally, we say <span class="arithmatex">\(F \equiv F'\)</span> if <span class="arithmatex">\(F\)</span> and <span class="arithmatex">\(F'\)</span> impose the same set constraint on the values in <span class="arithmatex">\(R\)</span>.</li>
-</ul>
+<p>Some points to take note. 
+* For brevity, we omit the commas when there is no confusion, i.e. <span class="arithmatex">\(YZ\)</span> is a short hand of <span class="arithmatex">\(Y,Z\)</span>. 
+* Informally, we say <span class="arithmatex">\(F \equiv F'\)</span> if <span class="arithmatex">\(F\)</span> and <span class="arithmatex">\(F'\)</span> impose the same set constraint on the values in <span class="arithmatex">\(R\)</span>.</p>
 <p>Similarly, if we let <span class="arithmatex">\(F'' = F \cup F'\)</span>, we have <span class="arithmatex">\(F \equiv F' \equiv F''\)</span>. </p>
 <p>Now we consider finding the greatest <em>superset</em> <span class="arithmatex">\(F^+\)</span> such that <span class="arithmatex">\(F \equiv F\)</span>  and for any other <span class="arithmatex">\(G\)</span> that is <span class="arithmatex">\(F \equiv G\)</span>, we have <span class="arithmatex">\(G \subseteq F^+\)</span>. <span class="arithmatex">\(F^+\)</span> is called the <em>closure</em> of <span class="arithmatex">\(F\)</span>.</p>
 <h3 id="computing-f">Computing <span class="arithmatex">\(F^+\)</span></h3>
@@ -224,52 +220,52 @@ X_1,...,X_m \rightarrow Y_1, ..., Y_n
 <tbody>
 <tr>
 <td>1</td>
-<td><span class="arithmatex">\(article\_id, book\_id, publisher\_id, date \rightarrow article\_id\)</span></td>
+<td>$article_id, book_id, publisher_id, date \rightarrow article_id $</td>
 <td>Ref</td>
 </tr>
 <tr>
 <td>2</td>
-<td><span class="arithmatex">\(article\_id, book\_id, publisher\_id, date \rightarrow book\_id\)</span></td>
+<td>$article_id, book_id, publisher_id, date \rightarrow book_id $</td>
 <td>Ref</td>
 </tr>
 <tr>
 <td>3</td>
-<td><span class="arithmatex">\(article\_id, book\_id, publisher\_id, date \rightarrow publisher\_id\)</span></td>
+<td>$article_id, book_id, publisher_id, date \rightarrow publisher_id $</td>
 <td>Ref</td>
 </tr>
 <tr>
 <td>4</td>
-<td><span class="arithmatex">\(article\_id, book\_id, publisher\_id, date \rightarrow date\)</span></td>
+<td>$article_id, book_id, publisher_id, date \rightarrow date $</td>
 <td>Ref</td>
 </tr>
 <tr>
 <td>5</td>
-<td><span class="arithmatex">\(article\_id, book\_id, publisher\_id \rightarrow article\_id\)</span></td>
+<td>$article_id, book_id, publisher_id \rightarrow article_id $</td>
 <td>Ref</td>
 </tr>
 <tr>
 <td>6</td>
-<td><span class="arithmatex">\(article\_id, book\_id, publisher\_id \rightarrow book\_id\)</span></td>
+<td>$article_id, book_id, publisher_id \rightarrow book_id $</td>
 <td>Ref</td>
 </tr>
 <tr>
 <td>7</td>
-<td><span class="arithmatex">\(article\_id, book\_id, publisher\_id \rightarrow publisher\_id\)</span></td>
+<td>$article_id, book_id, publisher_id \rightarrow publisher_id $</td>
 <td>Ref</td>
 </tr>
 <tr>
 <td>8</td>
-<td><span class="arithmatex">\(book\_id, publisher\_id, date \rightarrow book\_id\)</span></td>
+<td>$book_id, publisher_id, date \rightarrow book_id $</td>
 <td>Ref</td>
 </tr>
 <tr>
 <td>9</td>
-<td><span class="arithmatex">\(book\_id, publisher\_id, date \rightarrow publisher\_id\)</span></td>
+<td>$book_id, publisher_id, date \rightarrow publisher_id $</td>
 <td>Ref</td>
 </tr>
 <tr>
 <td>10</td>
-<td><span class="arithmatex">\(book\_id, publisher\_id, date \rightarrow date\)</span></td>
+<td>$book_id, publisher_id, date \rightarrow date $</td>
 <td>Ref</td>
 </tr>
 <tr>
@@ -362,12 +358,10 @@ X_1,...,X_m \rightarrow Y_1, ..., Y_n
 <p>An FD is in standard form iff its RHS is a single attribute.</p>
 <p>It follows that for any set of FDs, we can convert it into an equivalent set with standard form FDs. (Hint: we know <span class="arithmatex">\(X\rightarrow YZ\)</span> implies <span class="arithmatex">\(X \rightarrow Y\)</span> and <span class="arithmatex">\(X \rightarrow Z\)</span> holds.)</p>
 <h3 id="formal-definition">Formal definition</h3>
-<p>Let <span class="arithmatex">\(F\)</span> denote a set of FDs, we say <span class="arithmatex">\(F_c\)</span> is the canonical cover iff </p>
-<ol>
-<li>All FDs in <span class="arithmatex">\(F_c\)</span> are in standard form; and</li>
-<li><span class="arithmatex">\(F_c^+ \subseteq F^+ \wedge F^+ \subseteq F_c^+\)</span>; and</li>
-<li><span class="arithmatex">\(\neg \exists G \subset F_c\)</span> such that  <span class="arithmatex">\(G^+ \subseteq F^+ \wedge F^+ \subseteq G^+\)</span></li>
-</ol>
+<p>Let <span class="arithmatex">\(F\)</span> denote a set of FDs, we say <span class="arithmatex">\(F_c\)</span> is the canonical cover iff 
+1. All FDs in <span class="arithmatex">\(F_c\)</span> are in standard form; and
+2. <span class="arithmatex">\(F_c^+ \subseteq F^+ \wedge F^+ \subseteq F_c^+\)</span>; and
+3. <span class="arithmatex">\(\neg \exists G \subset F_c\)</span> such that  <span class="arithmatex">\(G^+ \subseteq F^+ \wedge F^+ \subseteq G^+\)</span></p>
 <h3 id="algorithm-to-compute-f_c">Algorithm to compute <span class="arithmatex">\(F_c\)</span></h3>
 <ol>
 <li>Convert <span class="arithmatex">\(F\)</span> to standard form.</li>
@@ -424,16 +418,14 @@ F = \left [ \begin{array}{ccc}
     \right ]
 \]</div>
 <p>The above is minimal.</p>
-<p>Note that the algorithm described above is non-confluent, i.e. depending on the order of FDs being picked a different canonical cover might be generated. </p>
+<p>Note that the algorithm described above is non-confluent, i.e. dpending on the order of FDs being picked a different canonical cover might be generated. </p>
 <h3 id="application-of-canonical-cover">Application of canonical cover</h3>
 <p>Canonical cover is very useful. We can use it to reduce the number of constraints (which is expensive to verified). We leverage on Canonical cover to identify candidate key for a relation.</p>
 <h4 id="some-extra-terminologies-different-kinds-of-keys">Some extra terminologies - different kinds of keys</h4>
-<p>In database, we call a set of attribute of a relation as a</p>
-<ul>
-<li>Super key if it functionally determines all other attributes </li>
-<li>Candidate key if it is a minimal set of attributes that functionally determines all other attributes.</li>
-<li>Primary key if it is one of the candidate key. (We just fix one.)</li>
-</ul></div>
+<p>In database, we call a set of attribute of a relation as a
+* Super key if it functionally determines all other attributes 
+* Candidate key if it is a minimal set of attributes that functionally determines all other attributes.
+* Primary key if it is one of the candidate key. (We just fix one.)</p></div>
             </div>
         </div>
 
