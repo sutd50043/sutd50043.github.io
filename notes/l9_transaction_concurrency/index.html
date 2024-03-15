@@ -86,16 +86,20 @@
 <h3 id="serializability">Serializability</h3>
 <p>Suppose we have a set of tasks <span class="arithmatex">\(t_1,...,t_n\)</span>, each task <span class="arithmatex">\(t_i\)</span> consists of a sequence of instructions <span class="arithmatex">\(c^i_1,..., c^i_{m_i}\)</span>. </p>
 <h4 id="schedule">Schedule</h4>
-<p>We call a sequence of distinct instructions <span class="arithmatex">\(c_1,...,c_k\)</span> a schedule of tasks <span class="arithmatex">\(t_1,...,t_n\)</span>, iff 
-1. for all <span class="arithmatex">\(i\in\{1,n\}\)</span>, for all <span class="arithmatex">\(p \in \{1, m_i\}\)</span>, we find <span class="arithmatex">\(c^i_p \in \{c_1,...,c_k\}\)</span>.
-2. for all <span class="arithmatex">\(q \in \{1,k\}\)</span>, there exist <span class="arithmatex">\(i\in\{1,n\}\)</span> and <span class="arithmatex">\(p \in  \{1, m_i\}\)</span> such that <span class="arithmatex">\(c_q = c^i_p\)</span>.
-3. for all  <span class="arithmatex">\(q \in \{1,k\}\)</span> and <span class="arithmatex">\(q' \in \{q,k\}\)</span>, there not exist <span class="arithmatex">\(i\in\{1,n\}\)</span> and <span class="arithmatex">\(p \in  \{1, m_i\}\)</span> and <span class="arithmatex">\(p' \in \{p, m_i\}\)</span> such that <span class="arithmatex">\(c_q = c^i_{p'}\)</span> and <span class="arithmatex">\(c_{q'} = c^i_p\)</span>.</p>
+<p>We call a sequence of distinct instructions <span class="arithmatex">\(c_1,...,c_k\)</span> a schedule of tasks <span class="arithmatex">\(t_1,...,t_n\)</span>, iff </p>
+<ol>
+<li>for all <span class="arithmatex">\(i\in\{1,n\}\)</span>, for all <span class="arithmatex">\(p \in \{1, m_i\}\)</span>, we find <span class="arithmatex">\(c^i_p \in \{c_1,...,c_k\}\)</span>.</li>
+<li>for all <span class="arithmatex">\(q \in \{1,k\}\)</span>, there exist <span class="arithmatex">\(i\in\{1,n\}\)</span> and <span class="arithmatex">\(p \in  \{1, m_i\}\)</span> such that <span class="arithmatex">\(c_q = c^i_p\)</span>.</li>
+<li>for all  <span class="arithmatex">\(q \in \{1,k\}\)</span> and <span class="arithmatex">\(q' \in \{q,k\}\)</span>, there not exist <span class="arithmatex">\(i\in\{1,n\}\)</span> and <span class="arithmatex">\(p \in  \{1, m_i\}\)</span> and <span class="arithmatex">\(p' \in \{p, m_i\}\)</span> such that <span class="arithmatex">\(c_q = c^i_{p'}\)</span> and <span class="arithmatex">\(c_{q'} = c^i_p\)</span>.</li>
+</ol>
 <p>The first rule enforces all instructions in the tasks can be found in the schedule. 
 The second rule enforces all instructions in the schedule can be found in the tasks.
 The third rule enforce that the relative order between instructions from the same task are maintained in the schedule.</p>
 <h4 id="serial-schedule">Serial Schedule</h4>
-<p>Given tasks <span class="arithmatex">\(t_1,...,t_n\)</span> and a schedule  <span class="arithmatex">\(c_1,...,c_k\)</span>, we say <span class="arithmatex">\(c_1,...,c_k\)</span> is a <em>serial schedule</em> of <span class="arithmatex">\(t_1,...,t_n\)</span> iff
-1. there not exists a sub-sequence <span class="arithmatex">\(c_{q-1}, c_{q}, c_{q+1}\)</span> of <span class="arithmatex">\(c_1,...,c_k\)</span> such that <span class="arithmatex">\(c_{q-1}\)</span> and <span class="arithmatex">\(c_{q+1}\)</span> are instructions from task <span class="arithmatex">\(t_j\)</span> and <span class="arithmatex">\(c_q\)</span> is an instruction from task <span class="arithmatex">\(t_i\)</span>, for some <span class="arithmatex">\(i\)</span> and <span class="arithmatex">\(j\)</span> in <span class="arithmatex">\(\{1,n\}\)</span>.</p>
+<p>Given tasks <span class="arithmatex">\(t_1,...,t_n\)</span> and a schedule  <span class="arithmatex">\(c_1,...,c_k\)</span>, we say <span class="arithmatex">\(c_1,...,c_k\)</span> is a <em>serial schedule</em> of <span class="arithmatex">\(t_1,...,t_n\)</span> iff</p>
+<ol>
+<li>there not exists a sub-sequence <span class="arithmatex">\(c_{q-1}, c_{q}, c_{q+1}\)</span> of <span class="arithmatex">\(c_1,...,c_k\)</span> such that <span class="arithmatex">\(c_{q-1}\)</span> and <span class="arithmatex">\(c_{q+1}\)</span> are instructions from task <span class="arithmatex">\(t_j\)</span> and <span class="arithmatex">\(c_q\)</span> is an instruction from task <span class="arithmatex">\(t_i\)</span>, for some <span class="arithmatex">\(i\)</span> and <span class="arithmatex">\(j\)</span> in <span class="arithmatex">\(\{1,n\}\)</span>.</li>
+</ol>
 <p>In other words, a schedule is <em>serial</em> iff there is no interleaving.</p>
 <p>Note that given a set of tasks <span class="arithmatex">\(t_1,...,t_n\)</span>, there are in total <span class="arithmatex">\(n!\)</span> serial schedules.</p>
 <h4 id="state-and-instruction">State and Instruction</h4>
@@ -188,9 +192,11 @@ commit;
 <h4 id="conflict-serializable">Conflict Serializable</h4>
 <p>Given a set of tasks <span class="arithmatex">\(t_1,...,t_n\)</span>, a schedule <span class="arithmatex">\(X\)</span> is conflict serializable iff it is conflict equivalent to some schedule <span class="arithmatex">\(X'\)</span> of tasks <span class="arithmatex">\(t_1,...,t_n\)</span> such that <span class="arithmatex">\(X'\)</span> is serial.</p>
 <h4 id="an-example">An example</h4>
-<p>Consider the following example with two transactions 
-* <code>T1: R(A), W(A), R(B), W(B)</code>
-* <code>T2: R(A), W(A), R(B), W(B)</code></p>
+<p>Consider the following example with two transactions </p>
+<ul>
+<li><code>T1: R(A), W(A), R(B), W(B)</code></li>
+<li><code>T2: R(A), W(A), R(B), W(B)</code></li>
+</ul>
 <p>Let's say </p>
 <ul>
 <li><code>T1:R(A), W(A)</code> is to increment <code>A</code>'s value by 10.</li>
@@ -334,13 +340,17 @@ commit;
 </tr>
 </tbody>
 </table>
-<p>Note that the above schedule is not conflict serializable, because 
-1. conflicting operator pair <span class="arithmatex">\(T2:W(B) \prec T1:R(B)\)</span> cannot be reordered to obtain serial schedule 1, and 
-2. conflicting pair <span class="arithmatex">\(T1:W(A) \prec T2:R(A)\)</span> cannot be reordered to obtain serial schedule 2.</p>
+<p>Note that the above schedule is not conflict serializable, because </p>
+<ol>
+<li>conflicting operator pair <span class="arithmatex">\(T2:W(B) \prec T1:R(B)\)</span> cannot be reordered to obtain serial schedule 1, and </li>
+<li>conflicting pair <span class="arithmatex">\(T1:W(A) \prec T2:R(A)\)</span> cannot be reordered to obtain serial schedule 2.</li>
+</ol>
 <p>If we were to execute the above non-conflict serializable schedule with the init state <code>{A:10, B:10}</code>, we get <code>{A:40, B:30}</code>.</p>
-<p>Recall that conflict serialiability is a conservative approximation of serialzability. Suppose we change the operation of <code>T2</code> 
-* <code>T2:R(A), W(A)</code> is to increase <code>A</code>'s value by 20.
-* <code>T2:R(B), W(B)</code> is to increase <code>B</code>'s value by 20.</p>
+<p>Recall that conflict serialiability is a conservative approximation of serialzability. Suppose we change the operation of <code>T2</code> </p>
+<ul>
+<li><code>T2:R(A), W(A)</code> is to increase <code>A</code>'s value by 20.</li>
+<li><code>T2:R(B), W(B)</code> is to increase <code>B</code>'s value by 20.</li>
+</ul>
 <p>Given the init state <code>{A:10, B:10}</code>,  serial schedule 1, serial schedule 2 and schedule 3 generate <code>{A:30, B:30}</code>, which means that after the change of the operation of <code>T2</code>, schedule 3 becomes serializable, but still not conflict serializable.</p>
 <h4 id="conflict-serializable-check-algorithm">Conflict Serializable Check Algorithm</h4>
 <p>In the above example, we illustrate the Conflict Serializable check via a table and manual checking. </p>

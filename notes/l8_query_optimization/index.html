@@ -112,7 +112,7 @@ Recall the article/book/publisher example</p>
 <div class="arithmatex">\[
 \Pi_{article.name} (\sigma_{book.date = 2010}((article \bowtie_{article.id=publish.article\_id} publish) \bowtie_{publish.book\_id = book.id} book)) ~~~~ {\tt (E2)}
 \]</div>
-<p>Besides these two alternatives, we also find the following expression producing the same result by "pushing" the selection operation down to the book relation, since it is only constrainted by the book's attribute.</p>
+<p>Besides these two alternatives, we also find the following expression producing the same result by "pushing" the selection operation down to the <code>book</code> relation, since it is only constrainted by the <code>book</code>'s attribute.</p>
 <div class="arithmatex">\[
 \Pi_{article.name} (article \bowtie_{article.id=publish.article\_id} (publish \bowtie_{publish.book\_id = book.id} \sigma_{book.date = 2020}(book))) ~~~~ {\tt (E3)}
 \]</div>
@@ -135,7 +135,7 @@ d("&amp;bowtie;&lt;sub&gt;publish.book_id = book.id&lt;/sub&gt;") --- e("publish
 d("&amp;bowtie;&lt;sub&gt;publish.book_id = book.id&lt;/sub&gt; &lt;br/&gt; [block nested loop]") --- f("&amp;sigma;&lt;sub&gt;book.date = 2020&lt;/sub&gt;") 
 f("&amp;sigma;&lt;sub&gt;book.date = 2020&lt;/sub&gt;")  --- g("book&lt;br/&gt;[heap scan]")
 </div>
-<p>The physical plan above scan the heap file to filter books with date = 2020, then a block nestd join is performed on publish and the immediate results coming from the filter. Finally, we apply another block nested loop to join the article with the immediate results coming from the nested join. The top level project is performed "on-the-fly". </p>
+<p>The physical plan above scan the heap file to filter books with <code>date = 2020</code>, then a block nested join is performed on the <code>publish</code> relation and the immediate results coming from the filter. Finally, we apply another block nested loop to join the <code>article</code> relation with the immediate results coming from the nested join. The top level project is performed "on-the-fly". </p>
 <p>Alternatively, we might have a slightly different phyiscal query plan,</p>
 <div class="mermaid">graph
 a("&amp;Pi;&lt;sub&gt;article.name&lt;/sub&gt;&lt;br/&gt;[iterator]") --- b("&amp;bowtie;&lt;sub&gt;article.id=publish.article_id&lt;/sub&gt;") 
@@ -145,9 +145,11 @@ d("&amp;bowtie;&lt;sub&gt;publish.book_id = book.id&lt;/sub&gt;") --- e("publish
 d("&amp;bowtie;&lt;sub&gt;publish.book_id = book.id&lt;/sub&gt; &lt;br/&gt; [block nested loop]") --- f("&amp;sigma;&lt;sub&gt;book.date = 2020&lt;/sub&gt;") 
 f("&amp;sigma;&lt;sub&gt;book.date = 2020&lt;/sub&gt;")  --- g("book&lt;br/&gt;[heap scan]")
 </div>
-<p>In the above physical query plan, we assume following indices are preesent
-* article.id (it's a primary key anyway)</p>
-<p>The physical plan applies the index nested loop to the outer join by using article as the inner relation. Though we preform a heap scan on the article relation, article is having primary key index on id, it is also a clustered index scan.</p>
+<p>In the above physical query plan, we assume following indices are preesent</p>
+<ul>
+<li>article.id (it's a primary key anyway)</li>
+</ul>
+<p>The physical plan applies the index nested loop to the outer join by using <code>article</code> as the inner relation. Though we preform a heap scan on the <code>article</code> relation, the operation is also a clustered index scan, since <code>article</code> is having primary key index on <code>id</code>.</p>
 <p>Note that there could be many physical query plans generated from a logical plan. Given a set of physical query plans, we need to find the "best" one (with the lowest I/O cost). It turns out that it is very challenging problem, and we will discuss about this shortly. This step is called <strong>query optimization</strong>.</p>
 <p>Suppose we identify a good physical query plan, we translate it into actual code to be executed in the database host machine. This final step is called <strong>query execution</strong>.</p>
 <div class="mermaid">stateDiagram-v2
@@ -183,7 +185,7 @@ class Iterator~T~ {
 <p>The downside of the iterator model is that sometimes we need to re-compute some common sub-queries, e.g. <span class="arithmatex">\((\sigma_{book.date = 2020}(book)) \bowtie (\sigma_{book.date = 2020}(book))\)</span>, we need to compute <span class="arithmatex">\(\sigma_{book.date = 2020}(book)\)</span> twice. </p>
 <p>We would be in the worst situation if an immediate result is needed as a whole, e.g. need to build a hash table, need to sort the immediate data first. In these situation, we have to block and consume all the children's data first.</p>
 <h3 id="materialization-model">Materialization Model</h3>
-<p>In materailization model, immediate results are fully computed and emit before the outer operation starts its computation. We can think of each operator having its own local storage holding the immediate results.</p>
+<p>In materialization model, immediate results are fully computed and emit before the outer operation starts its computation. We can think of each operator having its own local storage holding the immediate results.</p>
 <p>The advantage of this model is that we can re-use immediate results if they needed more than once and we ca use the immediate results to build immediate index, hash table, etc. It performs better when the immediate results are eventually part of the final results.</p>
 <h3 id="vectorized-model">Vectorized Model</h3>
 <p>The vectorized model, (AKA the batch model) is a hybrid of iterator and materialization model. Every operator in the vectorized model implements the <code>next()</code> method. The <code>next()</code> method returns a batch of tuples instead of a single one. </p>
@@ -206,11 +208,11 @@ class Iterator~T~ {
 <li><span class="arithmatex">\(R \cup R' \equiv R \cup R\)</span></li>
 <li><span class="arithmatex">\(R \cap (R' \cap R'') \equiv (R \cap R') \cap R''\)</span></li>
 <li><span class="arithmatex">\(R \cup (R' \cup R'') \equiv (R \cup R') \cup R''\)</span></li>
-<li><span class="arithmatex">\(\Pi_{a_1 \cup a_2} (R \bowtie_{c} R') \equiv \Pi_{a_1}(R) \bowtie_{c} \Pi_{a_2}(R')\)</span>  if <span class="arithmatex">\(attr(c) \equiv a_1 \cup a_2\)</span>.</li>
-<li><span class="arithmatex">\(\Pi_{a_1 \cup a_2} (R \bowtie_{c} R') \equiv \Pi_{a_1 \cup a_2}(\Pi_{a_1\cup a_3}(R) \bowtie_{c} \Pi_{a_2\cup a_4}(R') )\)</span> if <span class="arithmatex">\(a_3 \cup a_4 \equiv attr(c)\)</span></li>
+<li><span class="arithmatex">\(\Pi_{a_1 \cup a_2} (R \bowtie_{c} R') \equiv \Pi_{a_1}(R) \bowtie_{c} \Pi_{a_2}(R')\)</span>  if <span class="arithmatex">\(attr(c) \subseteq a_1 \cap a_2\)</span>.</li>
+<li><span class="arithmatex">\(\Pi_{a_1 \cup a_2} (R \bowtie_{c} R') \equiv \Pi_{a_1 \cup a_2}(\Pi_{a_1\cup a_3}(R) \bowtie_{c} \Pi_{a_2\cup a_4}(R') )\)</span> if <span class="arithmatex">\(attr(c) \subseteq a_3 \cap a_4\)</span></li>
 <li><span class="arithmatex">\(\Pi_{a}(R \cup R') \equiv \Pi_{a}(R) \cup \Pi_{a}(R')\)</span></li>
 <li><span class="arithmatex">\(\Pi_{a}(\sigma_{c}(R)) \equiv \sigma_{c}(\Pi_{a}(R))\)</span> if <span class="arithmatex">\(attr(c) \subseteq a\)</span></li>
-<li><span class="arithmatex">\(\sigma_{c}(R - R') \equiv \sigma_{c}(R) - \sigma_{c}(R') \equiv \sigma_{c}(R) - R'\)</span></li>
+<li><span class="arithmatex">\(\sigma_{c}(R - R') \equiv \sigma_{c}(R) - R'\)</span></li>
 <li><span class="arithmatex">\(\sigma_{c}(R \cap R') \equiv \sigma_{c}(R) \cap \sigma_{c}(R')\)</span></li>
 <li><span class="arithmatex">\(\sigma_{c}(R \cup R') \equiv \sigma_{c}(R) \cup \sigma_{c}(R')\)</span></li>
 </ol>
@@ -223,11 +225,13 @@ class Iterator~T~ {
 <li>the sizes of the relations</li>
 <li>the selectivity of the predicate.</li>
 </ol>
-<p>In DBMS, the sizes of the relations are recorded periodically in the catalog. The catalog sub-system keeps track of the following the statistics which can be used to approximate the selectivity.
-1. <span class="arithmatex">\(N(R)\)</span> the number of tuples in <span class="arithmatex">\(R\)</span>
-2. <span class="arithmatex">\(V(a,R)\)</span> the number of unique values of attribute <span class="arithmatex">\(a\)</span> in <span class="arithmatex">\(R\)</span>.
-3. <span class="arithmatex">\(min(a,R)\)</span> the minumum value of attribute <span class="arithmatex">\(a\)</span> in <span class="arithmatex">\(R\)</span>
-4. <span class="arithmatex">\(max(a,R)\)</span> the maximum value of attribtue <span class="arithmatex">\(a\)</span> in <span class="arithmatex">\(R\)</span>.</p>
+<p>In DBMS, the sizes of the relations are recorded periodically in the catalog. The catalog sub-system keeps track of the following the statistics which can be used to approximate the selectivity.</p>
+<ol>
+<li><span class="arithmatex">\(N(R)\)</span> the number of tuples in <span class="arithmatex">\(R\)</span></li>
+<li><span class="arithmatex">\(V(a,R)\)</span> the number of unique values of attribute <span class="arithmatex">\(a\)</span> in <span class="arithmatex">\(R\)</span>.</li>
+<li><span class="arithmatex">\(min(a,R)\)</span> the minumum value of attribute <span class="arithmatex">\(a\)</span> in <span class="arithmatex">\(R\)</span></li>
+<li><span class="arithmatex">\(max(a,R)\)</span> the maximum value of attribtue <span class="arithmatex">\(a\)</span> in <span class="arithmatex">\(R\)</span>.</li>
+</ol>
 <h3 id="cardinality-estimation">Cardinality Estimation</h3>
 <p>Given the above catalog statistics, we can estimate the selectivity ratio, <span class="arithmatex">\(\alpha(c, R)\)</span>.</p>
 <h4 id="equality-predicate">Equality Predicate</h4>
@@ -238,9 +242,11 @@ class Iterator~T~ {
 <h4 id="conjunction-predicate">Conjunction Predicate</h4>
 <p>In case <span class="arithmatex">\(c\)</span> is <span class="arithmatex">\(c_1 \wedge c_2\)</span>, assuming values constrained by <span class="arithmatex">\(c_1\)</span> are independent of those constrained by <span class="arithmatex">\(c_2\)</span>, <span class="arithmatex">\(\alpha(c_1 \wedge c_2, R) = \alpha(c_1, R) \cdot \alpha(c_2, R)\)</span>. </p>
 <h2 id="search-algorithm">Search Algorithm</h2>
-<p>The last piece of the query optimization is to search for the best physical plan given 
-* a method to enumerate alternative
-* a way to estimate the I/O cost given a plan</p>
+<p>The last piece of the query optimization is to search for the best physical plan given </p>
+<ul>
+<li>a method to enumerate alternative</li>
+<li>a way to estimate the I/O cost given a plan</li>
+</ul>
 <h3 id="the-challenge">The challenge</h3>
 <p>A naive approach would generate all possible plans, apply estimation to all of them and find the best one. However enumerating all possible plans could be expensive. For instance, enumerating all plan of a <span class="arithmatex">\(n\)</span>-way join will yield <span class="arithmatex">\(4^{n}\)</span> possibilities. </p>
 <p>Recall from our algorithm class that the number of possible Binary Search Trees with <span class="arithmatex">\(n\)</span> different keys is catalan number </p>
@@ -250,10 +256,14 @@ class Iterator~T~ {
 <p>A set of possible query plans with <span class="arithmatex">\(n\)</span>-way join shares the same size!</p>
 <h3 id="selinger-algorithm">Selinger Algorithm</h3>
 <p>The selinger algorithm is one of the classic algorthm for searching for optimal plan. </p>
-<p>The idea behind is to apply the following heuristics
-1. Only consider the left-skew trees.
-    1. This is because in many different physical plans, we need to scan the right sub-tree multiple times in join. It is better to keep the right sub-tree as simple as possible.
-    2. If we apply this heuristic, we cut down the search base to </p>
+<p>The idea behind is to apply the following heuristics</p>
+<ol>
+<li>Only consider the left-skew trees.<ol>
+<li>This is because in many different physical plans, we need to scan the right sub-tree multiple times in join. It is better to keep the right sub-tree as simple as possible.</li>
+<li>If we apply this heuristic, we cut down the search base to </li>
+</ol>
+</li>
+</ol>
 <div class="arithmatex">\[
     \left (\begin{array}{c}
             n \\
@@ -272,15 +282,17 @@ class Iterator~T~ {
     \right ) =       n!
 \]</div>
 <ol>
-<li>Considering the left-skew trees with <span class="arithmatex">\(n\)</span> relations still computing <span class="arithmatex">\(n!\)</span> possible plans. To further cut down the search, the algorithm assumes the best overall plan consists of best sub-plans. It proceeds by finding the best plans for leaf nodes, then "walk-up" the trees by finding the best plans to combine intermediate steps.  For example, <ul>
+<li>
+<p>Considering the left-skew trees with <span class="arithmatex">\(n\)</span> relations still computing <span class="arithmatex">\(n!\)</span> possible plans. To further cut down the search, the algorithm assumes the best overall plan consists of best sub-plans. It proceeds by finding the best plans for leaf nodes, then "walk-up" the trees by finding the best plans to combine intermediate steps.  For example, </p>
+<ul>
 <li>Pass 1. find the best plans for each relations (leaf nodes)</li>
 <li>Pass 2. find the best plans to join any 2 relations</li>
 <li>Pass 3. find the best plans to join any 3 relations</li>
-<li>...
-For each pass <span class="arithmatex">\(i\)</span> where <span class="arithmatex">\(i&gt;1\)</span>, the best plans are computed based on the result from pass <span class="arithmatex">\(i-1\)</span>. Overall this cut down the final search space of an <span class="arithmatex">\(n\)</span>-way join to</li>
+<li>...</li>
 </ul>
 </li>
 </ol>
+<p>For each pass <span class="arithmatex">\(i\)</span> where <span class="arithmatex">\(i&gt;1\)</span>, the best plans are computed based on the result from pass <span class="arithmatex">\(i-1\)</span>. Overall this cut down the final search space of an <span class="arithmatex">\(n\)</span>-way join to</p>
 <div class="arithmatex">\[
 \left (\begin{array}{c}
  n \\

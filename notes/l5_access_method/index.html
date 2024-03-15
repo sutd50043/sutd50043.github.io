@@ -122,9 +122,11 @@
 <h4 id="option-2-heap-page-with-bit-array-header">Option 2 - Heap Page with bit array header</h4>
 <p>In this version we improve over the previous version of Heap Page by including a header. The header is an array of bits whose size equals to the maximum number of tuples in a page (with the meta-data discounted). The i-th bit is 0 implies the i-th tuple slot is unused, otherwise, the slot is used.</p>
 <p>With this approach we address the deletion issue. To insert a tuple, we need to scan through the header array to look for free slot.</p>
-<p>There are still some issues to be addressed. 
-1. we have to assume that tuples are all in a single fixed size 
-2. it is hard to search for a particular tuple except sequential scan.</p>
+<p>There are still some issues to be addressed. </p>
+<ol>
+<li>we have to assume that tuples are all in a single fixed size </li>
+<li>it is hard to search for a particular tuple except sequential scan.</li>
+</ol>
 <p>The first issue can be addressed by allowing long tuple spanning across multiple slots. We need to store extra header information.</p>
 <p>The second issue will be addressed altogther when we consider the internal layout of a database file</p>
 <h2 id="file-internal">File Internal</h2>
@@ -166,14 +168,14 @@
 </tr>
 <tr>
 <td>Insert a record</td>
-<td>$t_{s+r} + t_{tf}  \cdot D $</td>
-<td>$(t_{s+r} + t_{tf})  \cdot D $</td>
+<td><span class="arithmatex">\(t_{s+r} + t_{tf}  \cdot D\)</span></td>
+<td><span class="arithmatex">\((t_{s+r} + t_{tf})  \cdot D\)</span></td>
 </tr>
 </tbody>
 </table>
 <p>One issue yet to be addressed is to enable searching for a tuple without resort to sequential scanning which is expensive.</p>
 <h2 id="index">Index</h2>
-<p>A way to resolve to search issue with Heap file is to incorporate indices.  For instance, we want to search for books that are publish in the year of 2019. </p>
+<p>A way to resolve to search issue with Heap file is to incorporate indices.</p>
 <p>An index maps values of the searching criteria into a set of record ids. Each record id stores the exact location of a tuple, i.e. page id and tuple slot number.</p>
 <p>A table may have multiple indices. </p>
 <p>The idea of indices is similar to adding labels to a thick phyiscal text book. The labels enable us to quickly "jump" to a section of interest. </p>
@@ -184,15 +186,17 @@
 <p>The perfect hash function should be </p>
 <ol>
 <li>efficient - takes no time to compute the hash</li>
-<li>low (or better to be no) collision. For all <span class="arithmatex">\(x_1 \neq x_2\)</span>, <span class="arithmatex">\(hash(x_1) \neq hash(x_2)\)</span>.</li>
+<li>low (or better  to be no) collision. For all <span class="arithmatex">\(x_1 \neq x_2\)</span>, <span class="arithmatex">\(hash(x_1) \neq hash(x_2)\)</span>.</li>
 </ol>
 <h4 id="dealing-with-collision">Dealing with collision</h4>
 <p>In reality, collision can't be eliminated. </p>
-<p>To deal with collision, there are two approaches on the storage level
-1. Open Hashing (a.k.a. separate chaining) we store collided objects in linked-list pointed by the same key. 
+<p>To deal with collision, there are two approaches on the storage level</p>
+<ol>
+<li>Open Hashing (a.k.a. separate chaining) we store collided objects in linked-list pointed by the same key. 
 <img alt="" src="../images/openhash.png"/>
-In the above diagram the values 1000 and 9530 are hashed into the same cell of the hash table, hence 9530 is stored in a chain. 
-2. Closed Hashing (a.k.a. open addressing) we try to store collided objects in the same hash table.</p>
+In the above diagram the values 1000 and 9530 are hashed into the same cell of the hash table, hence 9530 is stored in a chain. </li>
+<li>Closed Hashing (a.k.a. open addressing) we try to store collided objects in the same hash table.</li>
+</ol>
 <p>We discuss a few more alternatives of closed hasing</p>
 <h4 id="linear-probing">Linear Probing</h4>
 <p>Linear Probing is a close hashing collision resolution. The idea is that if both values are hashed to the same cell of the hash table, one of them will be stored in the next available slot. </p>
@@ -236,10 +240,12 @@ We re-insert <span class="arithmatex">\(A\)</span> at <span class="arithmatex">\
 The downside is that we might run into infinite vacate-insert loop. We need to some mechanism to detect the loop, and rehash everything with a new set of hash functions, or add more tables (and new hash functions).</p>
 <h4 id="bucket-hashing">Bucket Hashing</h4>
 <p>One issue with Cuckoo Hashing is that eventually, we need to rehash everything. </p>
-<p>The idea behind Bucket Hashing (a.k.a extensible hashing) is to 
-* store hashed values in buckets (relative small fixed size arrays, so that the sequential search is not expensive). All buckets have the same size.
-* use the <span class="arithmatex">\(n\)</span> least significant bits (LSB) of the hashed value to decide in  which bucket it should be placed.
-* increase <span class="arithmatex">\(n\)</span> and add new bucket gradually as some bucket becomes full.</p>
+<p>The idea behind Bucket Hashing (a.k.a extensible hashing) is to </p>
+<ul>
+<li>store hashed values in buckets (relative small fixed size arrays, so that the sequential search is not expensive). All buckets have the same size.</li>
+<li>use the <span class="arithmatex">\(n\)</span> least significant bits (LSB) of the hashed value to decide in  which bucket it should be placed.</li>
+<li>increase <span class="arithmatex">\(n\)</span> and add new bucket gradually as some bucket becomes full.</li>
+</ul>
 <p>The Bucket Hashing algorithm starts with a global slot array, a bucket.
 It maintains a set of integer values of <span class="arithmatex">\(n\)</span> LSB. <span class="arithmatex">\(G\)</span> denotes the global value of <span class="arithmatex">\(n\)</span> LSB, there is one and only one. <span class="arithmatex">\(L\)</span> denotes the local values of <span class="arithmatex">\(n\)</span> LSB, there is one <span class="arithmatex">\(L\)</span> per bucket. For all buckets, <span class="arithmatex">\(L \leq G\)</span>. The algorithm start with some small numbers of <span class="arithmatex">\(G\)</span> and <span class="arithmatex">\(L\)</span>. </p>
 <h5 id="bucket-hashing-insertion">Bucket Hashing Insertion</h5>
@@ -302,7 +308,8 @@ For example, it works well with query </p>
 <pre><code class="language-sql">select * from book where book_id = 'b1';
 </code></pre>
 <p>because we could hash <code>book_id</code>.</p>
-<p>Hashing does not help to speed up range search query</p>
+<p>Hashing does not help to speed up range search query. </p>
+<p>For instance, we want to search for books that are publish in the year of 2019. </p>
 <pre><code class="language-sql">select * from book where date &gt;= '2019-01-01' and date &lt;= '2019-12-31';
 </code></pre>
 <p>Even if we hash all <code>date</code>, there is no guarantee the values are store in the same bucket/page/block.</p>

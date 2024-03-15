@@ -90,7 +90,7 @@
 <li>Define relational algebra terms to query a relational model</li>
 </ol>
 <h2 id="relational-algebra">Relational Algebra</h2>
-<p>Given that relational model is a logical model (abstracting away the implementation details), we need something operations defined on the same layout to manupulate the data in a relational model. (So that we don't need to deal with the implementation details yet.)</p>
+<p>Given that relational model is a logical model (abstracting away the implementation details), we need something operations defined on the same layout to manipulate the data in a relational model. (So that we don't need to deal with the implementation details yet.)</p>
 <p>Like math algebra, Relational Algebra is a way to express data operation through symbols and relation manipulations. </p>
 <ol>
 <li>The data manipulation operations are defined in terms of a sequence of operation applications.</li>
@@ -130,20 +130,22 @@ Publish(<ins>article_id, book_id, publisher_id</ins>)</p>
 \Pi_{article\_id}(\sigma_{(publisher\_id='p1')}(Publish)) \cap \Pi_{article\_id}(\sigma_{(publisher\_id='p2')}(Publish)) \]</div>
 <h3 id="selection">Selection</h3>
 <p>A selection operator, <span class="arithmatex">\(\sigma_{P}(R)\)</span>, takes a logical predicate <span class="arithmatex">\(P\)</span> and a relation <span class="arithmatex">\(R\)</span> and returns all the tuple in <span class="arithmatex">\(R\)</span> that satisfy <span class="arithmatex">\(P\)</span>. </p>
-<p>Note that <span class="arithmatex">\(P\)</span> can be 
-1. a simple predicate such as a equality test $name = "tom" or 
-2. a conjunction or disjunction of predicates, e.g. <span class="arithmatex">\(name = "tom"\ {\tt AND} \ age &gt; 21\)</span>.</p>
+<p>Note that <span class="arithmatex">\(P\)</span> can be</p>
+<ol>
+<li>a simple predicate such as a equality test $name = "tom" or </li>
+<li>a conjunction or disjunction of predicates, e.g. <span class="arithmatex">\(name = "tom"\ {\tt AND} \ age &gt; 21\)</span>.</li>
+</ol>
 <p>For example, the following relational algebra expression returns a relation with all tuples from <span class="arithmatex">\(Publish\)</span> with <span class="arithmatex">\(publisher\_id\)</span> equals to <code>p1</code>.</p>
 <div class="arithmatex">\[\sigma_{(publisher\_id='p1')}(Publish)\]</div>
 <h3 id="projection">Projection</h3>
 <p>A projection operator <span class="arithmatex">\(\Pi_{A_1,A_2,...}(R)\)</span>, takes a set of attribute names <span class="arithmatex">\(A_1,...,A_n\)</span> and a relation <span class="arithmatex">\(R\)</span>, and returns a relation that contains the data of columns <span class="arithmatex">\(A_1,...,A_n\)</span> in <span class="arithmatex">\(R\)</span>.</p>
-<p>For example, the following expression returns a relation all all <span class="arithmatex">\(article\_id\)</span>s from <span class="arithmatex">\(Publish\)</span> with <span class="arithmatex">\(publisher\_id\)</span> equals to <code>p1</code>.</p>
+<p>For example, the following expression returns a relation of all <span class="arithmatex">\(article\_id\)</span>s from <span class="arithmatex">\(Publish\)</span> with <span class="arithmatex">\(publisher\_id\)</span> equals to <code>p1</code>.</p>
 <div class="arithmatex">\[\Pi_{article\_id}(\sigma_{(publisher\_id='p1')}(Publish))\]</div>
 <h3 id="intersection">Intersection</h3>
 <p>An intersection operation  <span class="arithmatex">\(R \cap S\)</span> finds all common tuples from <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(S\)</span>, assuming <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(S\)</span> sharing a common schema.</p>
 <p>We have seen an example of this earlier.</p>
 <h3 id="union">Union</h3>
-<p>A union operation <span class="arithmatex">\(R \cup S\)</span> returns a relation containing all tuples from <span class="arithmatex">\(R\)</span> and all thetuples from <span class="arithmatex">\(S\)</span>, assuming <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(S\)</span> sharing a common schema.</p>
+<p>A union operation <span class="arithmatex">\(R \cup S\)</span> returns a relation containing all tuples from <span class="arithmatex">\(R\)</span> and all tuples from <span class="arithmatex">\(S\)</span>, assuming <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(S\)</span> sharing a common schema.</p>
 <h3 id="difference">Difference</h3>
 <p>A difference operation <span class="arithmatex">\(R - S\)</span> returns a relation containing all tuples from <span class="arithmatex">\(R\)</span> that are not in <span class="arithmatex">\(S\)</span>, assuming <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(S\)</span> sharing a common schema.</p>
 <h3 id="cartesian-product">Cartesian Product</h3>
