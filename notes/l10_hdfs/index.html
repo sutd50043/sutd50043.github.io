@@ -138,7 +138,7 @@ header-includes:
 <p>By design, Google file system is a distributed file system that supports only sequential read and append operation. </p>
 <p>HDFS inherited the design of Google file system.</p>
 <h2 id="hdfs-file-system-model">HDFS File system model</h2>
-<p>Like many conventional file systems, HDFS follows a hierachical name space, i.e. data are organized by tree like structure, where each branch is a folder (sub folder) and the leaf nodes are the file.</p>
+<p>Like many conventional file systems, HDFS follows a hierarchical name space, i.e. data are organized by tree like structure, where each branch is a folder (sub folder) and the leaf nodes are the file.</p>
 <pre><code>|- A
 |  |- B
 |     |- mydoc.txt
@@ -168,16 +168,16 @@ For HDFS, since files are written via append, data fragmentation is minimized. <
 <p>The master node, which is also known as the <strong>name node</strong>, keeps track of a set of data node. </p>
 <p>The meta data of the files are stored in the name node. A secondary name node is provisioned for the backup purposes. </p>
 <p>The real data are stored and replicated among the data nodes. By default HDFS recommends there should be at least 3 copies of the same data block, i.e. <strong>replication factor</strong> = 3. Replication factors 5 or 7 are also recommended. </p>
-<p>A client, i.e. an application that tries to access a file in the HDFS, has to make the requests to the name node and waits for the repsonses. </p>
+<p>A client, i.e. an application that tries to access a file in the HDFS, has to make the requests to the name node and waits for the responses. </p>
 <h3 id="replication-and-replica-placement-policy">Replication and Replica placement policy</h3>
 <p>Replication is to increase data survivability in case of hardware failure. But how and where shall we store / distribute the replicas of a data block? To maximize the survivability, it might be beneficial to take into account the actual location of the data nodes. </p>
-<p>In data centers, servers are physically mounted and connected in racks. Multiple serverse can be placed in a rack which shares a power source and network switch (with redudancy). In case of power or network failure, the entire rack is affected. 
+<p>In data centers, servers are physically mounted and connected in racks. Multiple servers can be placed in a rack which shares a power source and network switch (with redudancy). In case of power or network failure, the entire rack is affected. 
 Hence, it would be wise not to store replicas of a data block in servers located in the same rack. On the other hand intra rack data transfer will be more cost effective. </p>
 <p>In a HDFS cluster, when the rack information is present, the replicas of a data block are distributed as follows </p>
 <ul>
 <li>Max 1 replica per datanode</li>
 <li>Max 2 replicas per rack</li>
-<li>Number of racks for replication should be less than the peplication factor</li>
+<li>Number of racks for replication should be less than the replication factor</li>
 </ul>
 <p>For example, we consider the following setup with 3 racks, each rack contains 3 datanodes. 3 data blocks need to be stored and replicated with RF = 3.</p>
 <p><img alt="" src="../images/replica-placement.png"/></p>
@@ -206,13 +206,13 @@ Hence, it would be wise not to store replicas of a data block in servers located
 <ol>
 <li>The client creates the meta data entry in the name node.</li>
 <li>The name node allocates and returns the first block locations to the client.</li>
-<li>Based on the first lbock locations the client initializes the data writing pipeline.</li>
+<li>Based on the first block locations the client initializes the data writing pipeline.</li>
 <li>The data will be sent in the daisy chain manner from the client to the data nodes.</li>
 <li>When the data is successfully transmitted, an acknowledgement will be sent to data source; When some data block (replica) write operation fails, the information is recorded by the name node and the operation will be re-executed on some data node.</li>
 <li>When the last data block is written, the client initiates a close request to the name node. </li>
 <li>The name node checks with the data nodes to ensure the minimum replica requirement is met. </li>
 <li>The data nodes reports the minimum replica status back to the name node.</li>
-<li>The name node sends the acknolwedgement to the client notifying that the file write operation was successful.</li>
+<li>The name node sends the acknowledgement to the client notifying that the file write operation was successful.</li>
 </ol>
 <div class="mermaid">graph LR 
   client --1. create--&gt; NN["name node"]
@@ -222,7 +222,7 @@ Hence, it would be wise not to store replicas of a data block in servers located
   DN1["data node 1"] --3. organize pipeline; 4. send data--&gt; DN2["data node 2"]
   DN2 --5. acknowledge--&gt; DN1
   DN2["data node 2"] --3. organize pipeline; 4. send data--&gt; DN3["data node 3"]
-  DN3 --5. acknolwedge--&gt;DN2
+  DN3 --5. acknowledge--&gt;DN2
   client --6. close --&gt; NN["name node"]
   NN --7. check minimum replica --&gt; DN1
   NN --7. check minimum replica --&gt; DN2
@@ -391,11 +391,11 @@ $$
 $$</p>
 <p>We recover the lost data.</p>
 <h4 id="erasure-coding-storage-overhead-and-data-efficiency">Erasure Coding storage overhead and data efficiency</h4>
-<p>Erase coding is more <em>economical</em> compared to data replicaiton. <span class="arithmatex">\(G^T\)</span> is fixed for all data, hence its overhead is neglectable. 
+<p>Erase coding is more <em>economical</em> compared to data replication. <span class="arithmatex">\(G^T\)</span> is fixed for all data, hence its overhead is neglectable. 
 We write <span class="arithmatex">\(RS(k,m)\)</span> to denote that <span class="arithmatex">\(G^T\)</span> is a matrix of <span class="arithmatex">\((k+m) \times k\)</span> and <span class="arithmatex">\(k\)</span> is the number of rows of the actual data matrix and <span class="arithmatex">\(m\)</span> is the number of parity rows. We have <span class="arithmatex">\(m/k\)</span> storage overhead and <span class="arithmatex">\(k / (k + m)\)</span> storage efficiency.</p>
 <p>One crucial observation is that we can always recover the a codeword with <span class="arithmatex">\((k +m) \times 1\)</span> when the number of lost cells is less than or equal to <span class="arithmatex">\(m\)</span>.</p>
 <h4 id="question">Question</h4>
-<p>What happen when <span class="arithmatex">\(L &gt; 1\)</span>? Hint: you may think about how matric multiplication works.</p></div>
+<p>What happen when <span class="arithmatex">\(L &gt; 1\)</span>? Hint: you may think about how matrix multiplication works.</p></div>
 </div>
 </div>
 <footer class="col-md-12">
