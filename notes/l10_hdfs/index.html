@@ -222,7 +222,7 @@ Hence, it would be wise not to store replicas of a data block in servers located
   DN1["data node 1"] --3. organize pipeline; 4. send data--&gt; DN2["data node 2"]
   DN2 --5. acknowledge--&gt; DN1
   DN2["data node 2"] --3. organize pipeline; 4. send data--&gt; DN3["data node 3"]
-  DN3 --5. acknowledge--&gt;DN2
+  DN3 --5. acknowledge --&gt;DN2
   client --6. close --&gt; NN["name node"]
   NN --7. check minimum replica --&gt; DN1
   NN --7. check minimum replica --&gt; DN2
