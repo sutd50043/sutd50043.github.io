@@ -100,7 +100,7 @@ header-includes:
 <li>Explain the use of erasure coding</li>
 </ol>
 <h2 id="hadoop">Hadoop</h2>
-<p>Hadoop is one of the widely-used framework for big data. It was started in 2005 by a group of Yahoo! scientists. The initial objective was to provide a scalable backend for the nutch crawler. </p>
+<p>Hadoop is one of the widely-used frameworks for big data. It was started in 2005 by a group of Yahoo! scientists. The initial objective was to provide a scalable backend for the nutch crawler. </p>
 <p>Over time Hadoop has evolved into a fully fledged distributed data storage and processing framework. It has a few major components</p>
 <ul>
 <li>MapReduce - the data processing layer</li>
@@ -121,7 +121,7 @@ header-includes:
 <p>The only alternative during that time was network file system (NFS), which deemed to be limited by its original use cases. </p>
 <ul>
 <li>a file must reside on one and only one machine.</li>
-<li>there is no reliability guarantee, data loss could be hard to recovered</li>
+<li>there is no reliability guarantee, data loss could be hard to recover</li>
 <li>it is not scalable, a computation over a huge batch of data cannot be distributed to multiple processors.</li>
 <li>there is no builtin replication mechanism, which leads to a high fail rate.</li>
 <li>file accessed over the network would incur huge amount of network I/O</li>
@@ -165,8 +165,8 @@ For HDFS, since files are written via append, data fragmentation is minimized. <
 <h2 id="hdfs-architecture">HDFS Architecture</h2>
 <p>The HDFS architecture follows a master-worker pattern. </p>
 <p><img alt="" src="../images/hdfsarchitecture.png"/></p>
-<p>The master node, which is also known as the <strong>name node</strong>, keeps track of a set of data node. </p>
-<p>The meta data of the files are stored in the name node. A secondary name node is provisioned for the backup purposes. </p>
+<p>The master node, which is also known as the <strong>name node</strong>, keeps track of a set of data nodes. </p>
+<p>The meta data of the files is stored in the name node. A secondary name node is provisioned for the backup purposes. </p>
 <p>The real data are stored and replicated among the data nodes. By default HDFS recommends there should be at least 3 copies of the same data block, i.e. <strong>replication factor</strong> = 3. Replication factors 5 or 7 are also recommended. </p>
 <p>A client, i.e. an application that tries to access a file in the HDFS, has to make the requests to the name node and waits for the responses. </p>
 <h3 id="replication-and-replica-placement-policy">Replication and Replica placement policy</h3>
@@ -189,7 +189,7 @@ Hence, it would be wise not to store replicas of a data block in servers located
 <li>The client requests for the data block locations of the file from the name node.</li>
 <li>The name node returns the list of data block locations to the client.</li>
 <li>Based on the data block locations, the client requests for the data blocks from the data node.</li>
-<li>The data nodes replied the client with the data being requested. </li>
+<li>The data nodes reply the client with the data being requested. </li>
 </ol>
 <div class="mermaid">graph LR;
   client --1. file path--&gt; NN["name node"]
@@ -393,7 +393,7 @@ $$</p>
 <h4 id="erasure-coding-storage-overhead-and-data-efficiency">Erasure Coding storage overhead and data efficiency</h4>
 <p>Erase coding is more <em>economical</em> compared to data replication. <span class="arithmatex">\(G^T\)</span> is fixed for all data, hence its overhead is neglectable. 
 We write <span class="arithmatex">\(RS(k,m)\)</span> to denote that <span class="arithmatex">\(G^T\)</span> is a matrix of <span class="arithmatex">\((k+m) \times k\)</span> and <span class="arithmatex">\(k\)</span> is the number of rows of the actual data matrix and <span class="arithmatex">\(m\)</span> is the number of parity rows. We have <span class="arithmatex">\(m/k\)</span> storage overhead and <span class="arithmatex">\(k / (k + m)\)</span> storage efficiency.</p>
-<p>One crucial observation is that we can always recover the a codeword with <span class="arithmatex">\((k +m) \times 1\)</span> when the number of lost cells is less than or equal to <span class="arithmatex">\(m\)</span>.</p>
+<p>One crucial observation is that we can always recover the codeword with <span class="arithmatex">\((k +m) \times 1\)</span> when the number of lost cells is less than or equal to <span class="arithmatex">\(m\)</span>.</p>
 <h4 id="question">Question</h4>
 <p>What happen when <span class="arithmatex">\(L &gt; 1\)</span>? Hint: you may think about how matrix multiplication works.</p></div>
 </div>

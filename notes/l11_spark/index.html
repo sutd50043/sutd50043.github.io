@@ -124,9 +124,9 @@
 <p>On top of that data visualization for big data also impose further challenge. It requires data to be reprocessed based on the user inputs such as sorting and filtering constraints. </p>
 <p>Hadoop MapReduce is no longer suitable for these applications because of the following 
 1. each of mapper (and educer) task needs to transfer intermediate data to the disk back and forth. 
-1. its rigit computation model (i.e. one step of map followed by one step of reduce) makes most of the application look unnecessarily complex.
-1. it does not utilize much of RAM. Many of the MapReduce applications are disk and network I/O bound rather than RAM and CPU bound.
-1. it is hard to redistribute the workload</p>
+2. its rigit computation model (i.e. one step of map followed by one step of reduce) makes most of the application look unnecessarily complex.
+3. it does not utilize much of RAM. Many of the MapReduce applications are disk and network I/O bound rather than RAM and CPU bound.
+4. it is hard to redistribute the workload</p>
 <p>Apache Spark is a project which started off as an academic reseach idea and became an enterprise level success. It addressed the above-mentioned limitations of the Hadoop MapReduce by introducing the following features</p>
 <ul>
 <li>Resilient distributed datasets, which act as the primary data structure for distributed map reduce operation</li>
@@ -328,7 +328,7 @@ counts = text_file.flatMap(lambda line: line.split(" ")) \
 counts.saveAsTextFile("hdfs://localhost:9000/output/")
 sc.stop()
 </code></pre>
-<p>We can compare it with the version in toy MapReduce, and find many similarity </p>
+<p>We can compare it with the version in toy MapReduce, and find many similarities </p>
 <pre><code class="language-python">infile = open(sys.argv[1], 'r')
 lines = []
 for line in infile: lines.append(line.strip())
@@ -437,7 +437,7 @@ r7 --reduce/3--&gt; r8
 </div>
 <p>In the above, we stage the first two map operations. The join operation is assigned to the 2nd stage. The <code>groupByKey</code> initiates the 3rd stage which includes the following map and reduce. </p>
 <h2 id="spark-performance-tuning">Spark performance tuning</h2>
-<p>Knowing how Spark schedule a job into stages of sub tasks. We can optimize the job by rewriting it into an equivalent one such that </p>
+<p>Knowing how Spark schedules a job into stages of sub tasks. We can optimize the job by rewriting it into an equivalent one such that </p>
 <ul>
 <li>Pre-partition or re-partition of the data</li>
 <li>Cache the common intermediate data</li>

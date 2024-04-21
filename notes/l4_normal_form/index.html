@@ -289,17 +289,19 @@
 <li><span class="arithmatex">\(D^+ = D\)</span></li>
 <li><span class="arithmatex">\(AB^+ = ABCD\)</span></li>
 <li><span class="arithmatex">\(ABC^+ = ABCD\)</span></li>
-<li>...
-We find that <span class="arithmatex">\(AB\)</span> is a candidate key of $$.</li>
+<li>...</li>
 </ul>
+<p>We find that <span class="arithmatex">\(AB\)</span> is a candidate key of $$.</p>
 <p>At step 1.2, we found <span class="arithmatex">\(A^+\)</span>, since <span class="arithmatex">\(A^+ = AD \neq ABCD\)</span>. We decompose 
-<span class="arithmatex">\(R\)</span> into 
-* <span class="arithmatex">\(R_1(A,D)\)</span>
-* <span class="arithmatex">\(R_2(A,B,C)\)</span></p>
+<span class="arithmatex">\(R\)</span> into </p>
+<ul>
+<li><span class="arithmatex">\(R_1(A,D)\)</span></li>
+<li><span class="arithmatex">\(R_2(A,B,C)\)</span></li>
+</ul>
 <p><span class="arithmatex">\(R_1\)</span> is already in BCNF. <span class="arithmatex">\(R_2\)</span> is not, because found <span class="arithmatex">\(C^+ = BC\)</span>. We decompose <span class="arithmatex">\(R_2\)</span> into</p>
 <ul>
 <li><span class="arithmatex">\(R_{21}(B,C)\)</span></li>
-<li><span class="arithmatex">\(R_{22}(A,B)\)</span></li>
+<li><span class="arithmatex">\(R_{22}(A,C)\)</span></li>
 </ul>
 <p>Then we are done.</p>
 <h3 id="3nf">3NF</h3>

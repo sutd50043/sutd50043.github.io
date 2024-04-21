@@ -162,7 +162,7 @@ By contrast, concurrency is a <strong>program-structuring technique</strong> in 
 </tr>
 </tbody>
 </table>
-<p>We focus on the key differences. Though concurrency also achieve certain level of speed up, its focus is in handling multiple tasks with a fixed set of resources through scheudling. Parallelism focuses on getting one thing done and fast. The result of parallel computing must be deterministic whilst concurrency does not necessarily entail determinism.</p>
+<p>We focus on the key differences. Though concurrency also achieve certain level of speed up, its focus is in handling multiple tasks with a fixed set of resources through scheduling. Parallelism focuses on getting one thing done and fast. The result of parallel computing must be deterministic whilst concurrency does not necessarily entail determinism.</p>
 <p>The following are some examples of parallelism </p>
 <ul>
 <li>A sodoku solver uses multiple CPU cores</li>
@@ -181,18 +181,18 @@ By contrast, concurrency is a <strong>program-structuring technique</strong> in 
 <p>Parallelism can be actualized via a single processor when the given instructions use less than provided bits, e.g. we can parallelize the execution of some 32 bit operations given that the processor operates on 64 bit addresses.</p>
 <p>Alterantively, the parallelism can be achieved by instruction pipelining, assume different sub components of the processor handles different types of process operators. For instance, </p>
 <pre><code class="language-java">1: add r1 r2 r3 // r1 = r2 + r3
-2: mul r1 2     // r2 *= 2
+2: mul r2 2     // r2 *= 2
 3: add r2 r4 r5 // r2 = r4 + r5
 </code></pre>
 <p>assuming <code>add</code> and <code>mul</code> instructions are executed by different components of the same processor, after the instruction <code>1</code> is executed, instructions <code>2</code> and <code>3</code> can be executed in parallel.</p>
 <h4 id="gpu">GPU</h4>
 <p>GPU can be leveraged to perform matrix operations in parallel by making use of the multiple cores builtin. The acceleration of computation often requires firwmware level and driver level support, e.g. Nvidia CUDA and AMD ROCM.</p>
 <h4 id="multiple-processors-with-shared-memory">Multiple processors with shared memory</h4>
-<p>Modern personal computers and mobile devices are equipped with multi-core processors. These processors share the same pool of physical memory. Parallelism can be achieved via data parallelism, task parallelism, multi-threading and etc.</p>
+<p>Modern personal computers and mobile devices are equipped with multi-core processors. These processors share the same pool of physical memory. Parallelism can be achieved via data parallelism, task parallelism, multi-threading etc.</p>
 <h4 id="multiple-processors-with-distributed-memory">Multiple processors with distributed memory</h4>
-<p>As the number of processors increases. the processing power per dollar for mutliple processor with shared memory is diminishing. Large scale systems are often built over multiple processors (multiple servers) with distributed memory. Each processor (set of processors) has its own dedicated memory. They are connected and communicating through high speed networks.</p>
+<p>As the number of processors increases, the processing power per dollar for multiple processors with shared memory is diminishing. Large scale systems are often built over multiple processors (multiple servers) with distributed memory. Each processor (set of processors) has its own dedicated memory. They are connected and communicating through high speed networks.</p>
 <h3 id="software-parallelism">Software Parallelism</h3>
-<p>In the earlier year of study, we came acrossing the concept of multithreading. In this module, we focus the other two commonly used (higher level) software parallelism, task parallelism and data paralleism.</p>
+<p>In the earlier year of study, we came acrossing the concept of multithreading. In this module, we focus on the other two commonly used (higher level) software parallelism concepts: task parallelism and data paralleism.</p>
 <h4 id="task-parallelism">Task Parallelism</h4>
 <p>In Task parallelism, if some sub-computations (sub tasks) are mutually independent, (which can be identified via human checking or software analysis), they can be executed in parallel. For instance,</p>
 <pre><code class="language-python">def cook_beef_bolognese(beef,spaghetti):
@@ -333,7 +333,7 @@ each group. e.g. <code>reduceByKey(lambda x,y:x+y, [("k1",1),("k2",1), ("k1",2),
     return map(agg, shuffle(kvs))
 </code></pre>
 <p>Both variants call shuffle to partition the input.
-The difference is that given a partition <code>(key,values)</code> obtained from the shuffled results, the function <code>agg</code> in <code>reducedByKey2</code> is applied to aggregate <code>values</code>, and returns key of the partition and the aggregated result. Note that <code>agg</code> is given by the user/programmer, which might not be implemented using <code>reduce</code>, in contrast, the <code>f</code> in <code>reduceByKey</code> is applied to the <code>reduce(f,values)</code>.</p>
+The difference is that given a partition <code>(key,values)</code> obtained from the shuffled results, the function <code>agg</code> in <code>reducedByKey2</code> is applied to aggregate <code>values</code>, and returns the key of the partition and the aggregated result. Note that <code>agg</code> is given by the user/programmer, which might not be implemented using <code>reduce</code>, in contrast, the <code>f</code> in <code>reduceByKey</code> is applied to the <code>reduce(f,values)</code>.</p>
 <h2 id="example-word-count">Example : Word Count</h2>
 <p>In this example, we would to write a program which opens a text file, reads all the words in the file and counts the number of occurences of words.</p>
 <h3 id="using-for-loop">Using for loop</h3>
@@ -395,7 +395,7 @@ w.r.t to the start of the text file.</p>
 <h2 id="hadoop-mapreduce-architecture">Hadoop MapReduce Architecture</h2>
 <p>The following diagram show a basic structure of all the server and clients component of the Hadoop MapReduce.</p>
 <p><img alt="MapReduce Architecture" src="../images/12774181-jobtracker-tasktracker.jpg" /></p>
-<p>In Hadoop v1, a JobTracker is spawned for coordination purpose; TaskTrackers are spawedfor executing the actual jobs. We can think of the JobTrackers are run in the name node, and the Tasktrackers are processes in the data nodes.</p>
+<p>In Hadoop v1, a JobTracker is spawned for coordination purposes; TaskTrackers are spawed for executing the actual jobs. We can think of the JobTrackers are run in the name node, and the Tasktrackers are processes in the data nodes.</p>
 <p>We leave the advanced architecture of Hadoop Version 2+ in the upcoming lesson, i.e. YARN. </p>
 <h2 id="hadoop-mapreduce-job-management">Hadoop MapReduce Job Management</h2>
 <p>Hadoop MapReduce follows the locallity principal, i.e. computation must be moved to the data, i.e. compute at the data nodes. This is possible thanks to the determinism property discussed earlier. These common tasks, mappers and reducers are compiled and packaged as (JAR) and uploaded to the data node. </p>
