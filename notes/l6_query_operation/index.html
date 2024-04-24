@@ -115,7 +115,7 @@ where <span class="arithmatex">\(B(R)\)</span> denotes the number of pages stori
 <h3 id="scanning-with-b-tree-index">Scanning with B+ Tree index</h3>
 <p>A <em>smarter</em> (but not always) way is to make use to the B+ tree index created over the attributes mentioned in <span class="arithmatex">\(C\)</span>. </p>
 <h4 id="case-1-clustered-index">Case 1: Clustered index</h4>
-<p>In this case the B+ Tree index is not clustered, i.e. the data in the pages are not stored according to the order of the index attribute. </p>
+<p>In this case the B+ Tree index is clustered, i.e. the data in the pages are stored according to the order of the index attribute. </p>
 <p>We have to traverse down the B+ Tree to find the boundaries of <span class="arithmatex">\(C\)</span>, and for each leaf node value (reference) we retrieve the page storing that tuple and check whether that tuple satisfies <span class="arithmatex">\(C\)</span>.</p>
 <p>Assuming each node in the B+ Tree occupies a page, the cost of this approach is </p>
 <div class="arithmatex">\[
