@@ -690,7 +690,7 @@
 where <span class="arithmatex">\(B(R)\)</span> denotes the number of pages storing <span class="arithmatex">\(R\)</span>.</p>
 <h3 id="scanning-with-b-tree-index">Scanning with B+ Tree index<a class="headerlink" href="#scanning-with-b-tree-index" title="Permanent link">&para;</a></h3>
 <p>A <em>smarter</em> (but not always) way is to make use to the B+ tree index created over the attributes mentioned in <span class="arithmatex">\(C\)</span>. </p>
-<h4 id="case-1-clustered-index">Case 1: Clustered index</h4>
+<h4 id="case-1-clustered-index">Case 1: Clustered index<a class="headerlink" href="#case-1-clustered-index" title="Permanent link">&para;</a></h4>
 <p>In this case the B+ Tree index is clustered, i.e. the data in the pages are stored according to the order of the index attribute. </p>
 <p>We have to traverse down the B+ Tree to find the boundaries of <span class="arithmatex">\(C\)</span>, and for each leaf node value (reference) we retrieve the page storing that tuple and check whether that tuple satisfies <span class="arithmatex">\(C\)</span>.</p>
 <p>Assuming each node in the B+ Tree occupies a page, the cost of this approach is </p>
@@ -1039,20 +1039,6 @@ The cost will be <span class="arithmatex">\(B(S) + \lceil B(S) / (m - 2) \rceil 
 <p>The total cost of the Grace Hash Join is </p>
 <div class="arithmatex">\[ 3 \cdot (B(R) + B(S)) \]</div>
 
-        <footer class="col-md-12">
-            <hr>
-            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
-        </footer>
-        <script src="../../js/jquery-3.6.0.min.js"></script>
-        <script src="../../js/bootstrap.min.js"></script>
-        <script>
-            var base_url = "../..",
-                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
-        </script>
-        <script src="../../js/base.js"></script>
-        <script src="../../javascripts/mathjax.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-        <script src="../../search/main.js"></script>
 
 
 
