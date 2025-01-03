@@ -941,6 +941,20 @@ During the redo recovery phase, we start from the last completed checkpoint's <c
 For undo-phase, we start from line 7 <code>&lt;start_checkpoint t1,t2&gt;</code> and search for uncommitted transactions, i.e. <code>t3</code>, we undo the update at line 11.</p>
 <p>For redo-phase, we start from line 7 <code>&lt;start_checkpoint t1,t2&gt;</code> and search for committed transactions, i.e. <code>t1</code> and <code>t2</code>, we need to re-do the updates at lines 4, 6 and 9.</p>
 
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/jquery-3.6.0.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../javascripts/mathjax.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="../../search/main.js"></script>
 
 
 
