@@ -1,91 +1,323 @@
+
 <!DOCTYPE html>
 
-<html lang="en">
+<html class="no-js" lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<link href="../../img/favicon.ico" rel="shortcut icon"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.5.3, mkdocs-material-9.5.3" name="generator"/>
 <title>50.043 - Query Optimization - Database System and Big Data 50.043</title>
-<link href="../../css/bootstrap.min.css" rel="stylesheet"/>
-<link href="../../css/font-awesome.min.css" rel="stylesheet"/>
-<link href="../../css/base.css" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-<script>hljs.highlightAll();</script>
+<link href="../../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<style>:root{--md-admonition-icon--abstract:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M2.5 1.75v11.5c0 .138.112.25.25.25h3.17a.75.75 0 0 1 0 1.5H2.75A1.75 1.75 0 0 1 1 13.25V1.75C1 .784 1.784 0 2.75 0h8.5C12.216 0 13 .784 13 1.75v7.736a.75.75 0 0 1-1.5 0V1.75a.25.25 0 0 0-.25-.25h-8.5a.25.25 0 0 0-.25.25Zm13.274 9.537v-.001l-4.557 4.45a.75.75 0 0 1-1.055-.008l-1.943-1.95a.75.75 0 0 1 1.062-1.058l1.419 1.425 4.026-3.932a.75.75 0 1 1 1.048 1.074ZM4.75 4h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM4 7.75A.75.75 0 0 1 4.75 7h2a.75.75 0 0 1 0 1.5h-2A.75.75 0 0 1 4 7.75Z"/></svg>');--md-admonition-icon--bug:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4.72.22a.75.75 0 0 1 1.06 0l1 .999a3.488 3.488 0 0 1 2.441 0l.999-1a.748.748 0 0 1 1.265.332.75.75 0 0 1-.205.729l-.775.776c.616.63.995 1.493.995 2.444v.327c0 .1-.009.197-.025.292.408.14.764.392 1.029.722l1.968-.787a.75.75 0 0 1 .556 1.392L13 7.258V9h2.25a.75.75 0 0 1 0 1.5H13v.5c0 .409-.049.806-.141 1.186l2.17.868a.75.75 0 0 1-.557 1.392l-2.184-.873A4.997 4.997 0 0 1 8 16a4.997 4.997 0 0 1-4.288-2.427l-2.183.873a.75.75 0 0 1-.558-1.392l2.17-.868A5.036 5.036 0 0 1 3 11v-.5H.75a.75.75 0 0 1 0-1.5H3V7.258L.971 6.446a.75.75 0 0 1 .558-1.392l1.967.787c.265-.33.62-.583 1.03-.722a1.677 1.677 0 0 1-.026-.292V4.5c0-.951.38-1.814.995-2.444L4.72 1.28a.75.75 0 0 1 0-1.06Zm.53 6.28a.75.75 0 0 0-.75.75V11a3.5 3.5 0 1 0 7 0V7.25a.75.75 0 0 0-.75-.75ZM6.173 5h3.654A.172.172 0 0 0 10 4.827V4.5a2 2 0 1 0-4 0v.327c0 .096.077.173.173.173Z"/></svg>');--md-admonition-icon--danger:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M9.504.43a1.516 1.516 0 0 1 2.437 1.713L10.415 5.5h2.123c1.57 0 2.346 1.909 1.22 3.004l-7.34 7.142a1.249 1.249 0 0 1-.871.354h-.302a1.25 1.25 0 0 1-1.157-1.723L5.633 10.5H3.462c-1.57 0-2.346-1.909-1.22-3.004L9.503.429Zm1.047 1.074L3.286 8.571A.25.25 0 0 0 3.462 9H6.75a.75.75 0 0 1 .694 1.034l-1.713 4.188 6.982-6.793A.25.25 0 0 0 12.538 7H9.25a.75.75 0 0 1-.683-1.06l2.008-4.418.003-.006a.036.036 0 0 0-.004-.009l-.006-.006-.008-.001c-.003 0-.006.002-.009.004Z"/></svg>');--md-admonition-icon--example:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M5 5.782V2.5h-.25a.75.75 0 0 1 0-1.5h6.5a.75.75 0 0 1 0 1.5H11v3.282l3.666 5.76C15.619 13.04 14.543 15 12.767 15H3.233c-1.776 0-2.852-1.96-1.899-3.458Zm-2.4 6.565a.75.75 0 0 0 .633 1.153h9.534a.75.75 0 0 0 .633-1.153L12.225 10.5h-8.45ZM9.5 2.5h-3V6c0 .143-.04.283-.117.403L4.73 9h6.54L9.617 6.403A.746.746 0 0 1 9.5 6Z"/></svg>');--md-admonition-icon--failure:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M2.344 2.343h-.001a8 8 0 0 1 11.314 11.314A8.002 8.002 0 0 1 .234 10.089a8 8 0 0 1 2.11-7.746Zm1.06 10.253a6.5 6.5 0 1 0 9.108-9.275 6.5 6.5 0 0 0-9.108 9.275ZM6.03 4.97 8 6.94l1.97-1.97a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l1.97 1.97a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-1.97 1.97a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L6.94 8 4.97 6.03a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018Z"/></svg>');--md-admonition-icon--info:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/></svg>');--md-admonition-icon--note:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M1 7.775V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 0 1 0 2.474l-5.026 5.026a1.75 1.75 0 0 1-2.474 0l-6.25-6.25A1.752 1.752 0 0 1 1 7.775Zm1.5 0c0 .066.026.13.073.177l6.25 6.25a.25.25 0 0 0 .354 0l5.025-5.025a.25.25 0 0 0 0-.354l-6.25-6.25a.25.25 0 0 0-.177-.073H2.75a.25.25 0 0 0-.25.25ZM6 5a1 1 0 1 1 0 2 1 1 0 0 1 0-2Z"/></svg>');--md-admonition-icon--success:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"/></svg>');--md-admonition-icon--tip:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M3.499.75a.75.75 0 0 1 1.5 0v.996C5.9 2.903 6.793 3.65 7.662 4.376l.24.202c-.036-.694.055-1.422.426-2.163C9.1.873 10.794-.045 12.622.26 14.408.558 16 1.94 16 4.25c0 1.278-.954 2.575-2.44 2.734l.146.508.065.22c.203.701.412 1.455.476 2.226.142 1.707-.4 3.03-1.487 3.898C11.714 14.671 10.27 15 8.75 15h-6a.75.75 0 0 1 0-1.5h1.376a4.484 4.484 0 0 1-.563-1.191 3.835 3.835 0 0 1-.05-2.063 4.647 4.647 0 0 1-2.025-.293.75.75 0 0 1 .525-1.406c1.357.507 2.376-.006 2.698-.318l.009-.01a.747.747 0 0 1 1.06 0 .748.748 0 0 1-.012 1.074c-.912.92-.992 1.835-.768 2.586.221.74.745 1.337 1.196 1.621H8.75c1.343 0 2.398-.296 3.074-.836.635-.507 1.036-1.31.928-2.602-.05-.603-.216-1.224-.422-1.93l-.064-.221c-.12-.407-.246-.84-.353-1.29a2.425 2.425 0 0 1-.507-.441 3.075 3.075 0 0 1-.633-1.248.75.75 0 0 1 1.455-.364c.046.185.144.436.31.627.146.168.353.305.712.305.738 0 1.25-.615 1.25-1.25 0-1.47-.95-2.315-2.123-2.51-1.172-.196-2.227.387-2.706 1.345-.46.92-.27 1.774.019 3.062l.042.19a.884.884 0 0 1 .01.05c.348.443.666.949.94 1.553a.75.75 0 1 1-1.365.62c-.553-1.217-1.32-1.94-2.3-2.768L6.7 5.527c-.814-.68-1.75-1.462-2.692-2.619a3.737 3.737 0 0 0-1.023.88c-.406.495-.663 1.036-.722 1.508.116.122.306.21.591.239.388.038.797-.06 1.032-.19a.75.75 0 0 1 .728 1.31c-.515.287-1.23.439-1.906.373-.682-.067-1.473-.38-1.879-1.193L.75 5.677V5.5c0-.984.48-1.94 1.077-2.664.46-.559 1.05-1.055 1.673-1.353V.75Z"/></svg>');--md-admonition-icon--question:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.92 6.085h.001a.749.749 0 1 1-1.342-.67c.169-.339.436-.701.849-.977C6.845 4.16 7.369 4 8 4a2.756 2.756 0 0 1 1.637.525c.503.377.863.965.863 1.725 0 .448-.115.83-.329 1.15-.205.307-.47.513-.692.662-.109.072-.22.138-.313.195l-.006.004a6.24 6.24 0 0 0-.26.16.952.952 0 0 0-.276.245.75.75 0 0 1-1.248-.832c.184-.264.42-.489.692-.661.103-.067.207-.132.313-.195l.007-.004c.1-.061.182-.11.258-.161a.969.969 0 0 0 .277-.245C8.96 6.514 9 6.427 9 6.25a.612.612 0 0 0-.262-.525A1.27 1.27 0 0 0 8 5.5c-.369 0-.595.09-.74.187a1.01 1.01 0 0 0-.34.398ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"/></svg>');--md-admonition-icon--quote:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M1.75 2.5h10.5a.75.75 0 0 1 0 1.5H1.75a.75.75 0 0 1 0-1.5Zm4 5h8.5a.75.75 0 0 1 0 1.5h-8.5a.75.75 0 0 1 0-1.5Zm0 5h8.5a.75.75 0 0 1 0 1.5h-8.5a.75.75 0 0 1 0-1.5ZM2.5 7.75v6a.75.75 0 0 1-1.5 0v-6a.75.75 0 0 1 1.5 0Z"/></svg>');--md-admonition-icon--warning:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"/></svg>');}</style>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CSpline+Sans+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Spline Sans Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
 </head>
-<body>
-<div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
-<div class="container">
-<a class="navbar-brand" href="../..">Database System and Big Data 50.043</a>
-<!-- Expander button -->
-<button class="navbar-toggler" data-target="#navbar-collapse" data-toggle="collapse" type="button">
-<span class="navbar-toggler-icon"></span>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#50043-query-optimization">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Database System and Big Data 50.043" class="md-header__button md-logo" data-md-component="logo" href="../.." title="Database System and Big Data 50.043">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 3a2 2 0 0 1 2-2h9.982a2 2 0 0 1 1.414.586l4.018 4.018A2 2 0 0 1 21 7.018V21a2 2 0 0 1-2 2H4.75a.75.75 0 0 1 0-1.5H19a.5.5 0 0 0 .5-.5V8.5h-4a2 2 0 0 1-2-2v-4H5a.5.5 0 0 0-.5.5v6.25a.75.75 0 0 1-1.5 0Zm12-.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 0-.146-.336l-4.018-4.018A.5.5 0 0 0 15 2.5Z"></path><path d="M4.53 12.24a.75.75 0 0 1-.039 1.06l-2.639 2.45 2.64 2.45a.75.75 0 1 1-1.022 1.1l-3.23-3a.75.75 0 0 1 0-1.1l3.23-3a.75.75 0 0 1 1.06.04Zm3.979 1.06a.75.75 0 1 1 1.02-1.1l3.231 3a.75.75 0 0 1 0 1.1l-3.23 3a.75.75 0 1 1-1.021-1.1l2.639-2.45-2.64-2.45Z"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Database System and Big Data 50.043
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              50.043 - Query Optimization
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+</form>
+<script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"></path></svg>
 </button>
-<!-- Expanded navigation -->
-<div class="navbar-collapse collapse" id="navbar-collapse">
-<!-- Main navigation -->
-<ul class="nav navbar-nav">
-<li class="navitem">
-<a class="nav-link" href="../..">Home</a>
-</li>
-<li class="navitem">
-<a class="nav-link" href="../../project/">Project</a>
-</li>
-<li class="navitem">
-<a class="nav-link" href="../l1_course_handout/">Handout</a>
-</li>
-</ul>
-<ul class="nav navbar-nav ml-auto">
-<li class="nav-item">
-<a class="nav-link" data-target="#mkdocs_search_modal" data-toggle="modal" href="#">
-<i class="fa fa-search"></i> Search
-                            </a>
-</li>
-</ul>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
 </div>
 </div>
 </div>
-<div class="container">
-<div class="row">
-<div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
-<div class="navbar-header">
-<button class="navbar-toggler collapsed" data-target="#toc-collapse" data-toggle="collapse" title="Table of Contents" type="button">
-<span class="fa fa-angle-down"></span>
-</button>
 </div>
-<div class="navbar-collapse collapse card bg-secondary" id="toc-collapse">
-<ul class="nav flex-column">
-<li class="nav-item" data-level="1"><a class="nav-link" href="#50043-query-optimization">50.043 - Query Optimization</a>
-<ul class="nav flex-column">
-<li class="nav-item" data-level="2"><a class="nav-link" href="#learning-outcomes">Learning Outcomes</a>
-<ul class="nav flex-column">
-</ul>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+        
+  
+    
+  
+  Home
+
+      </a>
 </li>
-<li class="nav-item" data-level="2"><a class="nav-link" href="#execution-model">Execution Model</a>
-<ul class="nav flex-column">
-</ul>
-</li>
-<li class="nav-item" data-level="2"><a class="nav-link" href="#query-planning">Query Planning</a>
-<ul class="nav flex-column">
-</ul>
-</li>
-<li class="nav-item" data-level="2"><a class="nav-link" href="#cost-estimation">Cost Estimation</a>
-<ul class="nav flex-column">
-</ul>
-</li>
-<li class="nav-item" data-level="2"><a class="nav-link" href="#search-algorithm">Search Algorithm</a>
-<ul class="nav flex-column">
-</ul>
-</li>
-</ul>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../l1_course_handout/">
+        
+  
+    
+  
+  Handout
+
+      </a>
 </li>
 </ul>
 </div>
-</div></div>
-<div class="col-md-9" role="main">
-<h1 id="50043-query-optimization">50.043 - Query Optimization</h1>
-<h2 id="learning-outcomes">Learning Outcomes</h2>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Database System and Big Data 50.043" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="Database System and Big Data 50.043">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 3a2 2 0 0 1 2-2h9.982a2 2 0 0 1 1.414.586l4.018 4.018A2 2 0 0 1 21 7.018V21a2 2 0 0 1-2 2H4.75a.75.75 0 0 1 0-1.5H19a.5.5 0 0 0 .5-.5V8.5h-4a2 2 0 0 1-2-2v-4H5a.5.5 0 0 0-.5.5v6.25a.75.75 0 0 1-1.5 0Zm12-.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 0-.146-.336l-4.018-4.018A.5.5 0 0 0 15 2.5Z"></path><path d="M4.53 12.24a.75.75 0 0 1-.039 1.06l-2.639 2.45 2.64 2.45a.75.75 0 1 1-1.022 1.1l-3.23-3a.75.75 0 0 1 0-1.1l3.23-3a.75.75 0 0 1 1.06.04Zm3.979 1.06a.75.75 0 1 1 1.02-1.1l3.231 3a.75.75 0 0 1 0 1.1l-3.23 3a.75.75 0 1 1-1.021-1.1l2.639-2.45-2.64-2.45Z"></path></svg>
+</a>
+    Database System and Big Data 50.043
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    Home
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../l1_course_handout/">
+<span class="md-ellipsis">
+    Handout
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#learning-outcomes">
+<span class="md-ellipsis">
+      Learning Outcomes
+    </span>
+</a>
+<nav aria-label="Learning Outcomes" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#query-life-cycle">
+<span class="md-ellipsis">
+      Query Life Cycle
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#execution-model">
+<span class="md-ellipsis">
+      Execution Model
+    </span>
+</a>
+<nav aria-label="Execution Model" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#iterator-model">
+<span class="md-ellipsis">
+      Iterator Model
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#materialization-model">
+<span class="md-ellipsis">
+      Materialization Model
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#vectorized-model">
+<span class="md-ellipsis">
+      Vectorized Model
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#query-planning">
+<span class="md-ellipsis">
+      Query Planning
+    </span>
+</a>
+<nav aria-label="Query Planning" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#equivalence-rules">
+<span class="md-ellipsis">
+      Equivalence rules
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cost-estimation">
+<span class="md-ellipsis">
+      Cost Estimation
+    </span>
+</a>
+<nav aria-label="Cost Estimation" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cardinality-estimation">
+<span class="md-ellipsis">
+      Cardinality Estimation
+    </span>
+</a>
+<nav aria-label="Cardinality Estimation" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#equality-predicate">
+<span class="md-ellipsis">
+      Equality Predicate
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#range-equality-predicate">
+<span class="md-ellipsis">
+      Range Equality Predicate
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#conjunction-predicate">
+<span class="md-ellipsis">
+      Conjunction Predicate
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#search-algorithm">
+<span class="md-ellipsis">
+      Search Algorithm
+    </span>
+</a>
+<nav aria-label="Search Algorithm" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#the-challenge">
+<span class="md-ellipsis">
+      The challenge
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#selinger-algorithm">
+<span class="md-ellipsis">
+      Selinger Algorithm
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#optional-reading-translating-sql-into-relational-algebra">
+<span class="md-ellipsis">
+      Optional Reading - Translating SQL into relational algebra
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="50043-query-optimization">50.043 - Query Optimization<a class="headerlink" href="#50043-query-optimization" title="Permanent link">¶</a></h1>
+<h2 id="learning-outcomes">Learning Outcomes<a class="headerlink" href="#learning-outcomes" title="Permanent link">¶</a></h2>
 <p>By the end of this unit, you should be able to</p>
 <ol>
 <li>name the stages in a query life cycle</li>
@@ -94,7 +326,7 @@
 <li>explain the process of query optimization</li>
 <li>estimate the cost of complex query operations</li>
 </ol>
-<h3 id="query-life-cycle">Query Life Cycle</h3>
+<h3 id="query-life-cycle">Query Life Cycle<a class="headerlink" href="#query-life-cycle" title="Permanent link">¶</a></h3>
 <p>From the previous lessons, we learn how to implement the primitive relational algebra operation in a physical database system, namely, select, join and sort.</p>
 <p>However in real word applications, we often encounter queries far more complex. 
 Recall the article/book/publisher example</p>
@@ -118,33 +350,30 @@ Recall the article/book/publisher example</p>
 \]</div>
 <p>We call them different <strong>logical query plans</strong> of the same query. We might argue that (E3) might perform better as we push down the selection operator and reduce the size of the joined relation. </p>
 <p>Sometimes for ease of reasoning we might consider representing the relational algbra expression in a tree structure, for instance, (E3) can be represented as</p>
-<div class="mermaid">graph
+<pre class="mermaid"><code>graph
 a("&amp;Pi;&lt;sub&gt;article.name&lt;/sub&gt;") --- b("&amp;bowtie;&lt;sub&gt;article.id=publish.article_id&lt;/sub&gt;")
 b("&amp;bowtie;&lt;sub&gt;article.id=publish.article_id&lt;/sub&gt;") --- c("article")
 b("&amp;bowtie;&lt;sub&gt;article.id=publish.article_id&lt;/sub&gt;") --- d("&amp;bowtie;&lt;sub&gt;publish.book_id = book.id&lt;/sub&gt;")
 d("&amp;bowtie;&lt;sub&gt;publish.book_id = book.id&lt;/sub&gt;") --- e("publish") 
 d("&amp;bowtie;&lt;sub&gt;publish.book_id = book.id&lt;/sub&gt;") --- f("&amp;sigma;&lt;sub&gt;book.date = 2020&lt;/sub&gt;") 
-f("&amp;sigma;&lt;sub&gt;book.date = 2020&lt;/sub&gt;")  --- g("book")
-</div>
+f("&amp;sigma;&lt;sub&gt;book.date = 2020&lt;/sub&gt;")  --- g("book")</code></pre>
 <p>In reality, we also need to consider the selectivity of selection condition, the size of the relations,  the different join algorithms, availability of indices, as well as the sortedness of the relation. Each intermediate operation can be computed "on-the-fly" or "materalized." Each possible combination performs differently. We refer to these combinations as <strong>physical query plans</strong>. For instance,</p>
-<div class="mermaid">graph
+<pre class="mermaid"><code>graph
 a("&amp;Pi;&lt;sub&gt;article.name&lt;/sub&gt;&lt;br/&gt;[iterator]") --- b("&amp;bowtie;&lt;sub&gt;article.id=publish.article_id&lt;/sub&gt;") 
 b("&amp;bowtie;&lt;sub&gt;article.id=publish.article_id&lt;/sub&gt;") --- c("article &lt;br/&gt; [heap scan]")
 b("&amp;bowtie;&lt;sub&gt;article.id=publish.article_id&lt;/sub&gt;&lt;br/&gt;[block nested loop]") --- d("&amp;bowtie;&lt;sub&gt;publish.book_id = book.id&lt;/sub&gt;")
 d("&amp;bowtie;&lt;sub&gt;publish.book_id = book.id&lt;/sub&gt;") --- e("publish &lt;br/&gt; [heap scan]") 
 d("&amp;bowtie;&lt;sub&gt;publish.book_id = book.id&lt;/sub&gt; &lt;br/&gt; [block nested loop]") --- f("&amp;sigma;&lt;sub&gt;book.date = 2020&lt;/sub&gt;") 
-f("&amp;sigma;&lt;sub&gt;book.date = 2020&lt;/sub&gt;")  --- g("book&lt;br/&gt;[heap scan]")
-</div>
+f("&amp;sigma;&lt;sub&gt;book.date = 2020&lt;/sub&gt;")  --- g("book&lt;br/&gt;[heap scan]")</code></pre>
 <p>The physical plan above scan the heap file to filter books with <code>date = 2020</code>, then a block nested join is performed on the <code>publish</code> relation and the immediate results coming from the filter. Finally, we apply another block nested loop to join the <code>article</code> relation with the immediate results coming from the nested join. The top level project is performed "on-the-fly". </p>
 <p>Alternatively, we might have a slightly different phyiscal query plan,</p>
-<div class="mermaid">graph
+<pre class="mermaid"><code>graph
 a("&amp;Pi;&lt;sub&gt;article.name&lt;/sub&gt;&lt;br/&gt;[iterator]") --- b("&amp;bowtie;&lt;sub&gt;article.id=publish.article_id&lt;/sub&gt;") 
 b("&amp;bowtie;&lt;sub&gt;article.id=publish.article_id&lt;/sub&gt;") --- c("article &lt;br/&gt; [heap scan]")
 b("&amp;bowtie;&lt;sub&gt;article.id=publish.article_id&lt;/sub&gt;&lt;br/&gt;[index nested loop]") --- d("&amp;bowtie;&lt;sub&gt;publish.book_id = book.id&lt;/sub&gt;")
 d("&amp;bowtie;&lt;sub&gt;publish.book_id = book.id&lt;/sub&gt;") --- e("publish &lt;br/&gt; [heap scan]") 
 d("&amp;bowtie;&lt;sub&gt;publish.book_id = book.id&lt;/sub&gt; &lt;br/&gt; [block nested loop]") --- f("&amp;sigma;&lt;sub&gt;book.date = 2020&lt;/sub&gt;") 
-f("&amp;sigma;&lt;sub&gt;book.date = 2020&lt;/sub&gt;")  --- g("book&lt;br/&gt;[heap scan]")
-</div>
+f("&amp;sigma;&lt;sub&gt;book.date = 2020&lt;/sub&gt;")  --- g("book&lt;br/&gt;[heap scan]")</code></pre>
 <p>In the above physical query plan, we assume following indices are preesent</p>
 <ul>
 <li>article.id (it's a primary key anyway)</li>
@@ -152,7 +381,7 @@ f("&amp;sigma;&lt;sub&gt;book.date = 2020&lt;/sub&gt;")  --- g("book&lt;br/&gt;[
 <p>The physical plan applies the index nested loop to the outer join by using <code>article</code> as the inner relation. Though we preform a heap scan on the <code>article</code> relation, the operation is also a clustered index scan, since <code>article</code> is having primary key index on <code>id</code>.</p>
 <p>Note that there could be many physical query plans generated from a logical plan. Given a set of physical query plans, we need to find the "best" one (with the lowest I/O cost). It turns out that it is very challenging problem, and we will discuss about this shortly. This step is called <strong>query optimization</strong>.</p>
 <p>Suppose we identify a good physical query plan, we translate it into actual code to be executed in the database host machine. This final step is called <strong>query execution</strong>.</p>
-<div class="mermaid">stateDiagram-v2
+<pre class="mermaid"><code>stateDiagram-v2
 s1 : query
 s2 : logical plans
 s1 --&gt; s2 : query rewriter
@@ -160,9 +389,8 @@ s3 : physical plans
 s2 --&gt; s3 : plan generation / cost estimation
 s4 : result 
 s3 --&gt; s4 : execution 
-
-</div>
-<h2 id="execution-model">Execution Model</h2>
+</code></pre>
+<h2 id="execution-model">Execution Model<a class="headerlink" href="#execution-model" title="Permanent link">¶</a></h2>
 <p>The input of an execution model is the logical query plan. Every operation in the query plan can be executed differently.</p>
 <p>There are several options</p>
 <ol>
@@ -170,30 +398,29 @@ s3 --&gt; s4 : execution
 <li>Materialization Model</li>
 <li>Vector Model</li>
 </ol>
-<h3 id="iterator-model">Iterator Model</h3>
+<h3 id="iterator-model">Iterator Model<a class="headerlink" href="#iterator-model" title="Permanent link">¶</a></h3>
 <p>The main idea of the iterator model is "on the fly" or "lazy", i.e. tuples are not retrieved/computed until they are needed. The idea is actualized by implementing the physical access operation, filter operation, join operation and etc has iterators. One possible implementation in Java is to use the <code>Iterator</code> interface, in which </p>
-<div class="mermaid">classDiagram
+<pre class="mermaid"><code>classDiagram
 class Iterator~T~ {
     bool hasNext()
     T next()
 }
-&lt;&lt;interface&gt;&gt; Iterator
-</div>
+&lt;&lt;interface&gt;&gt; Iterator</code></pre>
 <p>The <code>hasNext()</code> method checks whether the iterator is currently not empty. The <code>next()</code> method advances the internal pointer and produces the next item.</p>
 <p>For instance <span class="arithmatex">\(\sigma_{book.date = 2020}(book)\)</span>, the table access of <code>book</code> is an instance of <code>Iterator&lt;Tuple&gt;</code>, The filter operator <span class="arithmatex">\(\sigma\)</span> takes the <code>book</code> iterator and returns an iterator instance <code>Iterator&lt;Tuple&gt;</code>, too. When the top most iterator is executed, it calls its children's iterators to produce the next value. </p>
 <p>One strong advantage of the iterator model is that it is memory efficient. For instance, in the running example, we don't need to load all the tuples from the book table into the buffer pool before the filtering takes place. There might be worst case scenarios in which the intermediate results are too huge for the RAM and needed to be written back to the disk and be reloaded when required.</p>
 <p>The downside of the iterator model is that sometimes we need to re-compute some common sub-queries, e.g. <span class="arithmatex">\((\sigma_{book.date = 2020}(book)) \bowtie (\sigma_{book.date = 2020}(book))\)</span>, we need to compute <span class="arithmatex">\(\sigma_{book.date = 2020}(book)\)</span> twice. </p>
 <p>We would be in the worst situation if an immediate result is needed as a whole, e.g. need to build a hash table, need to sort the immediate data first. In these situation, we have to block and consume all the children's data first.</p>
-<h3 id="materialization-model">Materialization Model</h3>
+<h3 id="materialization-model">Materialization Model<a class="headerlink" href="#materialization-model" title="Permanent link">¶</a></h3>
 <p>In materialization model, immediate results are fully computed and emit before the outer operation starts its computation. We can think of each operator having its own local storage holding the immediate results.</p>
 <p>The advantage of this model is that we can re-use immediate results if they needed more than once and we ca use the immediate results to build immediate index, hash table, etc. It performs better when the immediate results are eventually part of the final results.</p>
-<h3 id="vectorized-model">Vectorized Model</h3>
+<h3 id="vectorized-model">Vectorized Model<a class="headerlink" href="#vectorized-model" title="Permanent link">¶</a></h3>
 <p>The vectorized model, (AKA the batch model) is a hybrid of iterator and materialization model. Every operator in the vectorized model implements the <code>next()</code> method. The <code>next()</code> method returns a batch of tuples instead of a single one. </p>
 <p>The advantage of this model is to strike a balance between iterator and materialization. It is memory efficient, as we don't compute and store the entire immediate result, yet we can compute Hash table (e.g. grace hash join) when needed.</p>
-<h2 id="query-planning">Query Planning</h2>
+<h2 id="query-planning">Query Planning<a class="headerlink" href="#query-planning" title="Permanent link">¶</a></h2>
 <p>The process of query planning involves enumerating a large enough subset of all possible equivalent query given the input expression. </p>
 <p>Two relaional algebra expressions are consider equivalent if they produce the same set of results.</p>
-<h3 id="equivalence-rules">Equivalence rules</h3>
+<h3 id="equivalence-rules">Equivalence rules<a class="headerlink" href="#equivalence-rules" title="Permanent link">¶</a></h3>
 <p>Let <span class="arithmatex">\(R\)</span>, <span class="arithmatex">\(R'\)</span> and <span class="arithmatex">\(R''\)</span> be relations, the subset of requivalence rules is as follows,</p>
 <ol>
 <li><span class="arithmatex">\(\sigma_{c_1}(\sigma_{c_2}(R)) \equiv \sigma_{c_1 \wedge c_2}(R)\)</span> </li>
@@ -217,7 +444,7 @@ class Iterator~T~ {
 <li><span class="arithmatex">\(\sigma_{c}(R \cup R') \equiv \sigma_{c}(R) \cup \sigma_{c}(R')\)</span></li>
 </ol>
 <p>With this subset of rules, we can already enumerate a substantially large set of alternative logical query plans from the original plan.</p>
-<h2 id="cost-estimation">Cost Estimation</h2>
+<h2 id="cost-estimation">Cost Estimation<a class="headerlink" href="#cost-estimation" title="Permanent link">¶</a></h2>
 <p>Recall that given a logical query plan, there are still multiple alternatives of physical query plans depending on the choice of access method, execution model, index and etc.</p>
 <p>The ultimate goal is to find the physical plan that has the lowest I/O cost. Without running the plans, we could only estimate the cost.</p>
 <p>From the previous lesson, we learned how to estimate the I/O cost for different access methods, selection, join and etc. The cost is subject to two extra information.</p>
@@ -232,29 +459,29 @@ class Iterator~T~ {
 <li><span class="arithmatex">\(min(a,R)\)</span> the minumum value of attribute <span class="arithmatex">\(a\)</span> in <span class="arithmatex">\(R\)</span></li>
 <li><span class="arithmatex">\(max(a,R)\)</span> the maximum value of attribtue <span class="arithmatex">\(a\)</span> in <span class="arithmatex">\(R\)</span>.</li>
 </ol>
-<h3 id="cardinality-estimation">Cardinality Estimation</h3>
+<h3 id="cardinality-estimation">Cardinality Estimation<a class="headerlink" href="#cardinality-estimation" title="Permanent link">¶</a></h3>
 <p>Given the above catalog statistics, we can estimate the selectivity ratio, <span class="arithmatex">\(\alpha(c, R)\)</span>.</p>
-<h4 id="equality-predicate">Equality Predicate</h4>
+<h4 id="equality-predicate">Equality Predicate<a class="headerlink" href="#equality-predicate" title="Permanent link">¶</a></h4>
 <p>In case <span class="arithmatex">\(c\)</span> is <span class="arithmatex">\(a = v\)</span> where <span class="arithmatex">\(a\)</span> is an attribute of <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(v\)</span> is a value, <span class="arithmatex">\(\alpha(a = v, R) = 1 / V(a,R)\)</span>.</p>
-<h4 id="range-equality-predicate">Range Equality Predicate</h4>
+<h4 id="range-equality-predicate">Range Equality Predicate<a class="headerlink" href="#range-equality-predicate" title="Permanent link">¶</a></h4>
 <p>In case <span class="arithmatex">\(c\)</span> is <span class="arithmatex">\(a &gt; v\)</span> where <span class="arithmatex">\(a\)</span> is an attribute of <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(v\)</span> is a value, <span class="arithmatex">\(\alpha(a &gt; v, R) = (max(a,R) - v) / (max(a,R) - min(a,R) + 1)\)</span> assuming values of <span class="arithmatex">\(a\)</span> in <span class="arithmatex">\(R\)</span> follow a uniform distribution.</p>
 <p>In case the distribution is not uniform, we may use a histogram with binning to obtain a better estimation. However building historgram for a large table could be expenive. In case of large data set, DBMS often collect a small sample to build the histogram.</p>
-<h4 id="conjunction-predicate">Conjunction Predicate</h4>
+<h4 id="conjunction-predicate">Conjunction Predicate<a class="headerlink" href="#conjunction-predicate" title="Permanent link">¶</a></h4>
 <p>In case <span class="arithmatex">\(c\)</span> is <span class="arithmatex">\(c_1 \wedge c_2\)</span>, assuming values constrained by <span class="arithmatex">\(c_1\)</span> are independent of those constrained by <span class="arithmatex">\(c_2\)</span>, <span class="arithmatex">\(\alpha(c_1 \wedge c_2, R) = \alpha(c_1, R) \cdot \alpha(c_2, R)\)</span>. </p>
-<h2 id="search-algorithm">Search Algorithm</h2>
+<h2 id="search-algorithm">Search Algorithm<a class="headerlink" href="#search-algorithm" title="Permanent link">¶</a></h2>
 <p>The last piece of the query optimization is to search for the best physical plan given </p>
 <ul>
 <li>a method to enumerate alternative</li>
 <li>a way to estimate the I/O cost given a plan</li>
 </ul>
-<h3 id="the-challenge">The challenge</h3>
+<h3 id="the-challenge">The challenge<a class="headerlink" href="#the-challenge" title="Permanent link">¶</a></h3>
 <p>A naive approach would generate all possible plans, apply estimation to all of them and find the best one. However enumerating all possible plans could be expensive. For instance, enumerating all plan of a <span class="arithmatex">\(n\)</span>-way join will yield <span class="arithmatex">\(4^{n}\)</span> possibilities. </p>
 <p>Recall from our algorithm class that the number of possible Binary Search Trees with <span class="arithmatex">\(n\)</span> different keys is catalan number </p>
 <div class="arithmatex">\[C_n = (2\cdot n)! / ((n + 1)! \cdot n!)\]</div>
 <p>As <span class="arithmatex">\(n\)</span> grows, catalan numbers grow as </p>
 <div class="arithmatex">\[4^n / (n^{3/2} \cdot \sqrt{\pi}) \]</div>
 <p>A set of possible query plans with <span class="arithmatex">\(n\)</span>-way join shares the same size!</p>
-<h3 id="selinger-algorithm">Selinger Algorithm</h3>
+<h3 id="selinger-algorithm">Selinger Algorithm<a class="headerlink" href="#selinger-algorithm" title="Permanent link">¶</a></h3>
 <p>The selinger algorithm is one of the classic algorthm for searching for optimal plan. </p>
 <p>The idea behind is to apply the following heuristics</p>
 <ol>
@@ -367,87 +594,39 @@ article \bowtie_{article.id=publish.article\_id} publish \bowtie_{publish.book\_
 </ul>
 <p>Overall, the cheapest plan is alterantive 1. </p>
 <p>Note that in real world DBMS, the query optimizer would prepare two best plans for each relation for all passes, an unordered plan and a best index plan. With these adjustment, we have double the size of the top-level search space and the overall time complexity.</p>
-<h3 id="optional-reading-translating-sql-into-relational-algebra">Optional Reading - Translating SQL into relational algebra</h3>
+<h3 id="optional-reading-translating-sql-into-relational-algebra">Optional Reading - Translating SQL into relational algebra<a class="headerlink" href="#optional-reading-translating-sql-into-relational-algebra" title="Permanent link">¶</a></h3>
 <ul>
 <li><a href="https://cs.ulb.ac.be/public/_media/teaching/infoh417/sql2alg_eng.pdf">Translating SQL into the Relational Algebra</a></li>
-</ul></div>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
 </div>
 </div>
-<footer class="col-md-12">
-<hr/>
-<p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+</div>
 </footer>
-<script src="../../js/jquery-3.6.0.min.js"></script>
-<script src="../../js/bootstrap.min.js"></script>
-<script>
-            var base_url = "../..",
-                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
-        </script>
-<script src="../../js/base.js"></script>
-<script src="../../javascripts/mathjax.js"></script>
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "content.code.copy", "navigation.expand", "navigation.indexes", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+<script src="../../assets/javascripts/bundle.d7c377c4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<script src="../../search/main.js"></script>
-<div aria-hidden="true" aria-labelledby="searchModalLabel" class="modal" id="mkdocs_search_modal" role="dialog" tabindex="-1">
-<div class="modal-dialog modal-lg">
-<div class="modal-content">
-<div class="modal-header">
-<h4 class="modal-title" id="searchModalLabel">Search</h4>
-<button class="close" data-dismiss="modal" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-</div>
-<div class="modal-body">
-<p>From here you can search these documents. Enter your search terms below.</p>
-<form>
-<div class="form-group">
-<input class="form-control" id="mkdocs-search-query" placeholder="Search..." title="Type search term here" type="search"/>
-</div>
-</form>
-<div data-no-results-text="No results found" id="mkdocs-search-results"></div>
-</div>
-<div class="modal-footer">
-</div>
-</div>
-</div>
-</div><div aria-hidden="true" aria-labelledby="keyboardModalLabel" class="modal" id="mkdocs_keyboard_modal" role="dialog" tabindex="-1">
-<div class="modal-dialog">
-<div class="modal-content">
-<div class="modal-header">
-<h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
-<button class="close" data-dismiss="modal" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-</div>
-<div class="modal-body">
-<table class="table">
-<thead>
-<tr>
-<th style="width: 20%;">Keys</th>
-<th>Action</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="help shortcut"><kbd>?</kbd></td>
-<td>Open this help</td>
-</tr>
-<tr>
-<td class="next shortcut"><kbd>n</kbd></td>
-<td>Next page</td>
-</tr>
-<tr>
-<td class="prev shortcut"><kbd>p</kbd></td>
-<td>Previous page</td>
-</tr>
-<tr>
-<td class="search shortcut"><kbd>s</kbd></td>
-<td>Search</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="modal-footer">
-</div>
-</div>
-</div>
-</div>
-<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
-mermaid.initialize({});</script></body>
+</body>
 </html>

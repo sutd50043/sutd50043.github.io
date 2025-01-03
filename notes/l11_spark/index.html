@@ -1,111 +1,471 @@
+
 <!DOCTYPE html>
 
-<html lang="en">
+<html class="no-js" lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<link href="../../img/favicon.ico" rel="shortcut icon"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.5.3, mkdocs-material-9.5.3" name="generator"/>
 <title>50.043 Spark - Database System and Big Data 50.043</title>
-<link href="../../css/bootstrap.min.css" rel="stylesheet"/>
-<link href="../../css/font-awesome.min.css" rel="stylesheet"/>
-<link href="../../css/base.css" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-<script>hljs.highlightAll();</script>
+<link href="../../assets/stylesheets/main.50c56a3b.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<style>:root{--md-admonition-icon--abstract:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M2.5 1.75v11.5c0 .138.112.25.25.25h3.17a.75.75 0 0 1 0 1.5H2.75A1.75 1.75 0 0 1 1 13.25V1.75C1 .784 1.784 0 2.75 0h8.5C12.216 0 13 .784 13 1.75v7.736a.75.75 0 0 1-1.5 0V1.75a.25.25 0 0 0-.25-.25h-8.5a.25.25 0 0 0-.25.25Zm13.274 9.537v-.001l-4.557 4.45a.75.75 0 0 1-1.055-.008l-1.943-1.95a.75.75 0 0 1 1.062-1.058l1.419 1.425 4.026-3.932a.75.75 0 1 1 1.048 1.074ZM4.75 4h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM4 7.75A.75.75 0 0 1 4.75 7h2a.75.75 0 0 1 0 1.5h-2A.75.75 0 0 1 4 7.75Z"/></svg>');--md-admonition-icon--bug:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4.72.22a.75.75 0 0 1 1.06 0l1 .999a3.488 3.488 0 0 1 2.441 0l.999-1a.748.748 0 0 1 1.265.332.75.75 0 0 1-.205.729l-.775.776c.616.63.995 1.493.995 2.444v.327c0 .1-.009.197-.025.292.408.14.764.392 1.029.722l1.968-.787a.75.75 0 0 1 .556 1.392L13 7.258V9h2.25a.75.75 0 0 1 0 1.5H13v.5c0 .409-.049.806-.141 1.186l2.17.868a.75.75 0 0 1-.557 1.392l-2.184-.873A4.997 4.997 0 0 1 8 16a4.997 4.997 0 0 1-4.288-2.427l-2.183.873a.75.75 0 0 1-.558-1.392l2.17-.868A5.036 5.036 0 0 1 3 11v-.5H.75a.75.75 0 0 1 0-1.5H3V7.258L.971 6.446a.75.75 0 0 1 .558-1.392l1.967.787c.265-.33.62-.583 1.03-.722a1.677 1.677 0 0 1-.026-.292V4.5c0-.951.38-1.814.995-2.444L4.72 1.28a.75.75 0 0 1 0-1.06Zm.53 6.28a.75.75 0 0 0-.75.75V11a3.5 3.5 0 1 0 7 0V7.25a.75.75 0 0 0-.75-.75ZM6.173 5h3.654A.172.172 0 0 0 10 4.827V4.5a2 2 0 1 0-4 0v.327c0 .096.077.173.173.173Z"/></svg>');--md-admonition-icon--danger:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M9.504.43a1.516 1.516 0 0 1 2.437 1.713L10.415 5.5h2.123c1.57 0 2.346 1.909 1.22 3.004l-7.34 7.142a1.249 1.249 0 0 1-.871.354h-.302a1.25 1.25 0 0 1-1.157-1.723L5.633 10.5H3.462c-1.57 0-2.346-1.909-1.22-3.004L9.503.429Zm1.047 1.074L3.286 8.571A.25.25 0 0 0 3.462 9H6.75a.75.75 0 0 1 .694 1.034l-1.713 4.188 6.982-6.793A.25.25 0 0 0 12.538 7H9.25a.75.75 0 0 1-.683-1.06l2.008-4.418.003-.006a.036.036 0 0 0-.004-.009l-.006-.006-.008-.001c-.003 0-.006.002-.009.004Z"/></svg>');--md-admonition-icon--example:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M5 5.782V2.5h-.25a.75.75 0 0 1 0-1.5h6.5a.75.75 0 0 1 0 1.5H11v3.282l3.666 5.76C15.619 13.04 14.543 15 12.767 15H3.233c-1.776 0-2.852-1.96-1.899-3.458Zm-2.4 6.565a.75.75 0 0 0 .633 1.153h9.534a.75.75 0 0 0 .633-1.153L12.225 10.5h-8.45ZM9.5 2.5h-3V6c0 .143-.04.283-.117.403L4.73 9h6.54L9.617 6.403A.746.746 0 0 1 9.5 6Z"/></svg>');--md-admonition-icon--failure:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M2.344 2.343h-.001a8 8 0 0 1 11.314 11.314A8.002 8.002 0 0 1 .234 10.089a8 8 0 0 1 2.11-7.746Zm1.06 10.253a6.5 6.5 0 1 0 9.108-9.275 6.5 6.5 0 0 0-9.108 9.275ZM6.03 4.97 8 6.94l1.97-1.97a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l1.97 1.97a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-1.97 1.97a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L6.94 8 4.97 6.03a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018Z"/></svg>');--md-admonition-icon--info:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/></svg>');--md-admonition-icon--note:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M1 7.775V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 0 1 0 2.474l-5.026 5.026a1.75 1.75 0 0 1-2.474 0l-6.25-6.25A1.752 1.752 0 0 1 1 7.775Zm1.5 0c0 .066.026.13.073.177l6.25 6.25a.25.25 0 0 0 .354 0l5.025-5.025a.25.25 0 0 0 0-.354l-6.25-6.25a.25.25 0 0 0-.177-.073H2.75a.25.25 0 0 0-.25.25ZM6 5a1 1 0 1 1 0 2 1 1 0 0 1 0-2Z"/></svg>');--md-admonition-icon--success:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"/></svg>');--md-admonition-icon--tip:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M3.499.75a.75.75 0 0 1 1.5 0v.996C5.9 2.903 6.793 3.65 7.662 4.376l.24.202c-.036-.694.055-1.422.426-2.163C9.1.873 10.794-.045 12.622.26 14.408.558 16 1.94 16 4.25c0 1.278-.954 2.575-2.44 2.734l.146.508.065.22c.203.701.412 1.455.476 2.226.142 1.707-.4 3.03-1.487 3.898C11.714 14.671 10.27 15 8.75 15h-6a.75.75 0 0 1 0-1.5h1.376a4.484 4.484 0 0 1-.563-1.191 3.835 3.835 0 0 1-.05-2.063 4.647 4.647 0 0 1-2.025-.293.75.75 0 0 1 .525-1.406c1.357.507 2.376-.006 2.698-.318l.009-.01a.747.747 0 0 1 1.06 0 .748.748 0 0 1-.012 1.074c-.912.92-.992 1.835-.768 2.586.221.74.745 1.337 1.196 1.621H8.75c1.343 0 2.398-.296 3.074-.836.635-.507 1.036-1.31.928-2.602-.05-.603-.216-1.224-.422-1.93l-.064-.221c-.12-.407-.246-.84-.353-1.29a2.425 2.425 0 0 1-.507-.441 3.075 3.075 0 0 1-.633-1.248.75.75 0 0 1 1.455-.364c.046.185.144.436.31.627.146.168.353.305.712.305.738 0 1.25-.615 1.25-1.25 0-1.47-.95-2.315-2.123-2.51-1.172-.196-2.227.387-2.706 1.345-.46.92-.27 1.774.019 3.062l.042.19a.884.884 0 0 1 .01.05c.348.443.666.949.94 1.553a.75.75 0 1 1-1.365.62c-.553-1.217-1.32-1.94-2.3-2.768L6.7 5.527c-.814-.68-1.75-1.462-2.692-2.619a3.737 3.737 0 0 0-1.023.88c-.406.495-.663 1.036-.722 1.508.116.122.306.21.591.239.388.038.797-.06 1.032-.19a.75.75 0 0 1 .728 1.31c-.515.287-1.23.439-1.906.373-.682-.067-1.473-.38-1.879-1.193L.75 5.677V5.5c0-.984.48-1.94 1.077-2.664.46-.559 1.05-1.055 1.673-1.353V.75Z"/></svg>');--md-admonition-icon--question:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.92 6.085h.001a.749.749 0 1 1-1.342-.67c.169-.339.436-.701.849-.977C6.845 4.16 7.369 4 8 4a2.756 2.756 0 0 1 1.637.525c.503.377.863.965.863 1.725 0 .448-.115.83-.329 1.15-.205.307-.47.513-.692.662-.109.072-.22.138-.313.195l-.006.004a6.24 6.24 0 0 0-.26.16.952.952 0 0 0-.276.245.75.75 0 0 1-1.248-.832c.184-.264.42-.489.692-.661.103-.067.207-.132.313-.195l.007-.004c.1-.061.182-.11.258-.161a.969.969 0 0 0 .277-.245C8.96 6.514 9 6.427 9 6.25a.612.612 0 0 0-.262-.525A1.27 1.27 0 0 0 8 5.5c-.369 0-.595.09-.74.187a1.01 1.01 0 0 0-.34.398ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"/></svg>');--md-admonition-icon--quote:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M1.75 2.5h10.5a.75.75 0 0 1 0 1.5H1.75a.75.75 0 0 1 0-1.5Zm4 5h8.5a.75.75 0 0 1 0 1.5h-8.5a.75.75 0 0 1 0-1.5Zm0 5h8.5a.75.75 0 0 1 0 1.5h-8.5a.75.75 0 0 1 0-1.5ZM2.5 7.75v6a.75.75 0 0 1-1.5 0v-6a.75.75 0 0 1 1.5 0Z"/></svg>');--md-admonition-icon--warning:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"/></svg>');}</style>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CSpline+Sans+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Spline Sans Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
 </head>
-<body>
-<div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
-<div class="container">
-<a class="navbar-brand" href="../..">Database System and Big Data 50.043</a>
-<!-- Expander button -->
-<button class="navbar-toggler" data-target="#navbar-collapse" data-toggle="collapse" type="button">
-<span class="navbar-toggler-icon"></span>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#50043-spark">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Database System and Big Data 50.043" class="md-header__button md-logo" data-md-component="logo" href="../.." title="Database System and Big Data 50.043">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 3a2 2 0 0 1 2-2h9.982a2 2 0 0 1 1.414.586l4.018 4.018A2 2 0 0 1 21 7.018V21a2 2 0 0 1-2 2H4.75a.75.75 0 0 1 0-1.5H19a.5.5 0 0 0 .5-.5V8.5h-4a2 2 0 0 1-2-2v-4H5a.5.5 0 0 0-.5.5v6.25a.75.75 0 0 1-1.5 0Zm12-.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 0-.146-.336l-4.018-4.018A.5.5 0 0 0 15 2.5Z"></path><path d="M4.53 12.24a.75.75 0 0 1-.039 1.06l-2.639 2.45 2.64 2.45a.75.75 0 1 1-1.022 1.1l-3.23-3a.75.75 0 0 1 0-1.1l3.23-3a.75.75 0 0 1 1.06.04Zm3.979 1.06a.75.75 0 1 1 1.02-1.1l3.231 3a.75.75 0 0 1 0 1.1l-3.23 3a.75.75 0 1 1-1.021-1.1l2.639-2.45-2.64-2.45Z"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Database System and Big Data 50.043
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              50.043 Spark
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"></path></svg>
+</label>
+</form>
+<script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"></path></svg>
 </button>
-<!-- Expanded navigation -->
-<div class="navbar-collapse collapse" id="navbar-collapse">
-<!-- Main navigation -->
-<ul class="nav navbar-nav">
-<li class="navitem">
-<a class="nav-link" href="../..">Home</a>
-</li>
-<li class="navitem">
-<a class="nav-link" href="../../project/">Project</a>
-</li>
-<li class="navitem">
-<a class="nav-link" href="../l1_course_handout/">Handout</a>
-</li>
-</ul>
-<ul class="nav navbar-nav ml-auto">
-<li class="nav-item">
-<a class="nav-link" data-target="#mkdocs_search_modal" data-toggle="modal" href="#">
-<i class="fa fa-search"></i> Search
-                            </a>
-</li>
-</ul>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
 </div>
 </div>
 </div>
-<div class="container">
-<div class="row">
-<div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
-<div class="navbar-header">
-<button class="navbar-toggler collapsed" data-target="#toc-collapse" data-toggle="collapse" title="Table of Contents" type="button">
-<span class="fa fa-angle-down"></span>
-</button>
 </div>
-<div class="navbar-collapse collapse card bg-secondary" id="toc-collapse">
-<ul class="nav flex-column">
-<li class="nav-item" data-level="1"><a class="nav-link" href="#50043-spark">50.043 Spark</a>
-<ul class="nav flex-column">
-<li class="nav-item" data-level="2"><a class="nav-link" href="#learning-outcomes">Learning Outcomes</a>
-<ul class="nav flex-column">
-</ul>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+        
+  
+    
+  
+  Home
+
+      </a>
 </li>
-<li class="nav-item" data-level="2"><a class="nav-link" href="#spark-vs-hadoop-mapreduce">Spark VS Hadoop MapReduce</a>
-<ul class="nav flex-column">
-</ul>
-</li>
-<li class="nav-item" data-level="2"><a class="nav-link" href="#spark-rdd-api">Spark RDD API</a>
-<ul class="nav flex-column">
-</ul>
-</li>
-<li class="nav-item" data-level="2"><a class="nav-link" href="#spark-performance-tuning">Spark performance tuning</a>
-<ul class="nav flex-column">
-</ul>
-</li>
-<li class="nav-item" data-level="2"><a class="nav-link" href="#spark-failure-recovery">Spark Failure Recovery</a>
-<ul class="nav flex-column">
-</ul>
-</li>
-<li class="nav-item" data-level="2"><a class="nav-link" href="#spark-dataframe">Spark DataFrame</a>
-<ul class="nav flex-column">
-</ul>
-</li>
-<li class="nav-item" data-level="2"><a class="nav-link" href="#spark-sql">Spark SQL</a>
-<ul class="nav flex-column">
-</ul>
-</li>
-<li class="nav-item" data-level="2"><a class="nav-link" href="#spark-machine-learning">Spark Machine Learning</a>
-<ul class="nav flex-column">
-</ul>
-</li>
-<li class="nav-item" data-level="2"><a class="nav-link" href="#spark-streaming">Spark Streaming</a>
-<ul class="nav flex-column">
-</ul>
-</li>
-<li class="nav-item" data-level="2"><a class="nav-link" href="#additional-references">Additional References</a>
-<ul class="nav flex-column">
-</ul>
-</li>
-</ul>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../l1_course_handout/">
+        
+  
+    
+  
+  Handout
+
+      </a>
 </li>
 </ul>
 </div>
-</div></div>
-<div class="col-md-9" role="main">
-<h1 id="50043-spark">50.043 Spark</h1>
-<h2 id="learning-outcomes">Learning Outcomes</h2>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Database System and Big Data 50.043" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="Database System and Big Data 50.043">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 3a2 2 0 0 1 2-2h9.982a2 2 0 0 1 1.414.586l4.018 4.018A2 2 0 0 1 21 7.018V21a2 2 0 0 1-2 2H4.75a.75.75 0 0 1 0-1.5H19a.5.5 0 0 0 .5-.5V8.5h-4a2 2 0 0 1-2-2v-4H5a.5.5 0 0 0-.5.5v6.25a.75.75 0 0 1-1.5 0Zm12-.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 0-.146-.336l-4.018-4.018A.5.5 0 0 0 15 2.5Z"></path><path d="M4.53 12.24a.75.75 0 0 1-.039 1.06l-2.639 2.45 2.64 2.45a.75.75 0 1 1-1.022 1.1l-3.23-3a.75.75 0 0 1 0-1.1l3.23-3a.75.75 0 0 1 1.06.04Zm3.979 1.06a.75.75 0 1 1 1.02-1.1l3.231 3a.75.75 0 0 1 0 1.1l-3.23 3a.75.75 0 1 1-1.021-1.1l2.639-2.45-2.64-2.45Z"></path></svg>
+</a>
+    Database System and Big Data 50.043
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    Home
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../l1_course_handout/">
+<span class="md-ellipsis">
+    Handout
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#learning-outcomes">
+<span class="md-ellipsis">
+      Learning Outcomes
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spark-vs-hadoop-mapreduce">
+<span class="md-ellipsis">
+      Spark VS Hadoop MapReduce
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spark-rdd-api">
+<span class="md-ellipsis">
+      Spark RDD API
+    </span>
+</a>
+<nav aria-label="Spark RDD API" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#lazy-vs-strict-evaluation">
+<span class="md-ellipsis">
+      Lazy vs Strict Evaluation
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#rdd-transformations">
+<span class="md-ellipsis">
+      RDD Transformations
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#rdd-actions">
+<span class="md-ellipsis">
+      RDD Actions
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#special-transformation">
+<span class="md-ellipsis">
+      Special Transformation
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#wordcount-example-in-spark">
+<span class="md-ellipsis">
+      Wordcount example in Spark
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spark-architecture">
+<span class="md-ellipsis">
+      Spark Architecture
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spark-task-scheduling">
+<span class="md-ellipsis">
+      Spark Task Scheduling
+    </span>
+</a>
+<nav aria-label="Spark Task Scheduling" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#a-simple-example">
+<span class="md-ellipsis">
+      A simple example
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#a-less-simple-example">
+<span class="md-ellipsis">
+      A less simple example
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spark-performance-tuning">
+<span class="md-ellipsis">
+      Spark performance tuning
+    </span>
+</a>
+<nav aria-label="Spark performance tuning" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pre-partition-or-re-partition-of-the-data">
+<span class="md-ellipsis">
+      Pre-partition or re-partition of the data
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cache-the-intermediate-data">
+<span class="md-ellipsis">
+      Cache the intermediate data
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#other-optimization-tricks">
+<span class="md-ellipsis">
+      Other optimization tricks
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spark-failure-recovery">
+<span class="md-ellipsis">
+      Spark Failure Recovery
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spark-dataframe">
+<span class="md-ellipsis">
+      Spark DataFrame
+    </span>
+</a>
+<nav aria-label="Spark DataFrame" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#question-why-columnar">
+<span class="md-ellipsis">
+      Question: Why Columnar?
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#creating-spark-dataframe">
+<span class="md-ellipsis">
+      Creating Spark Dataframe
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dataframe-apis">
+<span class="md-ellipsis">
+      DataFrame APIs
+    </span>
+</a>
+<nav aria-label="DataFrame APIs" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#column-projection">
+<span class="md-ellipsis">
+      Column Projection
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#row-filtering">
+<span class="md-ellipsis">
+      Row filtering
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#group-by-and-aggregation">
+<span class="md-ellipsis">
+      Group By and Aggregation
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#join">
+<span class="md-ellipsis">
+      Join
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spark-sql">
+<span class="md-ellipsis">
+      Spark SQL
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spark-machine-learning">
+<span class="md-ellipsis">
+      Spark Machine Learning
+    </span>
+</a>
+<nav aria-label="Spark Machine Learning" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#mllib-package">
+<span class="md-ellipsis">
+      MLLib package
+    </span>
+</a>
+<nav aria-label="MLLib package" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#vectors">
+<span class="md-ellipsis">
+      Vectors
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#labeled-points">
+<span class="md-ellipsis">
+      Labeled points
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#training-an-inference">
+<span class="md-ellipsis">
+      Training an inference
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ml-package">
+<span class="md-ellipsis">
+      ML Package
+    </span>
+</a>
+<nav aria-label="ML Package" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#the-training-pipeline">
+<span class="md-ellipsis">
+      The Training Pipeline
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#the-transformer-pipeline">
+<span class="md-ellipsis">
+      The transformer pipeline
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#sample-code">
+<span class="md-ellipsis">
+      Sample code
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spark-streaming">
+<span class="md-ellipsis">
+      Spark Streaming
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#additional-references">
+<span class="md-ellipsis">
+      Additional References
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="50043-spark">50.043 Spark<a class="headerlink" href="#50043-spark" title="Permanent link">¶</a></h1>
+<h2 id="learning-outcomes">Learning Outcomes<a class="headerlink" href="#learning-outcomes" title="Permanent link">¶</a></h2>
 <p>By the end of this lesson, you are able to</p>
 <ul>
 <li>Differentiate Hadoop MapReduce and Spark</li>
@@ -118,7 +478,7 @@
 <li>Develop Machine Learning application using Spark ML package</li>
 <li>Explain Spark Streaming</li>
 </ul>
-<h2 id="spark-vs-hadoop-mapreduce">Spark VS Hadoop MapReduce</h2>
+<h2 id="spark-vs-hadoop-mapreduce">Spark VS Hadoop MapReduce<a class="headerlink" href="#spark-vs-hadoop-mapreduce" title="Permanent link">¶</a></h2>
 <p>Hadoop MapReduce was created to batch process data once or twice, e.g.  web search index, processing crawled data, etc.</p>
 <p>When machine learning being applied to big data, the terabyte or zeta byte of data probably need to be processed iteratively.  For instance, if we need to run gradient descent thousands of times.</p>
 <p>On top of that data visualization for big data also impose further challenge. It requires data to be reprocessed based on the user inputs such as sorting and filtering constraints. </p>
@@ -137,40 +497,55 @@
 <li>Machine Learning Libraries, Graph computation libraries.</li>
 </ul>
 <p>Spark supports many mainstream programming languagues such as Scala, Python, R, Java and SQL. In this module we consider the Python interface.</p>
-<h2 id="spark-rdd-api">Spark RDD API</h2>
+<h2 id="spark-rdd-api">Spark RDD API<a class="headerlink" href="#spark-rdd-api" title="Permanent link">¶</a></h2>
 <p>The primary data structure of the Spark RDD API is the RDD. </p>
-<pre><code class="language-python">data = [1, 2, 3, 4, 5]
-distData = sc.parallelize(data)
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="n">distData</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
 <p>In the above code snippet, we initialize a list of integers and turn it into an RDD <code>distData</code>. </p>
 <p>Alternatively, we can load the data from a file.</p>
-<pre><code class="language-python">distData = sc.textFile("hdfs://127.0.0.1:9000/data.txt")
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="n">distData</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="p">(</span><span class="s2">"hdfs://127.0.0.1:9000/data.txt"</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
 <p>Given the RDD, we can now perform data manipulation. There are two kinds of RDD APIs, namely <em>Transformations</em> and <em>Actions</em>.  Transformation APIs are <em>lazy</em> and action APIs are <em>strict</em>.</p>
-<h3 id="lazy-vs-strict-evaluation">Lazy vs Strict Evaluation</h3>
+<h3 id="lazy-vs-strict-evaluation">Lazy vs Strict Evaluation<a class="headerlink" href="#lazy-vs-strict-evaluation" title="Permanent link">¶</a></h3>
 <p>In lazy evaluation, the argument of a function is not fully computed until it is needed. We can mimic this in Python using generator and iterator.</p>
-<pre><code class="language-python">r = range(2,-1,-1) # a range 2,1,0
-l = ( 4 // x for x in r) # a generator 2, 4, div_by_0
-def takeOne(l):
-    res = next(iter(l), None)
-    if res is None:
-        return error(" ... ")
-    else:
-        return res
-takeOne(l) # yield 2
-</code></pre>
-<p>When <code>takeOne(l)</code> is called, only the first element of <code>l</code> is computed, the rest are discarded. </p>
+<p><div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
+<span class="normal"><a href="#__codelineno-2-2">2</a></span>
+<span class="normal"><a href="#__codelineno-2-3">3</a></span>
+<span class="normal"><a href="#__codelineno-2-4">4</a></span>
+<span class="normal"><a href="#__codelineno-2-5">5</a></span>
+<span class="normal"><a href="#__codelineno-2-6">6</a></span>
+<span class="normal"><a href="#__codelineno-2-7">7</a></span>
+<span class="normal"><a href="#__codelineno-2-8">8</a></span>
+<span class="normal"><a href="#__codelineno-2-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="n">r</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># a range 2,1,0</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="n">l</span> <span class="o">=</span> <span class="p">(</span> <span class="mi">4</span> <span class="o">//</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">r</span><span class="p">)</span> <span class="c1"># a generator 2, 4, div_by_0</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="k">def</span> <span class="nf">takeOne</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4"></a>    <span class="n">res</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">l</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5"></a>    <span class="k">if</span> <span class="n">res</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6"></a>        <span class="k">return</span> <span class="n">error</span><span class="p">(</span><span class="s2">" ... "</span><span class="p">)</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7"></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8"></a>        <span class="k">return</span> <span class="n">res</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="n">takeOne</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="c1"># yield 2</span>
+</span></code></pre></div></td></tr></table></div>
+When <code>takeOne(l)</code> is called, only the first element of <code>l</code> is computed, the rest are discarded. </p>
 <p>In strict evaluation, the argument of a function is alwaysfully computed.</p>
-<pre><code class="language-python">def takeOneStrict(l):
-    res = next(iter(list(l)), None)
-    if res is None:
-        return error(" ... ")
-    else:
-        return res
-takeOneStrict(l) # yield an div by zero error.
-</code></pre>
-<p>When <code>takeOneStrict(l)</code> is called, even though only the first element of <code>l</code> is required, the rest are computed eagerly, thanks to the <code>list()</code> function call materializing the generator.</p>
-<h3 id="rdd-transformations">RDD Transformations</h3>
+<p><div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span>
+<span class="normal"><a href="#__codelineno-3-2">2</a></span>
+<span class="normal"><a href="#__codelineno-3-3">3</a></span>
+<span class="normal"><a href="#__codelineno-3-4">4</a></span>
+<span class="normal"><a href="#__codelineno-3-5">5</a></span>
+<span class="normal"><a href="#__codelineno-3-6">6</a></span>
+<span class="normal"><a href="#__codelineno-3-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="k">def</span> <span class="nf">takeOneStrict</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a>    <span class="n">res</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">l</span><span class="p">)),</span> <span class="kc">None</span><span class="p">)</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a>    <span class="k">if</span> <span class="n">res</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4"></a>        <span class="k">return</span> <span class="n">error</span><span class="p">(</span><span class="s2">" ... "</span><span class="p">)</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5"></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6"></a>        <span class="k">return</span> <span class="n">res</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="n">takeOneStrict</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="c1"># yield an div by zero error.</span>
+</span></code></pre></div></td></tr></table></div>
+When <code>takeOneStrict(l)</code> is called, even though only the first element of <code>l</code> is required, the rest are computed eagerly, thanks to the <code>list()</code> function call materializing the generator.</p>
+<h3 id="rdd-transformations">RDD Transformations<a class="headerlink" href="#rdd-transformations" title="Permanent link">¶</a></h3>
 <p>All Transformations takes the current RDD as (part of) the input and
 return some a new RDD as output.</p>
 <p>Let <code>l</code>, <code>l1</code> and <code>l2</code> be RDDs, <code>f</code> be a function</p>
@@ -257,7 +632,7 @@ return some a new RDD as output.</p>
 </table>
 <p>Note that the RDDS APIs follow the builtin Scala library's convention, <code>map</code>,
 <code>filter</code> and etc are methods of the List class.</p>
-<h3 id="rdd-actions">RDD Actions</h3>
+<h3 id="rdd-actions">RDD Actions<a class="headerlink" href="#rdd-actions" title="Permanent link">¶</a></h3>
 <p>All Actions takes the current RDD as (part of) the input and
 return some value that is not an RDD. It forces computation to happen.</p>
 <table>
@@ -311,45 +686,65 @@ return some value that is not an RDD. It forces computation to happen.</p>
 </tr>
 </tbody>
 </table>
-<h3 id="special-transformation">Special Transformation</h3>
+<h3 id="special-transformation">Special Transformation<a class="headerlink" href="#special-transformation" title="Permanent link">¶</a></h3>
 <p>Some transformation/opereations such as <code>reduceByKey</code>, <code>join</code>, <code>groupByKey</code> and <code>sortByKey</code> will trigger a shuffle event, in which
 Spark redistribute the data across partititon, which means intermediate results from lazy operations will be materialized. </p>
-<h3 id="wordcount-example-in-spark">Wordcount example in Spark</h3>
+<h3 id="wordcount-example-in-spark">Wordcount example in Spark<a class="headerlink" href="#wordcount-example-in-spark" title="Permanent link">¶</a></h3>
 <p>The follow code snippet, we find the wordcount application implemented using PySpark.</p>
-<pre><code class="language-python">import sys
-from pyspark import SparkContext, SparkConf
-conf = SparkConf().setAppName("Wordcount Application")
-sc = SparkContext(conf=conf)
-
-text_file = sc.textFile("hdfs://localhost:9000/input/")
-counts = text_file.flatMap(lambda line: line.split(" ")) \
-             .map(lambda word: (word, 1)) \
-             .reduceByKey(lambda a, b: a + b)
-counts.saveAsTextFile("hdfs://localhost:9000/output/")
-sc.stop()
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-4-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-4-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-4-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-4-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-4-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-4-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-4-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-4-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-4-10">10</a></span>
+<span class="normal"><a href="#__codelineno-4-11">11</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="kn">import</span> <span class="nn">sys</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="kn">from</span> <span class="nn">pyspark</span> <span class="kn">import</span> <span class="n">SparkContext</span><span class="p">,</span> <span class="n">SparkConf</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="n">conf</span> <span class="o">=</span> <span class="n">SparkConf</span><span class="p">()</span><span class="o">.</span><span class="n">setAppName</span><span class="p">(</span><span class="s2">"Wordcount Application"</span><span class="p">)</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="n">sc</span> <span class="o">=</span> <span class="n">SparkContext</span><span class="p">(</span><span class="n">conf</span><span class="o">=</span><span class="n">conf</span><span class="p">)</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5"></a>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="n">text_file</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="p">(</span><span class="s2">"hdfs://localhost:9000/input/"</span><span class="p">)</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="n">counts</span> <span class="o">=</span> <span class="n">text_file</span><span class="o">.</span><span class="n">flatMap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">))</span> \
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8"></a>             <span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:</span> <span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> \
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9"></a>             <span class="o">.</span><span class="n">reduceByKey</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="n">counts</span><span class="o">.</span><span class="n">saveAsTextFile</span><span class="p">(</span><span class="s2">"hdfs://localhost:9000/output/"</span><span class="p">)</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="n">sc</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</span></code></pre></div></td></tr></table></div>
 <p>We can compare it with the version in toy MapReduce, and find many similarities </p>
-<pre><code class="language-python">infile = open(sys.argv[1], 'r')
-lines = []
-for line in infile: lines.append(line.strip())
-
-ws = flatMap(lambda line:line.split(" "),lines)
-w1s = map(lambda w:(w,1), ws)
-res = reduceByKey(lambda x,y:x+y,w1s,0)
-
-with open(sys.argv[2], 'w') as out:
-    for w,c in res:
-        out.write(w + "\t" + str(c) + "\n")
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-5-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-5-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-5-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-5-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-5-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-5-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-5-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-5-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-5-10">10</a></span>
+<span class="normal"><a href="#__codelineno-5-11">11</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="n">infile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">'r'</span><span class="p">)</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">infile</span><span class="p">:</span> <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4"></a>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="n">ws</span> <span class="o">=</span> <span class="n">flatMap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">),</span><span class="n">lines</span><span class="p">)</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="n">w1s</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">w</span><span class="p">:(</span><span class="n">w</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">ws</span><span class="p">)</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="n">res</span> <span class="o">=</span> <span class="n">reduceByKey</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">,</span><span class="n">w1s</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8"></a>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10"></a>    <span class="k">for</span> <span class="n">w</span><span class="p">,</span><span class="n">c</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11"></a>        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">w</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\t</span><span class="s2">"</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
 <p>We will see more examples of using PySpark in the lecture and the labs.</p>
-<h3 id="spark-architecture">Spark Architecture</h3>
+<h3 id="spark-architecture">Spark Architecture<a class="headerlink" href="#spark-architecture" title="Permanent link">¶</a></h3>
 <p>Next we consider the how Spark manages the execution model.</p>
 <p>In the following, we find the Spark Architecture (in simple standalone mode)</p>
-<p><img alt="Spark Architecture" src="https://miro.medium.com/max/1117/1*Etqq2Ekh7BXso8Jcp_6e1g.png"/>{width=100%}</p>
+<p><img alt="Spark Architecture" src="https://miro.medium.com/max/1117/1*Etqq2Ekh7BXso8Jcp_6e1g.png" width="100%"/></p>
 <p>Like Hadoop, Spark follows a simple master and worker architecture. A machine is dedicated to manage the Spark cluster, which is known as the Spark Master node (c.f. namenode in a Hadoop Cluster). A set of machines are in charge of running the actual computation, namely, the Spark Worker nodes (c.f. data nodes in a Hadoop Cluster).</p>
 <p><img alt="" src="https://docs.cloudera.com/runtime/7.2.1/developing-spark-applications/images/spark-tuning-f1.png"/></p>
 <p>A <em>driver</em> is a program that runs on the Spark Master node, which manages the interaction between the application and the client. Upon a job submission from the client, a Spark driver schedules the jobs by analyzing the sub tasks dependency and allocate the sub tasks to the executors. A list of executors (runnning on some worker nodes) receive tasks from the driver and reports the result upon completion.</p>
-<h3 id="spark-task-scheduling">Spark Task Scheduling</h3>
+<h3 id="spark-task-scheduling">Spark Task Scheduling<a class="headerlink" href="#spark-task-scheduling" title="Permanent link">¶</a></h3>
 <p>In this section, we take a look at how Spark divides a given job into tasks and schedules the tasks to the workers. </p>
 <p><img alt="" src="../images/spark-job-scheduling.jpeg"/></p>
 <p>As illustrated by the above diagram Spark takes 4 stages to schedule the job. </p>
@@ -359,42 +754,50 @@ with open(sys.argv[2], 'w') as out:
 <li>Tasks are scheduled according to their stages, A later stage must not be started until the earlier stages are completed. </li>
 <li>Tasks scheduled to the workers then executed. </li>
 </ol>
-<h4 id="a-simple-example">A simple example</h4>
+<h4 id="a-simple-example">A simple example<a class="headerlink" href="#a-simple-example" title="Permanent link">¶</a></h4>
 <p>Let's consider a simple example </p>
-<pre><code class="language-python"># spark job 1
-r1 = sc.textFile("...")
-r2 = r1.map(f) 
-</code></pre>
-<p>A spark driver takes the above program and construct the DAG, since it contain just a read followed by a map operations. It has the following DAG. </p>
-<div class="mermaid">graph TD
-    r1 --map--&gt; r2 
-</div>
+<p><div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1">1</a></span>
+<span class="normal"><a href="#__codelineno-6-2">2</a></span>
+<span class="normal"><a href="#__codelineno-6-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="c1"># spark job 1</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="n">r1</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="p">(</span><span class="s2">"..."</span><span class="p">)</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="n">r2</span> <span class="o">=</span> <span class="n">r1</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> 
+</span></code></pre></div></td></tr></table></div>
+A spark driver takes the above program and construct the DAG, since it contain just a read followed by a map operations. It has the following DAG. </p>
+<pre class="mermaid"><code>graph TD
+    r1 --map--&gt; r2 </code></pre>
 <p>It is clear that there is only one stage, (because there is only one operation, one set of inputs and one set of outputs). </p>
 <p><img alt="" src="../images/spark_map.png"/></p>
 <p>The Task Scheduler allocate the tasks in parallel, as follows.</p>
 <p><img alt="" src="../images/spark_map2.png"/></p>
-<h4 id="a-less-simple-example">A less simple example</h4>
+<h4 id="a-less-simple-example">A less simple example<a class="headerlink" href="#a-less-simple-example" title="Permanent link">¶</a></h4>
 <p>Let's consider another example </p>
-<pre><code class="language-python"># spark job 2
-r1 = sc.textFile("...")
-r2 = r1.map(f)
-r3 = sc.textFile("...")
-r4 = r3.map(g)
-r5 = r2.join(r4)
-r6 = r5.groupByKey()
-r7 = r6.map(h)
-r8 = r7.reduce(i)
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1">1</a></span>
+<span class="normal"><a href="#__codelineno-7-2">2</a></span>
+<span class="normal"><a href="#__codelineno-7-3">3</a></span>
+<span class="normal"><a href="#__codelineno-7-4">4</a></span>
+<span class="normal"><a href="#__codelineno-7-5">5</a></span>
+<span class="normal"><a href="#__codelineno-7-6">6</a></span>
+<span class="normal"><a href="#__codelineno-7-7">7</a></span>
+<span class="normal"><a href="#__codelineno-7-8">8</a></span>
+<span class="normal"><a href="#__codelineno-7-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># spark job 2</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="n">r1</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="p">(</span><span class="s2">"..."</span><span class="p">)</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="n">r2</span> <span class="o">=</span> <span class="n">r1</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="n">r3</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="p">(</span><span class="s2">"..."</span><span class="p">)</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="n">r4</span> <span class="o">=</span> <span class="n">r3</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="n">r5</span> <span class="o">=</span> <span class="n">r2</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">r4</span><span class="p">)</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="n">r6</span> <span class="o">=</span> <span class="n">r5</span><span class="o">.</span><span class="n">groupByKey</span><span class="p">()</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="n">r7</span> <span class="o">=</span> <span class="n">r6</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9"></a><span class="n">r8</span> <span class="o">=</span> <span class="n">r7</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
 <p>The DAG is as follows</p>
-<div class="mermaid">graph TD;
+<pre class="mermaid"><code>graph TD;
 r1 --map--&gt; r2 
 r3 --map--&gt; r4
 r2 --join--&gt; r5
 r4 --join--&gt; r5
 r5 --groupByKey--&gt; r6
 r6 --map--&gt; r7
-r7 --reduce--&gt; r8
-</div>
+r7 --reduce--&gt; r8</code></pre>
 <p>There are mulitple way of dividing the above DAG into stages. For instance, we could naively turns each operation (each arrow) into a stage (we end up with many stages and poor parallelization) or we group the simple paths (straight line paths) into a stage.</p>
 <p>Spark takes a more intelligent approach by classifying different types of dependencies. </p>
 <ul>
@@ -408,15 +811,14 @@ partition</p>
 </ul>
 <p><img alt="Narrow dependencies vs Wide dependencies" src="../images/0%2AkAw8hogu1oZPy9QU.png"/></p>
 <p>Thus for <code>Spark Job 2</code>,  we further annotate the DAG with dependency types.</p>
-<div class="mermaid">graph TD;
+<pre class="mermaid"><code>graph TD;
 r1 --map/narrow--&gt; r2 
 r3 --map/narrow--&gt; r4
 r2 --join/narrow--&gt; r5
 r4 --join/wide--&gt; r5
 r5 --groupByKey/wide--&gt; r6
 r6 --map/narrow--&gt; r7
-r7 --reduce--&gt; r8
-</div>
+r7 --reduce--&gt; r8</code></pre>
 <p>All the map operations are narrow. The join of <code>r2</code> and <code>r4</code> should be wide. However since the result must be ordered either by <code>r2</code>'s partition order or <code>r4</code>'s. Only one side of the operation is wide. In this case, we assume <code>r5</code>'s partition follows <code>r2</code>'s, hence <code>r2</code> to <code>r5</code> is narrow. <code>groupByKey</code> operations are wide. </p>
 <p>Next we can decide how many stages we need by </p>
 <ol>
@@ -426,122 +828,163 @@ r7 --reduce--&gt; r8
 </li>
 <li>wide dependency initiates a new stage, as we need to wait for all the data operands to be fully computed before the operation being executed. </li>
 </ol>
-<div class="mermaid">graph TD;
+<pre class="mermaid"><code>graph TD;
 r1 --map/narrow/1--&gt; r2 
 r3 --map/narrow/1--&gt; r4
 r2 --join/narrow/2--&gt; r5
 r4 --join/wide/2--&gt; r5
 r5 --groupByKey/wide/3--&gt; r6
 r6 --map/narrow/3--&gt; r7
-r7 --reduce/3--&gt; r8
-</div>
-<p>In the above, we stage the first two map operations. The join operation is assigned to the 2nd stage. The <code>groupByKey</code> initiates the 3rd stage which includes the following map and reduce. </p>
-<h2 id="spark-performance-tuning">Spark performance tuning</h2>
+r7 --reduce/3--&gt; r8</code></pre>
+<p>In the above, we stage the first two map operations. The join operation is assigned to the 2<sup>nd</sup> stage. The <code>groupByKey</code> initiates the 3<sup>rd</sup> stage which includes the following map and reduce. </p>
+<h2 id="spark-performance-tuning">Spark performance tuning<a class="headerlink" href="#spark-performance-tuning" title="Permanent link">¶</a></h2>
 <p>Knowing how Spark schedules a job into stages of sub tasks. We can optimize the job by rewriting it into an equivalent one such that </p>
 <ul>
 <li>Pre-partition or re-partition of the data</li>
 <li>Cache the common intermediate data</li>
 </ul>
-<h3 id="pre-partition-or-re-partition-of-the-data">Pre-partition or re-partition of the data</h3>
+<h3 id="pre-partition-or-re-partition-of-the-data">Pre-partition or re-partition of the data<a class="headerlink" href="#pre-partition-or-re-partition-of-the-data" title="Permanent link">¶</a></h3>
 <p>Recall that a spark job is represented a DAG of stages</p>
 <p><img alt="" src="../images/spark_stages3.png"/></p>
 <p>If we know the join operation and pre- (or re-) arrange the data according to the key to partition mapping, we could reduce the shuffling. </p>
 <p><img alt="" src="../images/spark_repartition.png"/></p>
-<pre><code class="language-python">d1 = [(1, "A"), (2, "B"), (1, "C"), (2, "D"), (1, "E"), (3, "F")]
-d2 = [(1, 0.1), (2, 0.2), (2, 3.1), (3, 0)]
-r1 = sc.parallelize(d1) 
-r2 = sc.parallelize(d2)
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1">1</a></span>
+<span class="normal"><a href="#__codelineno-8-2">2</a></span>
+<span class="normal"><a href="#__codelineno-8-3">3</a></span>
+<span class="normal"><a href="#__codelineno-8-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="n">d1</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"A"</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">"B"</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"C"</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">"D"</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"E"</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">"F"</span><span class="p">)]</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="n">d2</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">3.1</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="n">r1</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">d1</span><span class="p">)</span> 
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="n">r2</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">d2</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
 <p>let assume that <code>r1</code> is by default partitioned randomly into two partitions
 and so is <code>r2</code>.</p>
-<pre><code class="language-python">r1.glom().collect() # collect rdd into list by retaining the partition
-r2.glom().collect()
-# r1 being partitioned 
-[[(1, 'A'), (2, 'B'), (1, 'C')],   # p1
-  [(2, 'D'), (1, 'E'), (3, 'F')]]  # p2
-# r2 being partitioned
-[[(1, 0.1), (2, 0.2)],  # p3
-  [(2, 3.1), (3, 0)]])  # p4
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-9-1">1</a></span>
+<span class="normal"><a href="#__codelineno-9-2">2</a></span>
+<span class="normal"><a href="#__codelineno-9-3">3</a></span>
+<span class="normal"><a href="#__codelineno-9-4">4</a></span>
+<span class="normal"><a href="#__codelineno-9-5">5</a></span>
+<span class="normal"><a href="#__codelineno-9-6">6</a></span>
+<span class="normal"><a href="#__codelineno-9-7">7</a></span>
+<span class="normal"><a href="#__codelineno-9-8">8</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="n">r1</span><span class="o">.</span><span class="n">glom</span><span class="p">()</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span> <span class="c1"># collect rdd into list by retaining the partition</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="n">r2</span><span class="o">.</span><span class="n">glom</span><span class="p">()</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3"></a><span class="c1"># r1 being partitioned </span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="p">[[(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'A'</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">)],</span>   <span class="c1"># p1</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5"></a>  <span class="p">[(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'D'</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'E'</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">'F'</span><span class="p">)]]</span>  <span class="c1"># p2</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6"></a><span class="c1"># r2 being partitioned</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="p">[[(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)],</span>  <span class="c1"># p3</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8"></a>  <span class="p">[(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">3.1</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]])</span>  <span class="c1"># p4</span>
+</span></code></pre></div></td></tr></table></div>
 <p>next we would like join <code>r1</code> with <code>r2</code> by key, i.e. the first component of the pairs</p>
-<pre><code class="language-python">r3 = r1.join(r2)
-r3.glom().collect()
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-10-1">1</a></span>
+<span class="normal"><a href="#__codelineno-10-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="n">r3</span> <span class="o">=</span> <span class="n">r1</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">r2</span><span class="p">)</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="n">r3</span><span class="o">.</span><span class="n">glom</span><span class="p">()</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+</span></code></pre></div></td></tr></table></div>
 <p>the result will be stored in three partitions</p>
-<pre><code class="language-python">[[(1, ('A', 0.1)), (1, ('C', 0.1)), (1, ('E', 0.1))], # p1
- [(2, ('B', 0.2)), (2, ('B', 3.1)), (2, ('D', 0.2)), (2, ('D', 3.1))], # p2
- [(3, ('F', 0))]] # p3
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-11-1">1</a></span>
+<span class="normal"><a href="#__codelineno-11-2">2</a></span>
+<span class="normal"><a href="#__codelineno-11-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="p">[[(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="s1">'C'</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="s1">'E'</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))],</span> <span class="c1"># p1</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2"></a> <span class="p">[(</span><span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="s1">'B'</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="s1">'B'</span><span class="p">,</span> <span class="mf">3.1</span><span class="p">)),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="s1">'D'</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="s1">'D'</span><span class="p">,</span> <span class="mf">3.1</span><span class="p">))],</span> <span class="c1"># p2</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3"></a> <span class="p">[(</span><span class="mi">3</span><span class="p">,</span> <span class="p">(</span><span class="s1">'F'</span><span class="p">,</span> <span class="mi">0</span><span class="p">))]]</span> <span class="c1"># p3</span>
+</span></code></pre></div></td></tr></table></div>
 <p>Note that the actual order of the collected result might not be same as above, Spark tries to reuse partitions being created whenever possible. (For breivity we omit an empty partition <code>p4</code>.)</p>
 <p>As observed, there are tuple transferred from <code>p1</code> to <code>p2</code>, e.g. <code>(2, 'B')</code> 
 and from <code>p2</code> to <code>p1</code>, e.g. <code>(1, 'E')</code>. These transfers can be eliminited 
 if we manually control the partitioning of the initial RDDs, </p>
-<pre><code class="language-python">r4 = sc.parallelize(d1).partitionBy(3, lambda key: key)
-r5 = sc.parallelize(d2).partitionBy(3, lambda key: key)
-r4.glom().collect()
-r5.glom().collect()
-</code></pre>
-<pre><code class="language-python"># r4 is partitioned 
-[[(3, 'F')], #p1 
- [(1, 'A'), (1, 'C'), (1, 'E')], #p2 
- [(2, 'B'), (2, 'D')]] #p3
-# r5 is partitioned 
-[[(3, 0)],  #p4
-[(1, 0.1)], #p5
-[(2, 0.2), (2, 3.1)]] #p6
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-12-1">1</a></span>
+<span class="normal"><a href="#__codelineno-12-2">2</a></span>
+<span class="normal"><a href="#__codelineno-12-3">3</a></span>
+<span class="normal"><a href="#__codelineno-12-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="n">r4</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">d1</span><span class="p">)</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">key</span><span class="p">:</span> <span class="n">key</span><span class="p">)</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="n">r5</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">d2</span><span class="p">)</span><span class="o">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">key</span><span class="p">:</span> <span class="n">key</span><span class="p">)</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3"></a><span class="n">r4</span><span class="o">.</span><span class="n">glom</span><span class="p">()</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="n">r5</span><span class="o">.</span><span class="n">glom</span><span class="p">()</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+</span></code></pre></div></td></tr></table></div>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-13-1">1</a></span>
+<span class="normal"><a href="#__codelineno-13-2">2</a></span>
+<span class="normal"><a href="#__codelineno-13-3">3</a></span>
+<span class="normal"><a href="#__codelineno-13-4">4</a></span>
+<span class="normal"><a href="#__codelineno-13-5">5</a></span>
+<span class="normal"><a href="#__codelineno-13-6">6</a></span>
+<span class="normal"><a href="#__codelineno-13-7">7</a></span>
+<span class="normal"><a href="#__codelineno-13-8">8</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="c1"># r4 is partitioned </span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="p">[[(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">'F'</span><span class="p">)],</span> <span class="c1">#p1 </span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3"></a> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'A'</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'E'</span><span class="p">)],</span> <span class="c1">#p2 </span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4"></a> <span class="p">[(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'D'</span><span class="p">)]]</span> <span class="c1">#p3</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="c1"># r5 is partitioned </span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6"></a><span class="p">[[(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span>  <span class="c1">#p4</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7"></a><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)],</span> <span class="c1">#p5</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="p">[(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">3.1</span><span class="p">)]]</span> <span class="c1">#p6</span>
+</span></code></pre></div></td></tr></table></div>
 <p>when we perform the join</p>
-<pre><code class="language-python">r6 = r4.join(r5)
-r6.glom().collect()
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-14-1">1</a></span>
+<span class="normal"><a href="#__codelineno-14-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="n">r6</span> <span class="o">=</span> <span class="n">r4</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">r5</span><span class="p">)</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="n">r6</span><span class="o">.</span><span class="n">glom</span><span class="p">()</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+</span></code></pre></div></td></tr></table></div>
 <p>we have </p>
-<pre><code class="language-python">[
-[(3, ('F', 0))], #p1
-[(1, ('A', 0.1)), (1, ('C', 0.1)), (1, ('E', 0.1))], #p2
-[(2, ('B', 0.2)), (2, ('B', 3.1)), (2, ('D', 0.2)), (2, ('D', 3.1))] #p3
-]
-</code></pre>
-<p>The number of tuples being transferred across partition is now minimized. </p>
+<p><div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-15-1">1</a></span>
+<span class="normal"><a href="#__codelineno-15-2">2</a></span>
+<span class="normal"><a href="#__codelineno-15-3">3</a></span>
+<span class="normal"><a href="#__codelineno-15-4">4</a></span>
+<span class="normal"><a href="#__codelineno-15-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="p">[</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="p">[(</span><span class="mi">3</span><span class="p">,</span> <span class="p">(</span><span class="s1">'F'</span><span class="p">,</span> <span class="mi">0</span><span class="p">))],</span> <span class="c1">#p1</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3"></a><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="s1">'C'</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="s1">'E'</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))],</span> <span class="c1">#p2</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="p">[(</span><span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="s1">'B'</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="s1">'B'</span><span class="p">,</span> <span class="mf">3.1</span><span class="p">)),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="s1">'D'</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="s1">'D'</span><span class="p">,</span> <span class="mf">3.1</span><span class="p">))]</span> <span class="c1">#p3</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="p">]</span>
+</span></code></pre></div></td></tr></table></div>
+The number of tuples being transferred across partition is now minimized. </p>
 <ul>
-<li>Sample code can be found here.</li>
+<li>Sample code can be found here.
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-16-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1"></a>https://colab.research.google.com/drive/1XO1hqcRCn9JKu0tkRb0ANQylCnBod3B-?usp=sharing
+</span></code></pre></div></td></tr></table></div></li>
 </ul>
-<pre><code>https://colab.research.google.com/drive/1XO1hqcRCn9JKu0tkRb0ANQylCnBod3B-?usp=sharing
-</code></pre>
-<h3 id="cache-the-intermediate-data">Cache the intermediate data</h3>
+<h3 id="cache-the-intermediate-data">Cache the intermediate data<a class="headerlink" href="#cache-the-intermediate-data" title="Permanent link">¶</a></h3>
 <p>Recall that in Spark transformation are lazy until a shuffling is required. Laziness is a double-edged sword. </p>
 <p><img alt="" src="../images/spark_cache.png"/></p>
 <p>In the above, the orange partition (data) is being used by 3 different "sinks". If all the operations above the last levels are transformations (i.e. lazy.) Having 3 sink operations will require most of the intermediate partitions (all boxes except for the last) </p>
 <p>For example consider the following</p>
-<pre><code class="language-python">data = [(1, 100), (1, 90), (1, 80), (2, 80), (2, 30), (2, 50)]
-r1 = sc.parallelize(data)
-r2 = r1.map( lambda x:(x[0], x[1] * 0.01))
-r3 = r2.groupByKey()
-r4 = r3.map( lambda x:(x[0], std(x[1])))
-r5 = r3.map( lambda x:(x[0], min(x[1])))
-r4.collect()
-r5.collect()
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-17-1">1</a></span>
+<span class="normal"><a href="#__codelineno-17-2">2</a></span>
+<span class="normal"><a href="#__codelineno-17-3">3</a></span>
+<span class="normal"><a href="#__codelineno-17-4">4</a></span>
+<span class="normal"><a href="#__codelineno-17-5">5</a></span>
+<span class="normal"><a href="#__codelineno-17-6">6</a></span>
+<span class="normal"><a href="#__codelineno-17-7">7</a></span>
+<span class="normal"><a href="#__codelineno-17-8">8</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="n">data</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">90</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">80</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">80</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">50</span><span class="p">)]</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="n">r1</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3"></a><span class="n">r2</span> <span class="o">=</span> <span class="n">r1</span><span class="o">.</span><span class="n">map</span><span class="p">(</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.01</span><span class="p">))</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="n">r3</span> <span class="o">=</span> <span class="n">r2</span><span class="o">.</span><span class="n">groupByKey</span><span class="p">()</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="n">r4</span> <span class="o">=</span> <span class="n">r3</span><span class="o">.</span><span class="n">map</span><span class="p">(</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">std</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6"></a><span class="n">r5</span> <span class="o">=</span> <span class="n">r3</span><span class="o">.</span><span class="n">map</span><span class="p">(</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7"></a><span class="n">r4</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8"></a><span class="n">r5</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+</span></code></pre></div></td></tr></table></div>
 <p>There are two downstream operation of <code>r3</code>, namely <code>r4</code> computing the standard deviation by key, and <code>r5</code> computing the minimum by key. </p>
 <p>Due to the fact that <code>r3</code> is lazy. The <code>r4.collect()</code> action (sink) triggers the computation of <code>r1</code> to <code>r3</code> and <code>r4</code>. The <code>r5.collect()</code> triggers the recomputation of <code>r1</code> to <code>r3</code> and the computation of <code>r5</code>.</p>
 <p>If we materialize <code>r3</code> and cache it, we would avoid the recomputation of <code>r1</code> to <code>r3</code>. </p>
-<pre><code class="language-python">data = [(1, 100), (1, 90), (1, 80), (2, 80), (2, 30), (2, 50)]
-r1 = sc.parallelize(data)
-r2 = r1.map( lambda x:(x[0], x[1] * 0.01))
-r3 = r2.groupByKey().cache()
-r4 = r3.map( lambda x:(x[0], std(x[1])))
-r5 = r3.map( lambda x:(x[0], min(x[1])))
-r4.collect()
-r5.collect()
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-18-1">1</a></span>
+<span class="normal"><a href="#__codelineno-18-2">2</a></span>
+<span class="normal"><a href="#__codelineno-18-3">3</a></span>
+<span class="normal"><a href="#__codelineno-18-4">4</a></span>
+<span class="normal"><a href="#__codelineno-18-5">5</a></span>
+<span class="normal"><a href="#__codelineno-18-6">6</a></span>
+<span class="normal"><a href="#__codelineno-18-7">7</a></span>
+<span class="normal"><a href="#__codelineno-18-8">8</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="n">data</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">90</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">80</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">80</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">50</span><span class="p">)]</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2"></a><span class="n">r1</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3"></a><span class="n">r2</span> <span class="o">=</span> <span class="n">r1</span><span class="o">.</span><span class="n">map</span><span class="p">(</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.01</span><span class="p">))</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4"></a><span class="n">r3</span> <span class="o">=</span> <span class="n">r2</span><span class="o">.</span><span class="n">groupByKey</span><span class="p">()</span><span class="o">.</span><span class="n">cache</span><span class="p">()</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5"></a><span class="n">r4</span> <span class="o">=</span> <span class="n">r3</span><span class="o">.</span><span class="n">map</span><span class="p">(</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">std</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6"></a><span class="n">r5</span> <span class="o">=</span> <span class="n">r3</span><span class="o">.</span><span class="n">map</span><span class="p">(</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7"></a><span class="n">r4</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8"></a><span class="n">r5</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+</span></code></pre></div></td></tr></table></div>
 <ul>
-<li>Sample code</li>
+<li>Sample code
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-19-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1"></a>https://colab.research.google.com/drive/1QqUSa5Kkjpw3Avw2DlWX9ZMrZcsnDz5x?usp=sharing
+</span></code></pre></div></td></tr></table></div></li>
 </ul>
-<pre><code>https://colab.research.google.com/drive/1QqUSa5Kkjpw3Avw2DlWX9ZMrZcsnDz5x?usp=sharing
-</code></pre>
-<h3 id="other-optimization-tricks">Other optimization tricks</h3>
+<h3 id="other-optimization-tricks">Other optimization tricks<a class="headerlink" href="#other-optimization-tricks" title="Permanent link">¶</a></h3>
 <p>Besides the above mentioned two approaches, a trick that we've used in RDBMS for optimization is also applicable to Spark. i.e. apply filter as early as possible so as to reduce the size of intermediate output. </p>
 <p>Another Spark specific optimization trick is to rewriting <code>groupByKey().map(...)</code> by <code>reduceByKey(...)</code>. However in some cases, a rewrite solution might not exist.</p>
-<h2 id="spark-failure-recovery">Spark Failure Recovery</h2>
+<h2 id="spark-failure-recovery">Spark Failure Recovery<a class="headerlink" href="#spark-failure-recovery" title="Permanent link">¶</a></h2>
 <p>Recall that for any MapReduce implementation to produce deterministic results. The computation must be <em>pure</em>. </p>
 <p>It turns out that purity property makes failure recovery much easier. 
 For each Spark job, a lineage of the sub tasks is computed. In the event of failure, the Spark driver will refer to the lineage and recompute the affected sub-tasks. Thanks to the purity property, partially completed and incomplete computation can always be computed without the need of restoring the original state.</p>
@@ -550,50 +993,68 @@ For each Spark job, a lineage of the sub tasks is computed. In the event of fail
 <p>Where all the square boxes denote the partitions of some RDDs, suppose partition <code>C1</code> is faulty.</p>
 <p><img alt="" src="../images/spark_lineage2.png"/></p>
 <p>Based on the diagram (lineage), we know that we can recompute <code>C1</code> elsewhere by using <code>B1</code> and <code>B2</code>.</p>
-<h2 id="spark-dataframe">Spark DataFrame</h2>
+<h2 id="spark-dataframe">Spark DataFrame<a class="headerlink" href="#spark-dataframe" title="Permanent link">¶</a></h2>
 <p>Besides Spark RDD, Spark offers DataFrame as a higher level API interface to the programmers and data engineers. The ussage is influenced and inspired by Python's Pandas.</p>
 <p>In a nutshell, a dataframe can be seenas a schema plus a set of RDDs. </p>
 <p><img alt="" src="../images/spark_dataframe_columnar.png"/></p>
 <p>Since Dataframe was designed for machine learning applications, it adopts the column-based data structure instead of row based. </p>
-<h3 id="question-why-columnar">Question: Why Columnar?</h3>
+<h3 id="question-why-columnar">Question: Why Columnar?<a class="headerlink" href="#question-why-columnar" title="Permanent link">¶</a></h3>
 <p>Hint: How data are used in ML model?</p>
-<h3 id="creating-spark-dataframe">Creating Spark Dataframe</h3>
+<h3 id="creating-spark-dataframe">Creating Spark Dataframe<a class="headerlink" href="#creating-spark-dataframe" title="Permanent link">¶</a></h3>
 <p>We can convert a Spark rdd into a dataframe.</p>
-<pre><code class="language-python">data = [(1, 100), (1, 90), (1, 80), (2, 80), (2, 30), (2, 50)]
-r1 = sc.parallelize(data)
-df1 = r1.toDF("id", "score")
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-20-1">1</a></span>
+<span class="normal"><a href="#__codelineno-20-2">2</a></span>
+<span class="normal"><a href="#__codelineno-20-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="n">data</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">90</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">80</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">80</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">50</span><span class="p">)]</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2"></a><span class="n">r1</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3"></a><span class="n">df1</span> <span class="o">=</span> <span class="n">r1</span><span class="o">.</span><span class="n">toDF</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"score"</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
 <p>Alternatively, we can create DataFrames directly from a CSV file.</p>
-<p>Given file <code>hdfs://127.0.0.1:9000/foo.csv</code></p>
-<pre><code class="language-csv">foo,bar
-1,true
-2,false
-3,true
-4,false
-</code></pre>
-<pre><code class="language-python">df = sparkSession.read\
-     .option("header", "true")\
-     .option("inferSchema", "true")\
-     .csv("hdfs://127.0.0.1:9000/foo.csv")
-df.printSchema()
-</code></pre>
-<p>shows</p>
-<pre><code class="language-text">root
- |-- foo: integer (nullable = true)
- |-- bar: boolean (nullable = true)
-</code></pre>
+<p>Given file <code>hdfs://127.0.0.1:9000/foo.csv</code>
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-21-1">1</a></span>
+<span class="normal"><a href="#__codelineno-21-2">2</a></span>
+<span class="normal"><a href="#__codelineno-21-3">3</a></span>
+<span class="normal"><a href="#__codelineno-21-4">4</a></span>
+<span class="normal"><a href="#__codelineno-21-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1"></a>foo,bar
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2"></a>1,true
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3"></a>2,false
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4"></a>3,true
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5"></a>4,false
+</span></code></pre></div></td></tr></table></div>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-22-1">1</a></span>
+<span class="normal"><a href="#__codelineno-22-2">2</a></span>
+<span class="normal"><a href="#__codelineno-22-3">3</a></span>
+<span class="normal"><a href="#__codelineno-22-4">4</a></span>
+<span class="normal"><a href="#__codelineno-22-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1"></a><span class="n">df</span> <span class="o">=</span> <span class="n">sparkSession</span><span class="o">.</span><span class="n">read</span>\
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2"></a>     <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">"header"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">)</span>\
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3"></a>     <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">"inferSchema"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">)</span>\
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4"></a>     <span class="o">.</span><span class="n">csv</span><span class="p">(</span><span class="s2">"hdfs://127.0.0.1:9000/foo.csv"</span><span class="p">)</span>
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5"></a><span class="n">df</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+</span></code></pre></div></td></tr></table></div>
+shows
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-23-1">1</a></span>
+<span class="normal"><a href="#__codelineno-23-2">2</a></span>
+<span class="normal"><a href="#__codelineno-23-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1"></a>root
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2"></a> |-- foo: integer (nullable = true)
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3"></a> |-- bar: boolean (nullable = true)
+</span></code></pre></div></td></tr></table></div></p>
 <p>Note in the above, Spark loads a text file (CSV) from HDFS and infers the schema based on the first line and the values.</p>
-<h3 id="dataframe-apis">DataFrame APIs</h3>
+<h3 id="dataframe-apis">DataFrame APIs<a class="headerlink" href="#dataframe-apis" title="Permanent link">¶</a></h3>
 <p>Let's have tour of the Spark DataFrame APIs by going through some examples.</p>
 <p>Here is the data we use in the examples</p>
-<pre><code class="language-python">data = [("100001", "Ace", "50043", 90), \
-        ("100002", "Brandon", "50043", 95), \
-        ("100003", "Cheryl", "50043", 80)]
-distData = sc.parallelize(data)
-df = distData.toDF(["studentid", "name", \
-                 "module", "score"])
-df.show()
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-24-1">1</a></span>
+<span class="normal"><a href="#__codelineno-24-2">2</a></span>
+<span class="normal"><a href="#__codelineno-24-3">3</a></span>
+<span class="normal"><a href="#__codelineno-24-4">4</a></span>
+<span class="normal"><a href="#__codelineno-24-5">5</a></span>
+<span class="normal"><a href="#__codelineno-24-6">6</a></span>
+<span class="normal"><a href="#__codelineno-24-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1"></a><span class="n">data</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">"100001"</span><span class="p">,</span> <span class="s2">"Ace"</span><span class="p">,</span> <span class="s2">"50043"</span><span class="p">,</span> <span class="mi">90</span><span class="p">),</span> \
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2"></a>        <span class="p">(</span><span class="s2">"100002"</span><span class="p">,</span> <span class="s2">"Brandon"</span><span class="p">,</span> <span class="s2">"50043"</span><span class="p">,</span> <span class="mi">95</span><span class="p">),</span> \
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3"></a>        <span class="p">(</span><span class="s2">"100003"</span><span class="p">,</span> <span class="s2">"Cheryl"</span><span class="p">,</span> <span class="s2">"50043"</span><span class="p">,</span> <span class="mi">80</span><span class="p">)]</span>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4"></a><span class="n">distData</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5"></a><span class="n">df</span> <span class="o">=</span> <span class="n">distData</span><span class="o">.</span><span class="n">toDF</span><span class="p">([</span><span class="s2">"studentid"</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">,</span> \
+</span><span id="__span-24-6"><a id="__codelineno-24-6" name="__codelineno-24-6"></a>                 <span class="s2">"module"</span><span class="p">,</span> <span class="s2">"score"</span><span class="p">])</span>
+</span><span id="__span-24-7"><a id="__codelineno-24-7" name="__codelineno-24-7"></a><span class="n">df</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></div></td></tr></table></div>
 <table>
 <thead>
 <tr>
@@ -624,13 +1085,16 @@ df.show()
 </tr>
 </tbody>
 </table>
-<h4 id="column-projection">Column Projection</h4>
+<h4 id="column-projection">Column Projection<a class="headerlink" href="#column-projection" title="Permanent link">¶</a></h4>
 <p>To project (select the columns) we use the <code>.select()</code> method.</p>
-<pre><code class="language-python">df.select(df["studentid"], df["score"]).show() # or
-
-from pyspark.sql.functions import col
-df.select(col("studentid"), col("score")).show() 
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-25-1">1</a></span>
+<span class="normal"><a href="#__codelineno-25-2">2</a></span>
+<span class="normal"><a href="#__codelineno-25-3">3</a></span>
+<span class="normal"><a href="#__codelineno-25-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1"></a><span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"studentid"</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s2">"score"</span><span class="p">])</span><span class="o">.</span><span class="n">show</span><span class="p">()</span> <span class="c1"># or</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2"></a>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3"></a><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">col</span>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4"></a><span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"studentid"</span><span class="p">),</span> <span class="n">col</span><span class="p">(</span><span class="s2">"score"</span><span class="p">))</span><span class="o">.</span><span class="n">show</span><span class="p">()</span> 
+</span></code></pre></div></td></tr></table></div>
 <table>
 <thead>
 <tr>
@@ -654,11 +1118,14 @@ df.select(col("studentid"), col("score")).show()
 </tbody>
 </table>
 <p>To compute a new column based on the existing one, we use an overloaded version of the <code>.select()</code> method whose first argument is the operation and the second argument is the name of the new column.</p>
-<pre><code class="language-python">from pyspark.sql.functions import concat, lit
-df.select(concat(df["studentid"]\
-         ,lit("@mymail.sutd.edu.sg"))\
-   .alias("email")).show()
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-26-1">1</a></span>
+<span class="normal"><a href="#__codelineno-26-2">2</a></span>
+<span class="normal"><a href="#__codelineno-26-3">3</a></span>
+<span class="normal"><a href="#__codelineno-26-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1"></a><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">concat</span><span class="p">,</span> <span class="n">lit</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2"></a><span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">concat</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"studentid"</span><span class="p">]</span>\
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3"></a>         <span class="p">,</span><span class="n">lit</span><span class="p">(</span><span class="s2">"@mymail.sutd.edu.sg"</span><span class="p">))</span>\
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4"></a>   <span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">"email"</span><span class="p">))</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></div></td></tr></table></div>
 <table>
 <thead>
 <tr>
@@ -677,14 +1144,16 @@ df.select(concat(df["studentid"]\
 </tr>
 </tbody>
 </table>
-<p>For the full set of builtin funtcions for column operations.</p>
-<pre><code class="language-url">https://spark.apache.org/docs/3.0.1/api/python/pyspark.sql.html
-</code></pre>
+<p>For the full set of builtin funtcions for column operations.
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-27-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1"></a>https://spark.apache.org/docs/3.0.1/api/python/pyspark.sql.html
+</span></code></pre></div></td></tr></table></div></p>
 <p>There are times we want to create a new column and keeping the old columns.</p>
-<pre><code class="language-python">df.withColumn("email",concat(col("studentid"),\
-   lit("@mymail.sutd.edu.sg")))\
-   .show()
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-28-1">1</a></span>
+<span class="normal"><a href="#__codelineno-28-2">2</a></span>
+<span class="normal"><a href="#__codelineno-28-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1"></a><span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">"email"</span><span class="p">,</span><span class="n">concat</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"studentid"</span><span class="p">),</span>\
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2"></a>   <span class="n">lit</span><span class="p">(</span><span class="s2">"@mymail.sutd.edu.sg"</span><span class="p">)))</span>\
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3"></a>   <span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></div></td></tr></table></div>
 <table>
 <thead>
 <tr>
@@ -719,10 +1188,10 @@ df.select(concat(df["studentid"]\
 </tr>
 </tbody>
 </table>
-<h4 id="row-filtering">Row filtering</h4>
+<h4 id="row-filtering">Row filtering<a class="headerlink" href="#row-filtering" title="Permanent link">¶</a></h4>
 <p>For row filterings, we use <code>.filter()</code> method.</p>
-<pre><code class="language-python">df.filter(col("studentid") == "100003").show()
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-29-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1"></a><span class="n">df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"studentid"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"100003"</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></div></td></tr></table></div>
 <table>
 <thead>
 <tr>
@@ -742,8 +1211,8 @@ df.select(concat(df["studentid"]\
 </tbody>
 </table>
 <p>And similar for range filter</p>
-<pre><code class="language-python">df.filter(col("score") &gt; 90).show()
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-30-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1"></a><span class="n">df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"score"</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">90</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></div></td></tr></table></div>
 <table>
 <thead>
 <tr>
@@ -763,10 +1232,10 @@ df.select(concat(df["studentid"]\
 </tbody>
 </table>
 <p><code>lit()</code> is optional here, pyspark inserts it for us.</p>
-<h4 id="group-by-and-aggregation">Group By and Aggregation</h4>
+<h4 id="group-by-and-aggregation">Group By and Aggregation<a class="headerlink" href="#group-by-and-aggregation" title="Permanent link">¶</a></h4>
 <p>For aggregation, we use <code>.groupBy()</code> </p>
-<pre><code class="language-python">df.groupBy("module").avg().show()
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-31-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1"></a><span class="n">df</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">"module"</span><span class="p">)</span><span class="o">.</span><span class="n">avg</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></div></td></tr></table></div>
 <table>
 <thead>
 <tr>
@@ -781,16 +1250,22 @@ df.select(concat(df["studentid"]\
 </tr>
 </tbody>
 </table>
-<h4 id="join">Join</h4>
+<h4 id="join">Join<a class="headerlink" href="#join" title="Permanent link">¶</a></h4>
 <p>For join, we use <code>.join()</code> </p>
-<pre><code class="language-python">moddata = [("50043", "Database and Big Data Systems")]
-distmodData = sc.parallelize(moddata)
-moddf = distmodData.toDF(["module", "modname"])
-
-df.join(moddf, df["module"] == moddf["module"], "inner")\
-   .select(df["studentid"], df["name"], df["module"],\
-   df["score"], moddf["modname"]).show()
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-32-1">1</a></span>
+<span class="normal"><a href="#__codelineno-32-2">2</a></span>
+<span class="normal"><a href="#__codelineno-32-3">3</a></span>
+<span class="normal"><a href="#__codelineno-32-4">4</a></span>
+<span class="normal"><a href="#__codelineno-32-5">5</a></span>
+<span class="normal"><a href="#__codelineno-32-6">6</a></span>
+<span class="normal"><a href="#__codelineno-32-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1"></a><span class="n">moddata</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">"50043"</span><span class="p">,</span> <span class="s2">"Database and Big Data Systems"</span><span class="p">)]</span>
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2"></a><span class="n">distmodData</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">moddata</span><span class="p">)</span>
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3"></a><span class="n">moddf</span> <span class="o">=</span> <span class="n">distmodData</span><span class="o">.</span><span class="n">toDF</span><span class="p">([</span><span class="s2">"module"</span><span class="p">,</span> <span class="s2">"modname"</span><span class="p">])</span>
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4"></a>
+</span><span id="__span-32-5"><a id="__codelineno-32-5" name="__codelineno-32-5"></a><span class="n">df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">moddf</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s2">"module"</span><span class="p">]</span> <span class="o">==</span> <span class="n">moddf</span><span class="p">[</span><span class="s2">"module"</span><span class="p">],</span> <span class="s2">"inner"</span><span class="p">)</span>\
+</span><span id="__span-32-6"><a id="__codelineno-32-6" name="__codelineno-32-6"></a>   <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"studentid"</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s2">"name"</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s2">"module"</span><span class="p">],</span>\
+</span><span id="__span-32-7"><a id="__codelineno-32-7" name="__codelineno-32-7"></a>   <span class="n">df</span><span class="p">[</span><span class="s2">"score"</span><span class="p">],</span> <span class="n">moddf</span><span class="p">[</span><span class="s2">"modname"</span><span class="p">])</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></div></td></tr></table></div>
 <table>
 <thead>
 <tr>
@@ -825,12 +1300,13 @@ df.join(moddf, df["module"] == moddf["module"], "inner")\
 </tr>
 </tbody>
 </table>
-<h2 id="spark-sql">Spark SQL</h2>
+<h2 id="spark-sql">Spark SQL<a class="headerlink" href="#spark-sql" title="Permanent link">¶</a></h2>
 <p>Besides Spark RDD, Spark allows program to use SQL query to perform data transformation and action. </p>
-<p>For example, </p>
-<pre><code class="language-python">df.createOrReplaceTempView("students")
-spark.sql("SELECT * FROM students").show()
-</code></pre>
+<p>For example, 
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-33-1">1</a></span>
+<span class="normal"><a href="#__codelineno-33-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1"></a><span class="n">df</span><span class="o">.</span><span class="n">createOrReplaceTempView</span><span class="p">(</span><span class="s2">"students"</span><span class="p">)</span>
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2"></a><span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">"SELECT * FROM students"</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></div></td></tr></table></div></p>
 <table>
 <thead>
 <tr>
@@ -863,115 +1339,164 @@ spark.sql("SELECT * FROM students").show()
 </table>
 <p>With some notebook support, we can even use SQL to perform
 data visualization.</p>
-<h2 id="spark-machine-learning">Spark Machine Learning</h2>
+<h2 id="spark-machine-learning">Spark Machine Learning<a class="headerlink" href="#spark-machine-learning" title="Permanent link">¶</a></h2>
 <p>Spark comes with two differen Machine Learning libraries.</p>
 <ul>
 <li><code>MLLib</code> package - for RDD</li>
 <li><code>ML</code> package - for dataframe (and dataset)</li>
 </ul>
-<h3 id="mllib-package">MLLib package</h3>
+<h3 id="mllib-package">MLLib package<a class="headerlink" href="#mllib-package" title="Permanent link">¶</a></h3>
 <p>MLLib package offers a lower level access of data type such as vectors and label points. </p>
-<h4 id="vectors">Vectors</h4>
+<h4 id="vectors">Vectors<a class="headerlink" href="#vectors" title="Permanent link">¶</a></h4>
 <p>In Spark, vectors are local data collection (non-distributed). 
 There are dense vectors and sparse vectors.</p>
 <ul>
-<li>For dense vector - all values need to be specified when it is created</li>
+<li>
+<p>For dense vector - all values need to be specified when it is created
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-34-1">1</a></span>
+<span class="normal"><a href="#__codelineno-34-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1"></a><span class="kn">from</span> <span class="nn">pyspark.mllib.linalg</span> <span class="kn">import</span> <span class="o">*</span> 
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2"></a><span class="n">dv</span> <span class="o">=</span> <span class="n">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div></p>
+</li>
+<li>
+<p>For sparse vector - we don't need to specify all the value, instead we specify the size of the vector as well as the non-zero values.</p>
+</li>
 </ul>
-<pre><code class="language-python">from pyspark.mllib.linalg import * 
-dv = Vectors.dense(1.0, 0.0, 3.0)
-</code></pre>
-<ul>
-<li>For sparse vector - we don't need to specify all the value, instead we specify the size of the vector as well as the non-zero values.</li>
-</ul>
-<pre><code class="language-python">sv1 = Vectors.sparse(3, [0, 2], [1.0, 3.0]) # or
-sv2 = Vectors.sparse(3, [(0, 1.0), (2, 3.0)])
-</code></pre>
-<h4 id="labeled-points">Labeled points</h4>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-35-1">1</a></span>
+<span class="normal"><a href="#__codelineno-35-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1"></a><span class="n">sv1</span> <span class="o">=</span> <span class="n">Vectors</span><span class="o">.</span><span class="n">sparse</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span> <span class="c1"># or</span>
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2"></a><span class="n">sv2</span> <span class="o">=</span> <span class="n">Vectors</span><span class="o">.</span><span class="n">sparse</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">)])</span>
+</span></code></pre></div></td></tr></table></div>
+<h4 id="labeled-points">Labeled points<a class="headerlink" href="#labeled-points" title="Permanent link">¶</a></h4>
 <p>With features extracted as vectors. We need to find a way to label them.</p>
 <p>Spark MLLib comes with its own labeled point data type</p>
-<pre><code class="language-python">from pyspark.mllib.regression import *
-# Create a labeled point with a positive label
-# and a dense feature vector.
-pos = LabeledPoint(1.0, Vectors.dense(1.0, 0.0, 3.0))
-# Create a labeled point with a negative label
-# and a sparse feature vector.
-neg = LabeledPoint(0.0, Vectors.sparse(3, \
-      [(0, 1.0), (2, 3.0)]))
-</code></pre>
-<h4 id="training-an-inference">Training an inference</h4>
-<p>With labeled points defined and extracted, assuming</p>
-<pre><code class="language-python">pos = ... # RDD of labeled points
-neg = ... # RDD of labeled points
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-36-1">1</a></span>
+<span class="normal"><a href="#__codelineno-36-2">2</a></span>
+<span class="normal"><a href="#__codelineno-36-3">3</a></span>
+<span class="normal"><a href="#__codelineno-36-4">4</a></span>
+<span class="normal"><a href="#__codelineno-36-5">5</a></span>
+<span class="normal"><a href="#__codelineno-36-6">6</a></span>
+<span class="normal"><a href="#__codelineno-36-7">7</a></span>
+<span class="normal"><a href="#__codelineno-36-8">8</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1"></a><span class="kn">from</span> <span class="nn">pyspark.mllib.regression</span> <span class="kn">import</span> <span class="o">*</span>
+</span><span id="__span-36-2"><a id="__codelineno-36-2" name="__codelineno-36-2"></a><span class="c1"># Create a labeled point with a positive label</span>
+</span><span id="__span-36-3"><a id="__codelineno-36-3" name="__codelineno-36-3"></a><span class="c1"># and a dense feature vector.</span>
+</span><span id="__span-36-4"><a id="__codelineno-36-4" name="__codelineno-36-4"></a><span class="n">pos</span> <span class="o">=</span> <span class="n">LabeledPoint</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">))</span>
+</span><span id="__span-36-5"><a id="__codelineno-36-5" name="__codelineno-36-5"></a><span class="c1"># Create a labeled point with a negative label</span>
+</span><span id="__span-36-6"><a id="__codelineno-36-6" name="__codelineno-36-6"></a><span class="c1"># and a sparse feature vector.</span>
+</span><span id="__span-36-7"><a id="__codelineno-36-7" name="__codelineno-36-7"></a><span class="n">neg</span> <span class="o">=</span> <span class="n">LabeledPoint</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">Vectors</span><span class="o">.</span><span class="n">sparse</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> \
+</span><span id="__span-36-8"><a id="__codelineno-36-8" name="__codelineno-36-8"></a>      <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">)]))</span>
+</span></code></pre></div></td></tr></table></div>
+<h4 id="training-an-inference">Training an inference<a class="headerlink" href="#training-an-inference" title="Permanent link">¶</a></h4>
+<p>With labeled points defined and extracted, assuming
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-37-1">1</a></span>
+<span class="normal"><a href="#__codelineno-37-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1"></a><span class="n">pos</span> <span class="o">=</span> <span class="o">...</span> <span class="c1"># RDD of labeled points</span>
+</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2"></a><span class="n">neg</span> <span class="o">=</span> <span class="o">...</span> <span class="c1"># RDD of labeled points</span>
+</span></code></pre></div></td></tr></table></div></p>
 <p>we train the model</p>
-<pre><code class="language-python">from pyspark.mllib.classification import SVMWithSGD
-training = pos + neg
-numIteration = 20
-model = SVMWithSGD.train(training, numIterations)
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-38-1">1</a></span>
+<span class="normal"><a href="#__codelineno-38-2">2</a></span>
+<span class="normal"><a href="#__codelineno-38-3">3</a></span>
+<span class="normal"><a href="#__codelineno-38-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1"></a><span class="kn">from</span> <span class="nn">pyspark.mllib.classification</span> <span class="kn">import</span> <span class="n">SVMWithSGD</span>
+</span><span id="__span-38-2"><a id="__codelineno-38-2" name="__codelineno-38-2"></a><span class="n">training</span> <span class="o">=</span> <span class="n">pos</span> <span class="o">+</span> <span class="n">neg</span>
+</span><span id="__span-38-3"><a id="__codelineno-38-3" name="__codelineno-38-3"></a><span class="n">numIteration</span> <span class="o">=</span> <span class="mi">20</span>
+</span><span id="__span-38-4"><a id="__codelineno-38-4" name="__codelineno-38-4"></a><span class="n">model</span> <span class="o">=</span> <span class="n">SVMWithSGD</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">training</span><span class="p">,</span> <span class="n">numIterations</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
 <p>which is a support vector machine with SGD algorithm.</p>
 <p>To perform inference, we need to feed a new sample as a vector to the model.</p>
-<pre><code class="language-python">newInstance = Vectors.dense(1.0, 2.0, 3.0)
-model.predict(newInstance)
-</code></pre>
-<h3 id="ml-package">ML Package</h3>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-39-1">1</a></span>
+<span class="normal"><a href="#__codelineno-39-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1"></a><span class="n">newInstance</span> <span class="o">=</span> <span class="n">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">)</span>
+</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2"></a><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">newInstance</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
+<h3 id="ml-package">ML Package<a class="headerlink" href="#ml-package" title="Permanent link">¶</a></h3>
 <p>As the ML package is targetting the higher level data structures (Dataframe and Dataset), machine learning models in ML package are built using the pipeline. </p>
-<h4 id="the-training-pipeline">The Training Pipeline</h4>
+<h4 id="the-training-pipeline">The Training Pipeline<a class="headerlink" href="#the-training-pipeline" title="Permanent link">¶</a></h4>
 <p>One of the training pipelines is known as the estimator</p>
 <p><img alt="Estimator Pipeline" src="https://spark.apache.org/docs/latest/img/ml-Pipeline.png"/></p>
 <p>In the diagram above, it illustrate the pipeline of training a classifier using logistic regression. </p>
-<pre><code class="language-python">from pyspark.ml import Pipeline, PipelineModel
-from pyspark.ml.classification import LogisticRegression
-from pyspark.ml.feature import HashingTF, Tokenizer
-data = spark.createDataFrame([
-    (0, "a b c d e spark", 1.0),
-    (1, "b d", 0.0),
-    (2, "spark f g h", 1.0),
-    (3, "hadoop mapreduce", 0.0),
-    (4, "spark is scaling", 1.0),
-    (5, "random stuff", 0.0)
-], ["id", "text", "label"])
-
-train, test = data.randomSplit([0.7, 0.3], seed=12345)
-# Configure an estimator pipeline, 
-tokenizer = Tokenizer(inputCol="text", outputCol="words")
-hashingTF = HashingTF(inputCol=tokenizer.getOutputCol(), outputCol="features")
-lr = LogisticRegression(maxIter=10, regParam=0.001)
-pipeline = Pipeline(stages=[tokenizer, hashingTF, lr])
-
-# Fit the pipeline to train
-model = pipeline.fit(train)
-</code></pre>
-<h4 id="the-transformer-pipeline">The transformer pipeline</h4>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-40-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-40-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-40-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-40-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-40-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-40-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-40-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-40-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-40-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-40-10">10</a></span>
+<span class="normal"><a href="#__codelineno-40-11">11</a></span>
+<span class="normal"><a href="#__codelineno-40-12">12</a></span>
+<span class="normal"><a href="#__codelineno-40-13">13</a></span>
+<span class="normal"><a href="#__codelineno-40-14">14</a></span>
+<span class="normal"><a href="#__codelineno-40-15">15</a></span>
+<span class="normal"><a href="#__codelineno-40-16">16</a></span>
+<span class="normal"><a href="#__codelineno-40-17">17</a></span>
+<span class="normal"><a href="#__codelineno-40-18">18</a></span>
+<span class="normal"><a href="#__codelineno-40-19">19</a></span>
+<span class="normal"><a href="#__codelineno-40-20">20</a></span>
+<span class="normal"><a href="#__codelineno-40-21">21</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1"></a><span class="kn">from</span> <span class="nn">pyspark.ml</span> <span class="kn">import</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">PipelineModel</span>
+</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2"></a><span class="kn">from</span> <span class="nn">pyspark.ml.classification</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+</span><span id="__span-40-3"><a id="__codelineno-40-3" name="__codelineno-40-3"></a><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">HashingTF</span><span class="p">,</span> <span class="n">Tokenizer</span>
+</span><span id="__span-40-4"><a id="__codelineno-40-4" name="__codelineno-40-4"></a><span class="n">data</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">([</span>
+</span><span id="__span-40-5"><a id="__codelineno-40-5" name="__codelineno-40-5"></a>    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">"a b c d e spark"</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+</span><span id="__span-40-6"><a id="__codelineno-40-6" name="__codelineno-40-6"></a>    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"b d"</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+</span><span id="__span-40-7"><a id="__codelineno-40-7" name="__codelineno-40-7"></a>    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">"spark f g h"</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+</span><span id="__span-40-8"><a id="__codelineno-40-8" name="__codelineno-40-8"></a>    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">"hadoop mapreduce"</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+</span><span id="__span-40-9"><a id="__codelineno-40-9" name="__codelineno-40-9"></a>    <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s2">"spark is scaling"</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+</span><span id="__span-40-10"><a id="__codelineno-40-10" name="__codelineno-40-10"></a>    <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">"random stuff"</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+</span><span id="__span-40-11"><a id="__codelineno-40-11" name="__codelineno-40-11"></a><span class="p">],</span> <span class="p">[</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">,</span> <span class="s2">"label"</span><span class="p">])</span>
+</span><span id="__span-40-12"><a id="__codelineno-40-12" name="__codelineno-40-12"></a>
+</span><span id="__span-40-13"><a id="__codelineno-40-13" name="__codelineno-40-13"></a><span class="n">train</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">randomSplit</span><span class="p">([</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span> <span class="n">seed</span><span class="o">=</span><span class="mi">12345</span><span class="p">)</span>
+</span><span id="__span-40-14"><a id="__codelineno-40-14" name="__codelineno-40-14"></a><span class="c1"># Configure an estimator pipeline, </span>
+</span><span id="__span-40-15"><a id="__codelineno-40-15" name="__codelineno-40-15"></a><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="p">(</span><span class="n">inputCol</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">outputCol</span><span class="o">=</span><span class="s2">"words"</span><span class="p">)</span>
+</span><span id="__span-40-16"><a id="__codelineno-40-16" name="__codelineno-40-16"></a><span class="n">hashingTF</span> <span class="o">=</span> <span class="n">HashingTF</span><span class="p">(</span><span class="n">inputCol</span><span class="o">=</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">getOutputCol</span><span class="p">(),</span> <span class="n">outputCol</span><span class="o">=</span><span class="s2">"features"</span><span class="p">)</span>
+</span><span id="__span-40-17"><a id="__codelineno-40-17" name="__codelineno-40-17"></a><span class="n">lr</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">maxIter</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">regParam</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
+</span><span id="__span-40-18"><a id="__codelineno-40-18" name="__codelineno-40-18"></a><span class="n">pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">stages</span><span class="o">=</span><span class="p">[</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">hashingTF</span><span class="p">,</span> <span class="n">lr</span><span class="p">])</span>
+</span><span id="__span-40-19"><a id="__codelineno-40-19" name="__codelineno-40-19"></a>
+</span><span id="__span-40-20"><a id="__codelineno-40-20" name="__codelineno-40-20"></a><span class="c1"># Fit the pipeline to train</span>
+</span><span id="__span-40-21"><a id="__codelineno-40-21" name="__codelineno-40-21"></a><span class="n">model</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
+<h4 id="the-transformer-pipeline">The transformer pipeline<a class="headerlink" href="#the-transformer-pipeline" title="Permanent link">¶</a></h4>
 <p>The inference pipeline on the other hand is known as the transformer </p>
 <p><img alt="Transformer Pipeline" src="https://spark.apache.org/docs/latest/img/ml-PipelineModel.png"/></p>
-<pre><code class="language-python"># Configure an Inference pipeline
-# Note now model include tokenizterm hashingTF, and lr
-pipeline_model = PipelineModel(stages=[model]) 
-prediction = pipeline_model.transform(test)
-result = prediction.select("id", "text", "probability", "prediction")
-result.show()
-</code></pre>
-<h4 id="sample-code">Sample code</h4>
-<pre><code>https://colab.research.google.com/drive/1ZI-BG2XaB3AOyzPrXeqO7xqNGYycCJ-U?usp=sharing
-</code></pre>
-<h2 id="spark-streaming">Spark Streaming</h2>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-41-1">1</a></span>
+<span class="normal"><a href="#__codelineno-41-2">2</a></span>
+<span class="normal"><a href="#__codelineno-41-3">3</a></span>
+<span class="normal"><a href="#__codelineno-41-4">4</a></span>
+<span class="normal"><a href="#__codelineno-41-5">5</a></span>
+<span class="normal"><a href="#__codelineno-41-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1"></a><span class="c1"># Configure an Inference pipeline</span>
+</span><span id="__span-41-2"><a id="__codelineno-41-2" name="__codelineno-41-2"></a><span class="c1"># Note now model include tokenizterm hashingTF, and lr</span>
+</span><span id="__span-41-3"><a id="__codelineno-41-3" name="__codelineno-41-3"></a><span class="n">pipeline_model</span> <span class="o">=</span> <span class="n">PipelineModel</span><span class="p">(</span><span class="n">stages</span><span class="o">=</span><span class="p">[</span><span class="n">model</span><span class="p">])</span> 
+</span><span id="__span-41-4"><a id="__codelineno-41-4" name="__codelineno-41-4"></a><span class="n">prediction</span> <span class="o">=</span> <span class="n">pipeline_model</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+</span><span id="__span-41-5"><a id="__codelineno-41-5" name="__codelineno-41-5"></a><span class="n">result</span> <span class="o">=</span> <span class="n">prediction</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">,</span> <span class="s2">"probability"</span><span class="p">,</span> <span class="s2">"prediction"</span><span class="p">)</span>
+</span><span id="__span-41-6"><a id="__codelineno-41-6" name="__codelineno-41-6"></a><span class="n">result</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></div></td></tr></table></div>
+<h4 id="sample-code">Sample code<a class="headerlink" href="#sample-code" title="Permanent link">¶</a></h4>
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-42-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1"></a>https://colab.research.google.com/drive/1ZI-BG2XaB3AOyzPrXeqO7xqNGYycCJ-U?usp=sharing
+</span></code></pre></div></td></tr></table></div>
+<h2 id="spark-streaming">Spark Streaming<a class="headerlink" href="#spark-streaming" title="Permanent link">¶</a></h2>
 <p>Spark offers Streaming API which handles real time (infinite) input data. </p>
 <p>The real-timeness is approxmiated by chopping the data stream into small batches. 
 These small batches are fed to the spark application. </p>
 <p><img alt="" src="https://spark.apache.org/docs/latest/img/streaming-flow.png"/></p>
 <p>For example the following is a simplified version of a data streaming application that computes the page views by URL over time.</p>
-<pre><code class="language-python">from pyspark import SparkContext
-from pyspark.streaming import StreamingContext
-sc = SparkContext("local[2]", "PageView")
-ssc = StreamingContext(sc, 1)
-
-lines = ssc.socketTextStream("localhost", 9999)
-pageViews = lines.map(lambda l:parse(l))
-ones = pageViews.map(lambda x: (x.url, 1))
-counts = ones.runningReduce(lambda x,y: x+y)
-</code></pre>
-<h2 id="additional-references">Additional References</h2>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-43-1">1</a></span>
+<span class="normal"><a href="#__codelineno-43-2">2</a></span>
+<span class="normal"><a href="#__codelineno-43-3">3</a></span>
+<span class="normal"><a href="#__codelineno-43-4">4</a></span>
+<span class="normal"><a href="#__codelineno-43-5">5</a></span>
+<span class="normal"><a href="#__codelineno-43-6">6</a></span>
+<span class="normal"><a href="#__codelineno-43-7">7</a></span>
+<span class="normal"><a href="#__codelineno-43-8">8</a></span>
+<span class="normal"><a href="#__codelineno-43-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1"></a><span class="kn">from</span> <span class="nn">pyspark</span> <span class="kn">import</span> <span class="n">SparkContext</span>
+</span><span id="__span-43-2"><a id="__codelineno-43-2" name="__codelineno-43-2"></a><span class="kn">from</span> <span class="nn">pyspark.streaming</span> <span class="kn">import</span> <span class="n">StreamingContext</span>
+</span><span id="__span-43-3"><a id="__codelineno-43-3" name="__codelineno-43-3"></a><span class="n">sc</span> <span class="o">=</span> <span class="n">SparkContext</span><span class="p">(</span><span class="s2">"local[2]"</span><span class="p">,</span> <span class="s2">"PageView"</span><span class="p">)</span>
+</span><span id="__span-43-4"><a id="__codelineno-43-4" name="__codelineno-43-4"></a><span class="n">ssc</span> <span class="o">=</span> <span class="n">StreamingContext</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-43-5"><a id="__codelineno-43-5" name="__codelineno-43-5"></a>
+</span><span id="__span-43-6"><a id="__codelineno-43-6" name="__codelineno-43-6"></a><span class="n">lines</span> <span class="o">=</span> <span class="n">ssc</span><span class="o">.</span><span class="n">socketTextStream</span><span class="p">(</span><span class="s2">"localhost"</span><span class="p">,</span> <span class="mi">9999</span><span class="p">)</span>
+</span><span id="__span-43-7"><a id="__codelineno-43-7" name="__codelineno-43-7"></a><span class="n">pageViews</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">l</span><span class="p">:</span><span class="n">parse</span><span class="p">(</span><span class="n">l</span><span class="p">))</span>
+</span><span id="__span-43-8"><a id="__codelineno-43-8" name="__codelineno-43-8"></a><span class="n">ones</span> <span class="o">=</span> <span class="n">pageViews</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</span><span id="__span-43-9"><a id="__codelineno-43-9" name="__codelineno-43-9"></a><span class="n">counts</span> <span class="o">=</span> <span class="n">ones</span><span class="o">.</span><span class="n">runningReduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
+<h2 id="additional-references">Additional References<a class="headerlink" href="#additional-references" title="Permanent link">¶</a></h2>
 <ul>
 <li>Spark Dataframe</li>
 <li>https://spark.apache.org/docs/latest/sql-getting-started.html</li>
@@ -979,84 +1504,36 @@ counts = ones.runningReduce(lambda x,y: x+y)
 <li>https://spark.apache.org/docs/latest/ml-guide.html</li>
 <li>Spark Streaming </li>
 <li>https://spark.apache.org/docs/latest/streaming-programming-guide.html</li>
-</ul></div>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
 </div>
 </div>
-<footer class="col-md-12">
-<hr/>
-<p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+</div>
 </footer>
-<script src="../../js/jquery-3.6.0.min.js"></script>
-<script src="../../js/bootstrap.min.js"></script>
-<script>
-            var base_url = "../..",
-                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
-        </script>
-<script src="../../js/base.js"></script>
-<script src="../../javascripts/mathjax.js"></script>
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "content.code.copy", "navigation.expand", "navigation.indexes", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+<script src="../../assets/javascripts/bundle.d7c377c4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<script src="../../search/main.js"></script>
-<div aria-hidden="true" aria-labelledby="searchModalLabel" class="modal" id="mkdocs_search_modal" role="dialog" tabindex="-1">
-<div class="modal-dialog modal-lg">
-<div class="modal-content">
-<div class="modal-header">
-<h4 class="modal-title" id="searchModalLabel">Search</h4>
-<button class="close" data-dismiss="modal" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-</div>
-<div class="modal-body">
-<p>From here you can search these documents. Enter your search terms below.</p>
-<form>
-<div class="form-group">
-<input class="form-control" id="mkdocs-search-query" placeholder="Search..." title="Type search term here" type="search"/>
-</div>
-</form>
-<div data-no-results-text="No results found" id="mkdocs-search-results"></div>
-</div>
-<div class="modal-footer">
-</div>
-</div>
-</div>
-</div><div aria-hidden="true" aria-labelledby="keyboardModalLabel" class="modal" id="mkdocs_keyboard_modal" role="dialog" tabindex="-1">
-<div class="modal-dialog">
-<div class="modal-content">
-<div class="modal-header">
-<h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
-<button class="close" data-dismiss="modal" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-</div>
-<div class="modal-body">
-<table class="table">
-<thead>
-<tr>
-<th style="width: 20%;">Keys</th>
-<th>Action</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="help shortcut"><kbd>?</kbd></td>
-<td>Open this help</td>
-</tr>
-<tr>
-<td class="next shortcut"><kbd>n</kbd></td>
-<td>Next page</td>
-</tr>
-<tr>
-<td class="prev shortcut"><kbd>p</kbd></td>
-<td>Previous page</td>
-</tr>
-<tr>
-<td class="search shortcut"><kbd>s</kbd></td>
-<td>Search</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="modal-footer">
-</div>
-</div>
-</div>
-</div>
-<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
-mermaid.initialize({});</script></body>
+</body>
 </html>

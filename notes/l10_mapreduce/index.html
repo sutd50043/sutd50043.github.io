@@ -1,113 +1,662 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
-        
-        
-        <link rel="shortcut icon" href="../../img/favicon.ico">
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.3">
+    
+    
+      
         <title>50.043 Map Reduce - Database System and Big Data 50.043</title>
-        <link href="../../css/bootstrap.min.css" rel="stylesheet">
-        <link href="../../css/font-awesome.min.css" rel="stylesheet">
-        <link href="../../css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-        <script>hljs.highlightAll();</script> 
-    </head>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.50c56a3b.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+  
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+  
+  <style>:root{--md-admonition-icon--abstract:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M2.5 1.75v11.5c0 .138.112.25.25.25h3.17a.75.75 0 0 1 0 1.5H2.75A1.75 1.75 0 0 1 1 13.25V1.75C1 .784 1.784 0 2.75 0h8.5C12.216 0 13 .784 13 1.75v7.736a.75.75 0 0 1-1.5 0V1.75a.25.25 0 0 0-.25-.25h-8.5a.25.25 0 0 0-.25.25Zm13.274 9.537v-.001l-4.557 4.45a.75.75 0 0 1-1.055-.008l-1.943-1.95a.75.75 0 0 1 1.062-1.058l1.419 1.425 4.026-3.932a.75.75 0 1 1 1.048 1.074ZM4.75 4h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM4 7.75A.75.75 0 0 1 4.75 7h2a.75.75 0 0 1 0 1.5h-2A.75.75 0 0 1 4 7.75Z"/></svg>');--md-admonition-icon--bug:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4.72.22a.75.75 0 0 1 1.06 0l1 .999a3.488 3.488 0 0 1 2.441 0l.999-1a.748.748 0 0 1 1.265.332.75.75 0 0 1-.205.729l-.775.776c.616.63.995 1.493.995 2.444v.327c0 .1-.009.197-.025.292.408.14.764.392 1.029.722l1.968-.787a.75.75 0 0 1 .556 1.392L13 7.258V9h2.25a.75.75 0 0 1 0 1.5H13v.5c0 .409-.049.806-.141 1.186l2.17.868a.75.75 0 0 1-.557 1.392l-2.184-.873A4.997 4.997 0 0 1 8 16a4.997 4.997 0 0 1-4.288-2.427l-2.183.873a.75.75 0 0 1-.558-1.392l2.17-.868A5.036 5.036 0 0 1 3 11v-.5H.75a.75.75 0 0 1 0-1.5H3V7.258L.971 6.446a.75.75 0 0 1 .558-1.392l1.967.787c.265-.33.62-.583 1.03-.722a1.677 1.677 0 0 1-.026-.292V4.5c0-.951.38-1.814.995-2.444L4.72 1.28a.75.75 0 0 1 0-1.06Zm.53 6.28a.75.75 0 0 0-.75.75V11a3.5 3.5 0 1 0 7 0V7.25a.75.75 0 0 0-.75-.75ZM6.173 5h3.654A.172.172 0 0 0 10 4.827V4.5a2 2 0 1 0-4 0v.327c0 .096.077.173.173.173Z"/></svg>');--md-admonition-icon--danger:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M9.504.43a1.516 1.516 0 0 1 2.437 1.713L10.415 5.5h2.123c1.57 0 2.346 1.909 1.22 3.004l-7.34 7.142a1.249 1.249 0 0 1-.871.354h-.302a1.25 1.25 0 0 1-1.157-1.723L5.633 10.5H3.462c-1.57 0-2.346-1.909-1.22-3.004L9.503.429Zm1.047 1.074L3.286 8.571A.25.25 0 0 0 3.462 9H6.75a.75.75 0 0 1 .694 1.034l-1.713 4.188 6.982-6.793A.25.25 0 0 0 12.538 7H9.25a.75.75 0 0 1-.683-1.06l2.008-4.418.003-.006a.036.036 0 0 0-.004-.009l-.006-.006-.008-.001c-.003 0-.006.002-.009.004Z"/></svg>');--md-admonition-icon--example:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M5 5.782V2.5h-.25a.75.75 0 0 1 0-1.5h6.5a.75.75 0 0 1 0 1.5H11v3.282l3.666 5.76C15.619 13.04 14.543 15 12.767 15H3.233c-1.776 0-2.852-1.96-1.899-3.458Zm-2.4 6.565a.75.75 0 0 0 .633 1.153h9.534a.75.75 0 0 0 .633-1.153L12.225 10.5h-8.45ZM9.5 2.5h-3V6c0 .143-.04.283-.117.403L4.73 9h6.54L9.617 6.403A.746.746 0 0 1 9.5 6Z"/></svg>');--md-admonition-icon--failure:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M2.344 2.343h-.001a8 8 0 0 1 11.314 11.314A8.002 8.002 0 0 1 .234 10.089a8 8 0 0 1 2.11-7.746Zm1.06 10.253a6.5 6.5 0 1 0 9.108-9.275 6.5 6.5 0 0 0-9.108 9.275ZM6.03 4.97 8 6.94l1.97-1.97a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l1.97 1.97a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-1.97 1.97a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L6.94 8 4.97 6.03a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018Z"/></svg>');--md-admonition-icon--info:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/></svg>');--md-admonition-icon--note:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M1 7.775V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 0 1 0 2.474l-5.026 5.026a1.75 1.75 0 0 1-2.474 0l-6.25-6.25A1.752 1.752 0 0 1 1 7.775Zm1.5 0c0 .066.026.13.073.177l6.25 6.25a.25.25 0 0 0 .354 0l5.025-5.025a.25.25 0 0 0 0-.354l-6.25-6.25a.25.25 0 0 0-.177-.073H2.75a.25.25 0 0 0-.25.25ZM6 5a1 1 0 1 1 0 2 1 1 0 0 1 0-2Z"/></svg>');--md-admonition-icon--success:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"/></svg>');--md-admonition-icon--tip:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M3.499.75a.75.75 0 0 1 1.5 0v.996C5.9 2.903 6.793 3.65 7.662 4.376l.24.202c-.036-.694.055-1.422.426-2.163C9.1.873 10.794-.045 12.622.26 14.408.558 16 1.94 16 4.25c0 1.278-.954 2.575-2.44 2.734l.146.508.065.22c.203.701.412 1.455.476 2.226.142 1.707-.4 3.03-1.487 3.898C11.714 14.671 10.27 15 8.75 15h-6a.75.75 0 0 1 0-1.5h1.376a4.484 4.484 0 0 1-.563-1.191 3.835 3.835 0 0 1-.05-2.063 4.647 4.647 0 0 1-2.025-.293.75.75 0 0 1 .525-1.406c1.357.507 2.376-.006 2.698-.318l.009-.01a.747.747 0 0 1 1.06 0 .748.748 0 0 1-.012 1.074c-.912.92-.992 1.835-.768 2.586.221.74.745 1.337 1.196 1.621H8.75c1.343 0 2.398-.296 3.074-.836.635-.507 1.036-1.31.928-2.602-.05-.603-.216-1.224-.422-1.93l-.064-.221c-.12-.407-.246-.84-.353-1.29a2.425 2.425 0 0 1-.507-.441 3.075 3.075 0 0 1-.633-1.248.75.75 0 0 1 1.455-.364c.046.185.144.436.31.627.146.168.353.305.712.305.738 0 1.25-.615 1.25-1.25 0-1.47-.95-2.315-2.123-2.51-1.172-.196-2.227.387-2.706 1.345-.46.92-.27 1.774.019 3.062l.042.19a.884.884 0 0 1 .01.05c.348.443.666.949.94 1.553a.75.75 0 1 1-1.365.62c-.553-1.217-1.32-1.94-2.3-2.768L6.7 5.527c-.814-.68-1.75-1.462-2.692-2.619a3.737 3.737 0 0 0-1.023.88c-.406.495-.663 1.036-.722 1.508.116.122.306.21.591.239.388.038.797-.06 1.032-.19a.75.75 0 0 1 .728 1.31c-.515.287-1.23.439-1.906.373-.682-.067-1.473-.38-1.879-1.193L.75 5.677V5.5c0-.984.48-1.94 1.077-2.664.46-.559 1.05-1.055 1.673-1.353V.75Z"/></svg>');--md-admonition-icon--question:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.92 6.085h.001a.749.749 0 1 1-1.342-.67c.169-.339.436-.701.849-.977C6.845 4.16 7.369 4 8 4a2.756 2.756 0 0 1 1.637.525c.503.377.863.965.863 1.725 0 .448-.115.83-.329 1.15-.205.307-.47.513-.692.662-.109.072-.22.138-.313.195l-.006.004a6.24 6.24 0 0 0-.26.16.952.952 0 0 0-.276.245.75.75 0 0 1-1.248-.832c.184-.264.42-.489.692-.661.103-.067.207-.132.313-.195l.007-.004c.1-.061.182-.11.258-.161a.969.969 0 0 0 .277-.245C8.96 6.514 9 6.427 9 6.25a.612.612 0 0 0-.262-.525A1.27 1.27 0 0 0 8 5.5c-.369 0-.595.09-.74.187a1.01 1.01 0 0 0-.34.398ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"/></svg>');--md-admonition-icon--quote:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M1.75 2.5h10.5a.75.75 0 0 1 0 1.5H1.75a.75.75 0 0 1 0-1.5Zm4 5h8.5a.75.75 0 0 1 0 1.5h-8.5a.75.75 0 0 1 0-1.5Zm0 5h8.5a.75.75 0 0 1 0 1.5h-8.5a.75.75 0 0 1 0-1.5ZM2.5 7.75v6a.75.75 0 0 1-1.5 0v-6a.75.75 0 0 1 1.5 0Z"/></svg>');--md-admonition-icon--warning:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"/></svg>');}</style>
 
-    <body>
-        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
-            <div class="container">
-                <a class="navbar-brand" href="../..">Database System and Big Data 50.043</a>
-                <!-- Expander button -->
-                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
 
-                <!-- Expanded navigation -->
-                <div id="navbar-collapse" class="navbar-collapse collapse">
-                        <!-- Main navigation -->
-                        <ul class="nav navbar-nav">
-                            <li class="navitem">
-                                <a href="../.." class="nav-link">Home</a>
-                            </li>
-                            <li class="navitem">
-                                <a href="../../project/" class="nav-link">Project</a>
-                            </li>
-                            <li class="navitem">
-                                <a href="../l1_course_handout/" class="nav-link">Handout</a>
-                            </li>
-                        </ul>
-
-                    <ul class="nav navbar-nav ml-auto">
-                        <li class="nav-item">
-                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
-                                <i class="fa fa-search"></i> Search
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="container">
-            <div class="row">
-                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
-    <div class="navbar-header">
-        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
-            <span class="fa fa-angle-down"></span>
-        </button>
-    </div>
 
     
-    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
-        <ul class="nav flex-column">
-            
-            <li class="nav-item" data-level="1"><a href="#50043-map-reduce" class="nav-link">50.043 Map Reduce</a>
-              <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#learning-outcomes" class="nav-link">Learning Outcomes</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#recall" class="nav-link">Recall</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#parallel-computing" class="nav-link">Parallel Computing</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#means-of-parallelism" class="nav-link">Means of Parallelism</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#mapreduce-framework" class="nav-link">MapReduce Framework</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#example-word-count" class="nav-link">Example : Word Count</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#hadoop-mapreduce-architecture" class="nav-link">Hadoop MapReduce Architecture</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#hadoop-mapreduce-job-management" class="nav-link">Hadoop MapReduce Job Management</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-              </ul>
-            </li>
-        </ul>
-    </div>
-</div></div>
-                    <div class="col-md-9" role="main">
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CSpline+Sans+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Spline Sans Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
 
-<h1 id="50043-map-reduce">50.043 Map Reduce</h1>
-<h2 id="learning-outcomes">Learning Outcomes</h2>
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#50043-map-reduce" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Database System and Big Data 50.043" class="md-header__button md-logo" aria-label="Database System and Big Data 50.043" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 3a2 2 0 0 1 2-2h9.982a2 2 0 0 1 1.414.586l4.018 4.018A2 2 0 0 1 21 7.018V21a2 2 0 0 1-2 2H4.75a.75.75 0 0 1 0-1.5H19a.5.5 0 0 0 .5-.5V8.5h-4a2 2 0 0 1-2-2v-4H5a.5.5 0 0 0-.5.5v6.25a.75.75 0 0 1-1.5 0Zm12-.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 0-.146-.336l-4.018-4.018A.5.5 0 0 0 15 2.5Z"/><path d="M4.53 12.24a.75.75 0 0 1-.039 1.06l-2.639 2.45 2.64 2.45a.75.75 0 1 1-1.022 1.1l-3.23-3a.75.75 0 0 1 0-1.1l3.23-3a.75.75 0 0 1 1.06.04Zm3.979 1.06a.75.75 0 1 1 1.02-1.1l3.231 3a.75.75 0 0 1 0 1.1l-3.23 3a.75.75 0 1 1-1.021-1.1l2.639-2.45-2.64-2.45Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Database System and Big Data 50.043
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              50.043 Map Reduce
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../l1_course_handout/" class="md-tabs__link">
+        
+  
+    
+  
+  Handout
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Database System and Big Data 50.043" class="md-nav__button md-logo" aria-label="Database System and Big Data 50.043" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 3a2 2 0 0 1 2-2h9.982a2 2 0 0 1 1.414.586l4.018 4.018A2 2 0 0 1 21 7.018V21a2 2 0 0 1-2 2H4.75a.75.75 0 0 1 0-1.5H19a.5.5 0 0 0 .5-.5V8.5h-4a2 2 0 0 1-2-2v-4H5a.5.5 0 0 0-.5.5v6.25a.75.75 0 0 1-1.5 0Zm12-.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 0-.146-.336l-4.018-4.018A.5.5 0 0 0 15 2.5Z"/><path d="M4.53 12.24a.75.75 0 0 1-.039 1.06l-2.639 2.45 2.64 2.45a.75.75 0 1 1-1.022 1.1l-3.23-3a.75.75 0 0 1 0-1.1l3.23-3a.75.75 0 0 1 1.06.04Zm3.979 1.06a.75.75 0 1 1 1.02-1.1l3.231 3a.75.75 0 0 1 0 1.1l-3.23 3a.75.75 0 1 1-1.021-1.1l2.639-2.45-2.64-2.45Z"/></svg>
+
+    </a>
+    Database System and Big Data 50.043
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../l1_course_handout/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Handout
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#learning-outcomes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Learning Outcomes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recall" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recall
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parallel-computing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parallel Computing
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#means-of-parallelism" class="md-nav__link">
+    <span class="md-ellipsis">
+      Means of Parallelism
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Means of Parallelism">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hardware-parallelism" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hardware Parallelism
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Hardware Parallelism">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#single-processor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Single Processor
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      GPU
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multiple-processors-with-shared-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multiple processors with shared memory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multiple-processors-with-distributed-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multiple processors with distributed memory
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#software-parallelism" class="md-nav__link">
+    <span class="md-ellipsis">
+      Software Parallelism
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Software Parallelism">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#task-parallelism" class="md-nav__link">
+    <span class="md-ellipsis">
+      Task Parallelism
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-parallelism" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Parallelism
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-parallelism-and-determinism" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Parallelism and determinism
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Parallelism and determinism">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#defintion-determinisism" class="md-nav__link">
+    <span class="md-ellipsis">
+      Defintion: Determinisism
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pure-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pure function
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-parallelism-with-reduce" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Parallelism with Reduce
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Parallelism with Reduce">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#reduce-and-determinism" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reduce and determinism
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mapreduce-framework" class="md-nav__link">
+    <span class="md-ellipsis">
+      MapReduce Framework
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MapReduce Framework">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-toy-mapreduce-framework" class="md-nav__link">
+    <span class="md-ellipsis">
+      The Toy MapReduce Framework
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-word-count" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example : Word Count
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Example : Word Count">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-for-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using for loop
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-toy-mapreduce" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using Toy MapReduce
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-mapreduce-in-hadoop" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using MapReduce in Hadoop
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hadoop-mapreduce-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hadoop MapReduce Architecture
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hadoop-mapreduce-job-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hadoop MapReduce Job Management
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="50043-map-reduce">50.043 Map Reduce<a class="headerlink" href="#50043-map-reduce" title="Permanent link">&para;</a></h1>
+<h2 id="learning-outcomes">Learning Outcomes<a class="headerlink" href="#learning-outcomes" title="Permanent link">&para;</a></h2>
 <p>By the end of this lesson, you are able to</p>
 <ul>
 <li>Differentiate Parallelism and Concurrency</li>
@@ -115,7 +664,7 @@
 <li>Explain map and reduce</li>
 <li>Explain Hadoop MapReduce</li>
 </ul>
-<h2 id="recall">Recall</h2>
+<h2 id="recall">Recall<a class="headerlink" href="#recall" title="Permanent link">&para;</a></h2>
 <p>HDFS addresses the big data issues by </p>
 <ol>
 <li>distributing the data into multiple data nodes.</li>
@@ -125,7 +674,7 @@
 <p>Based on the design decision made during the design of Google File system, data query via join and B-tree based indexing was not the top-most wanted use case.</p>
 <p>On the other hand, most of the data processing is to scan through the needed data files and perform transformation or aggregation (page rank algorithm).</p>
 <p>To shorten the processing time, we could leverage on the processors found in the data nodes. This leads us to parallel computing.</p>
-<h2 id="parallel-computing">Parallel Computing</h2>
+<h2 id="parallel-computing">Parallel Computing<a class="headerlink" href="#parallel-computing" title="Permanent link">&para;</a></h2>
 <p>A parallel program is one that uses a <strong>multiplicity of computational hardware</strong> (e.g., several processor cores or several server nodes) to <strong>perform a computation more quickly</strong>. The aim is to arrive at the answer earlier, by
 delegating different parts of the computation to different processors that execute at the same time.</p>
 <p>We are often confused parallelism with concurrency.
@@ -174,63 +723,89 @@ By contrast, concurrency is a <strong>program-structuring technique</strong> in 
 <li>A web application that handles multiple clients HTTP requests  and interacting with the databases.</li>
 <li>A User Interface of the a mobile phone handles user's touch screen input    and exchanging data via the 4G network</li>
 </ul>
-<h2 id="means-of-parallelism">Means of Parallelism</h2>
+<h2 id="means-of-parallelism">Means of Parallelism<a class="headerlink" href="#means-of-parallelism" title="Permanent link">&para;</a></h2>
 <p>Parallelism can be achieved via special hardware or/and via software </p>
-<h3 id="hardware-parallelism">Hardware Parallelism</h3>
-<h4 id="single-processor">Single Processor</h4>
+<h3 id="hardware-parallelism">Hardware Parallelism<a class="headerlink" href="#hardware-parallelism" title="Permanent link">&para;</a></h3>
+<h4 id="single-processor">Single Processor<a class="headerlink" href="#single-processor" title="Permanent link">&para;</a></h4>
 <p>Parallelism can be actualized via a single processor when the given instructions use less than provided bits, e.g. we can parallelize the execution of some 32 bit operations given that the processor operates on 64 bit addresses.</p>
 <p>Alterantively, the parallelism can be achieved by instruction pipelining, assume different sub components of the processor handles different types of process operators. For instance, </p>
-<pre><code class="language-java">1: add r1 r2 r3 // r1 = r2 + r3
-2: mul r2 2     // r2 *= 2
-3: add r2 r4 r5 // r2 = r4 + r5
-</code></pre>
-<p>assuming <code>add</code> and <code>mul</code> instructions are executed by different components of the same processor, after the instruction <code>1</code> is executed, instructions <code>2</code> and <code>3</code> can be executed in parallel.</p>
-<h4 id="gpu">GPU</h4>
+<p><div class="language-java highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">2</a></span>
+<span class="normal"><a href="#__codelineno-0-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="mi">1</span><span class="p">:</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">r1</span><span class="w"> </span><span class="n">r2</span><span class="w"> </span><span class="n">r3</span><span class="w"> </span><span class="c1">// r1 = r2 + r3</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="mi">2</span><span class="p">:</span><span class="w"> </span><span class="n">mul</span><span class="w"> </span><span class="n">r2</span><span class="w"> </span><span class="mi">2</span><span class="w">     </span><span class="c1">// r2 *= 2</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="mi">3</span><span class="p">:</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">r2</span><span class="w"> </span><span class="n">r4</span><span class="w"> </span><span class="n">r5</span><span class="w"> </span><span class="c1">// r2 = r4 + r5</span>
+</span></code></pre></div></td></tr></table></div>
+assuming <code>add</code> and <code>mul</code> instructions are executed by different components of the same processor, after the instruction <code>1</code> is executed, instructions <code>2</code> and <code>3</code> can be executed in parallel.</p>
+<h4 id="gpu">GPU<a class="headerlink" href="#gpu" title="Permanent link">&para;</a></h4>
 <p>GPU can be leveraged to perform matrix operations in parallel by making use of the multiple cores builtin. The acceleration of computation often requires firwmware level and driver level support, e.g. Nvidia CUDA and AMD ROCM.</p>
-<h4 id="multiple-processors-with-shared-memory">Multiple processors with shared memory</h4>
+<h4 id="multiple-processors-with-shared-memory">Multiple processors with shared memory<a class="headerlink" href="#multiple-processors-with-shared-memory" title="Permanent link">&para;</a></h4>
 <p>Modern personal computers and mobile devices are equipped with multi-core processors. These processors share the same pool of physical memory. Parallelism can be achieved via data parallelism, task parallelism, multi-threading etc.</p>
-<h4 id="multiple-processors-with-distributed-memory">Multiple processors with distributed memory</h4>
+<h4 id="multiple-processors-with-distributed-memory">Multiple processors with distributed memory<a class="headerlink" href="#multiple-processors-with-distributed-memory" title="Permanent link">&para;</a></h4>
 <p>As the number of processors increases, the processing power per dollar for multiple processors with shared memory is diminishing. Large scale systems are often built over multiple processors (multiple servers) with distributed memory. Each processor (set of processors) has its own dedicated memory. They are connected and communicating through high speed networks.</p>
-<h3 id="software-parallelism">Software Parallelism</h3>
+<h3 id="software-parallelism">Software Parallelism<a class="headerlink" href="#software-parallelism" title="Permanent link">&para;</a></h3>
 <p>In the earlier year of study, we came acrossing the concept of multithreading. In this module, we focus on the other two commonly used (higher level) software parallelism concepts: task parallelism and data paralleism.</p>
-<h4 id="task-parallelism">Task Parallelism</h4>
+<h4 id="task-parallelism">Task Parallelism<a class="headerlink" href="#task-parallelism" title="Permanent link">&para;</a></h4>
 <p>In Task parallelism, if some sub-computations (sub tasks) are mutually independent, (which can be identified via human checking or software analysis), they can be executed in parallel. For instance,</p>
-<pre><code class="language-python">def cook_beef_bolognese(beef,spaghetti):
-  sauce = cook_sauce(beef) # task A
-  pasta = cook_pasta(spaghetti) # task B
-  return mix(sauce,pasta)
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
+<span class="normal"><a href="#__codelineno-1-2">2</a></span>
+<span class="normal"><a href="#__codelineno-1-3">3</a></span>
+<span class="normal"><a href="#__codelineno-1-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="k">def</span> <span class="nf">cook_beef_bolognese</span><span class="p">(</span><span class="n">beef</span><span class="p">,</span><span class="n">spaghetti</span><span class="p">):</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a>  <span class="n">sauce</span> <span class="o">=</span> <span class="n">cook_sauce</span><span class="p">(</span><span class="n">beef</span><span class="p">)</span> <span class="c1"># task A</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a>  <span class="n">pasta</span> <span class="o">=</span> <span class="n">cook_pasta</span><span class="p">(</span><span class="n">spaghetti</span><span class="p">)</span> <span class="c1"># task B</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4"></a>  <span class="k">return</span> <span class="n">mix</span><span class="p">(</span><span class="n">sauce</span><span class="p">,</span><span class="n">pasta</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
 <p>If we identify that sub task of cooking sauce is independent of the sub task of cooking pasta, we can execute the two sub tasks in parallel when the hardware resource is available.</p>
 <p>Note that in Task parallelism, the sub tasks are not necessary having the same set of instructions.</p>
-<h4 id="data-parallelism">Data Parallelism</h4>
+<h4 id="data-parallelism">Data Parallelism<a class="headerlink" href="#data-parallelism" title="Permanent link">&para;</a></h4>
 <p>In data parallelism, we compute the result by running a common routine repeatedly over a set of input data. If there is no dependency among the iteration, we could parallize these computations too. </p>
 <p>For example,</p>
-<pre><code class="language-python">def fib(n): ... 
-def main():
-    inputs = [ 10, 100, 200, ...]
-    results = []
-    for i in inputs: 
-        results.append(fib(i))
-    return results
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
+<span class="normal"><a href="#__codelineno-2-2">2</a></span>
+<span class="normal"><a href="#__codelineno-2-3">3</a></span>
+<span class="normal"><a href="#__codelineno-2-4">4</a></span>
+<span class="normal"><a href="#__codelineno-2-5">5</a></span>
+<span class="normal"><a href="#__codelineno-2-6">6</a></span>
+<span class="normal"><a href="#__codelineno-2-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span> <span class="o">...</span> 
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3"></a>    <span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4"></a>    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">:</span> 
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6"></a>        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fib</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7"></a>    <span class="k">return</span> <span class="n">results</span>
+</span></code></pre></div></td></tr></table></div>
 <p>in the above code snippet, we repeatedly compute the fibonacci numbers given the index positions as the input. Note that these computations are independent. We could rewrite the above using the python `map`` function.</p>
-<pre><code class="language-python">def fib(n): ... 
-def main():
-   inputs = [ 10, 100, 200, ...]
-   # task C 
-   results = map(fib, inputs) 
-   return results
-
-def map(f,l):
-    if len(l) == 0:
-        return []
-    else:
-        hd = l[0]
-        tl = l[1:]
-        fst = f(hd)
-        rest = map(f,tl)
-        return [fst] + rest
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-3-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-3-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-3-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-3-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-3-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-3-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-3-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-3-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-3-10">10</a></span>
+<span class="normal"><a href="#__codelineno-3-11">11</a></span>
+<span class="normal"><a href="#__codelineno-3-12">12</a></span>
+<span class="normal"><a href="#__codelineno-3-13">13</a></span>
+<span class="normal"><a href="#__codelineno-3-14">14</a></span>
+<span class="normal"><a href="#__codelineno-3-15">15</a></span>
+<span class="normal"><a href="#__codelineno-3-16">16</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span> <span class="o">...</span> 
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a>   <span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4"></a>   <span class="c1"># task C </span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5"></a>   <span class="n">results</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">fib</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span> 
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6"></a>   <span class="k">return</span> <span class="n">results</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7"></a>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">l</span><span class="p">):</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9"></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10"></a>        <span class="k">return</span> <span class="p">[]</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11"></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12"></a>        <span class="n">hd</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13"></a>        <span class="n">tl</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14"></a>        <span class="n">fst</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">hd</span><span class="p">)</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15"></a>        <span class="n">rest</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">tl</span><span class="p">)</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16"></a>        <span class="k">return</span> <span class="p">[</span><span class="n">fst</span><span class="p">]</span> <span class="o">+</span> <span class="n">rest</span>
+</span></code></pre></div></td></tr></table></div>
 <p>The above variant is the computing the same results as the original version, except that we are using the map function instead of the for loop. The <code>map</code> function applies a higher order function <code>f</code>  to a list of items <code>l</code>. In case <code>l</code> is an empty list, it returns an empty list. otherwise, it applies <code>f</code> to the first item in <code>l</code> and recursively calls itself to handle the rest of the elements. (Note: since Python 3, the <code>map</code> is implemented in iterator style. However, we still use the above version for the ease of reasoning.) One motivation to use <code>map</code> instead of for-loop is to explicitly show that</p>
 <ol>
 <li>each call to <code>f(hd)</code> for each item in <code>l</code> is using the same instruction</li>
@@ -238,147 +813,219 @@ def map(f,l):
 </ol>
 <p>Exploiting these results, the compiler could parallelize these calls, e.g. by scheduling <code>fib(10)</code> in CPU core 1, <code>fib(100)</code> in CPU core 2, and etc. </p>
 <p>Unfortunately, Python does not have data parallelism builtin for <code>map</code>. In some other languages such as Scala, the <code>map</code> function has builtin support of data parallelism. We will see some of the demo during the lecture when time permits.</p>
-<h3 id="data-parallelism-and-determinism">Data Parallelism and determinism</h3>
-<h4 id="defintion-determinisism">Defintion: Determinisism</h4>
+<h3 id="data-parallelism-and-determinism">Data Parallelism and determinism<a class="headerlink" href="#data-parallelism-and-determinism" title="Permanent link">&para;</a></h3>
+<h4 id="defintion-determinisism">Defintion: Determinisism<a class="headerlink" href="#defintion-determinisism" title="Permanent link">&para;</a></h4>
 <p>We say a programm <span class="arithmatex">\(P\)</span> is <strong>deterministic</strong> iff 
 for all input <span class="arithmatex">\(i_1\)</span> and <span class="arithmatex">\(i_2\)</span> such that <span class="arithmatex">\(i_1 \equiv i_2\)</span> then <span class="arithmatex">\(P(i_1) \equiv P(i_2)\)</span>.</p>
 <p>In the presence of parallelism and concurrency, it is tricky to ensure a program is determinsitic. </p>
 <p>Fortunately, for <code>map</code> data parallelism, all we need is a side condition to ensure <strong>deterministic</strong> semantics. </p>
-<h4 id="pure-function">Pure function</h4>
+<h4 id="pure-function">Pure function<a class="headerlink" href="#pure-function" title="Permanent link">&para;</a></h4>
 <p>Recall from some earlier module, we learned that a function <code>f</code> is <em>pure</em> if it does not modify nor is dependent on the external state when it is executed.</p>
 <p><code>map(f,l)</code> is guaranteed to be deterministic (regardless whether it is executed sequentially or in parallel.)</p>
-<h3 id="data-parallelism-with-reduce">Data Parallelism with <code>Reduce</code></h3>
+<h3 id="data-parallelism-with-reduce">Data Parallelism with <code>Reduce</code><a class="headerlink" href="#data-parallelism-with-reduce" title="Permanent link">&para;</a></h3>
 <p>Orthogonal to <code>map</code>, function <code>reduce(f, l, initial)</code> aggregates all the items in <code>l</code> with a binary operation <code>f</code>, using <code>initial</code> as the initial aggregated value.</p>
-<pre><code class="language-python">def reduce(f,l,acc):
-    if len(l) == 0: 
-        return acc
-    else:
-        hd = l[0]
-        tl = l[1:]
-        return reduce(f, tl, f(hd,acc))
-
-def reduce(f,l):
-    return reduce(f,l[1:], l[0])
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-4-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-4-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-4-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-4-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-4-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-4-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-4-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-4-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-4-10">10</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">l</span><span class="p">,</span><span class="n">acc</span><span class="p">):</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2"></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> 
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3"></a>        <span class="k">return</span> <span class="n">acc</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4"></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5"></a>        <span class="n">hd</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6"></a>        <span class="n">tl</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7"></a>        <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">tl</span><span class="p">,</span> <span class="n">f</span><span class="p">(</span><span class="n">hd</span><span class="p">,</span><span class="n">acc</span><span class="p">))</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8"></a>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">l</span><span class="p">):</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10"></a>    <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span></code></pre></div></td></tr></table></div>
 <p>For example,</p>
-<pre><code class="language-python">def main():
-    inputs = [10, 100, 200, 400]
-    result = reduce(lambda x,y:x+y,inputs,0)
-    return result
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1">1</a></span>
+<span class="normal"><a href="#__codelineno-5-2">2</a></span>
+<span class="normal"><a href="#__codelineno-5-3">3</a></span>
+<span class="normal"><a href="#__codelineno-5-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2"></a>    <span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">400</span><span class="p">]</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">,</span><span class="n">inputs</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4"></a>    <span class="k">return</span> <span class="n">result</span>
+</span></code></pre></div></td></tr></table></div>
 <p>computes the sum of all numbers found in <code>inputs</code>, i.e. it is effectively computing </p>
-<pre><code class="language-python">(0 + 10 + 100 + 200 + 400)
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="p">(</span><span class="mi">0</span> <span class="o">+</span> <span class="mi">10</span> <span class="o">+</span> <span class="mi">100</span> <span class="o">+</span> <span class="mi">200</span> <span class="o">+</span> <span class="mi">400</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
 <p>If we are given 2 CPU cores, we could evaluate <code>(0 + 10 + 100)</code> in Core 1, <code>(200 + 400)</code> in Core 2, then <code>(110 + 600)</code> in Core 1. </p>
-<h4 id="reduce-and-determinism"><code>Reduce</code> and determinism</h4>
+<h4 id="reduce-and-determinism"><code>Reduce</code> and determinism<a class="headerlink" href="#reduce-and-determinism" title="Permanent link">&para;</a></h4>
 <p>Given that a binary function <code>f</code> is <em>pure</em>, <em>commutative</em> and <em>associative</em> it is guaranteed that <code>reduce(f,l,a)</code> can be parallelized. The results will be the same as it is executed sequentially.</p>
 <p>Note: A binary function <code>f</code> is commutative iff <code>f(x,y) = f(y,x)</code>. A binary function <code>f</code> is associative iff <code>f(x,f(y,z)) = f(f(x,y),z)</code>.</p>
-<h2 id="mapreduce-framework">MapReduce Framework</h2>
+<h2 id="mapreduce-framework">MapReduce Framework<a class="headerlink" href="#mapreduce-framework" title="Permanent link">&para;</a></h2>
 <p>Though this looks prosing on paper, </p>
 <ul>
 <li>In practice, it won't scale well with each map or reduce task being teeny tiny. </li>
 <li>It is better to partition data into chunks so that each map or reduce task is reasonably large enough.</li>
 </ul>
 <p>This leads to the MapReduce Framework found in Google FS, Hadoop and many other big data platforms.</p>
-<h3 id="the-toy-mapreduce-framework">The Toy MapReduce Framework</h3>
+<h3 id="the-toy-mapreduce-framework">The Toy MapReduce Framework<a class="headerlink" href="#the-toy-mapreduce-framework" title="Permanent link">&para;</a></h3>
 <p>For the ease of understanding, we consider a scaled down and simplified implementation of the MapReduce Framework in Python.  Though there is no parallelism builtin, we know that when the same library can be easily ported to other languguages or environments with parallel <code>map</code> and <code>reduce</code> support. </p>
 <p>Besides <code>map</code> and <code>reduce</code> we need a few more combinators (functions)</p>
-<pre><code class="language-python">def flatMap(f,l):
-    ll = map(f,l)
-    return reduce(lambda x,y:x+y, ll, [])
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1">1</a></span>
+<span class="normal"><a href="#__codelineno-7-2">2</a></span>
+<span class="normal"><a href="#__codelineno-7-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="k">def</span> <span class="nf">flatMap</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">l</span><span class="p">):</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2"></a>    <span class="n">ll</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">l</span><span class="p">)</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3"></a>    <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">,</span> <span class="n">ll</span><span class="p">,</span> <span class="p">[])</span>
+</span></code></pre></div></td></tr></table></div>
 <p><code>flatMap</code> is similar to map, except that each inner list is flattened. e.g.  <code>flatMap(lambda x: [x+1], [1,2,3])</code> yields <code>[2,3,4]</code>.</p>
-<pre><code class="language-python">def lift_if(p,x):
-    if p(x):
-        return [x]
-    else:
-        return []
-
-def filter(p,l):
-    return flatMap(lambda x:lift_if(p,x), l)
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1">1</a></span>
+<span class="normal"><a href="#__codelineno-8-2">2</a></span>
+<span class="normal"><a href="#__codelineno-8-3">3</a></span>
+<span class="normal"><a href="#__codelineno-8-4">4</a></span>
+<span class="normal"><a href="#__codelineno-8-5">5</a></span>
+<span class="normal"><a href="#__codelineno-8-6">6</a></span>
+<span class="normal"><a href="#__codelineno-8-7">7</a></span>
+<span class="normal"><a href="#__codelineno-8-8">8</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="k">def</span> <span class="nf">lift_if</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2"></a>    <span class="k">if</span> <span class="n">p</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3"></a>        <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4"></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5"></a>        <span class="k">return</span> <span class="p">[]</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6"></a>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">l</span><span class="p">):</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8"></a>    <span class="k">return</span> <span class="n">flatMap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">lift_if</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x</span><span class="p">),</span> <span class="n">l</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
 <p><code>filter</code> returns a new list whose elements are from <code>l</code> and satisfying the test <code>p</code>. e.g.
 <code>filter(lambda x:x%2==0, [1,2,3,4,5,6])</code> yields <code>[2,4,6]</code>.</p>
-<pre><code class="language-python">def merge(kvls1, kvls2):
-    if len(kvls1) == 0: return kvls2
-    elif len(kvls2) == 0: return kvls1
-    else:
-        ((k1,vl1), tl1) = (kvls1[0], kvls1[1:])
-        ((k2,vl2), tl2) = (kvls2[0], kvls2[1:])
-        if k1 == k2: return [(k1,vl1+vl2)]+merge(tl1,tl2)
-        elif k1 &lt; k2: return [(k1,vl1)]+merge(tl1,kvls2)
-        else: return [(k2,vl2)]+merge(kvls1, tl2)
-
-def shuffle(kvs):
-    kvls = map(lambda kv: [(kv[0], [kv[1]])], kvs)
-    return reduce(merge, kvls, [])
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-9-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-9-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-9-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-9-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-9-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-9-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-9-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-9-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-9-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-9-10">10</a></span>
+<span class="normal"><a href="#__codelineno-9-11">11</a></span>
+<span class="normal"><a href="#__codelineno-9-12">12</a></span>
+<span class="normal"><a href="#__codelineno-9-13">13</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="n">kvls1</span><span class="p">,</span> <span class="n">kvls2</span><span class="p">):</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2"></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">kvls1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="k">return</span> <span class="n">kvls2</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3"></a>    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">kvls2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="k">return</span> <span class="n">kvls1</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4"></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5"></a>        <span class="p">((</span><span class="n">k1</span><span class="p">,</span><span class="n">vl1</span><span class="p">),</span> <span class="n">tl1</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">kvls1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">kvls1</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6"></a>        <span class="p">((</span><span class="n">k2</span><span class="p">,</span><span class="n">vl2</span><span class="p">),</span> <span class="n">tl2</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">kvls2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">kvls2</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7"></a>        <span class="k">if</span> <span class="n">k1</span> <span class="o">==</span> <span class="n">k2</span><span class="p">:</span> <span class="k">return</span> <span class="p">[(</span><span class="n">k1</span><span class="p">,</span><span class="n">vl1</span><span class="o">+</span><span class="n">vl2</span><span class="p">)]</span><span class="o">+</span><span class="n">merge</span><span class="p">(</span><span class="n">tl1</span><span class="p">,</span><span class="n">tl2</span><span class="p">)</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8"></a>        <span class="k">elif</span> <span class="n">k1</span> <span class="o">&lt;</span> <span class="n">k2</span><span class="p">:</span> <span class="k">return</span> <span class="p">[(</span><span class="n">k1</span><span class="p">,</span><span class="n">vl1</span><span class="p">)]</span><span class="o">+</span><span class="n">merge</span><span class="p">(</span><span class="n">tl1</span><span class="p">,</span><span class="n">kvls2</span><span class="p">)</span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9"></a>        <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="p">[(</span><span class="n">k2</span><span class="p">,</span><span class="n">vl2</span><span class="p">)]</span><span class="o">+</span><span class="n">merge</span><span class="p">(</span><span class="n">kvls1</span><span class="p">,</span> <span class="n">tl2</span><span class="p">)</span>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10"></a>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11"></a><span class="k">def</span> <span class="nf">shuffle</span><span class="p">(</span><span class="n">kvs</span><span class="p">):</span>
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12"></a>    <span class="n">kvls</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">kv</span><span class="p">:</span> <span class="p">[(</span><span class="n">kv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="n">kv</span><span class="p">[</span><span class="mi">1</span><span class="p">]])],</span> <span class="n">kvs</span><span class="p">)</span>
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13"></a>    <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="n">merge</span><span class="p">,</span> <span class="n">kvls</span><span class="p">,</span> <span class="p">[])</span>
+</span></code></pre></div></td></tr></table></div>
 <p>We assume that there exists a total order among keys. 
 Given a list of key-value pairs, <code>shuffle</code> shuffles and merge values sharing the same key.
 e.g. <code>shuffle([("k1",1),("k2",1), ("k1",2), ("k2",3)])</code> yields
 <code>[('k1', [1, 2]), ('k2', [1, 3])]</code></p>
-<pre><code class="language-python">def reduceByKey(f, kvs, acc):
-    s = shuffle(kvs)
-    return map(lambda p: (p[0], reduce(f,p[1],acc)), s)
-
-def reduceByKey(f, kvs):
-    s = shuffle(kvs)
-    return map(lambda p: (p[0], reduce(f,p[1])), s)
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-10-1">1</a></span>
+<span class="normal"><a href="#__codelineno-10-2">2</a></span>
+<span class="normal"><a href="#__codelineno-10-3">3</a></span>
+<span class="normal"><a href="#__codelineno-10-4">4</a></span>
+<span class="normal"><a href="#__codelineno-10-5">5</a></span>
+<span class="normal"><a href="#__codelineno-10-6">6</a></span>
+<span class="normal"><a href="#__codelineno-10-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="k">def</span> <span class="nf">reduceByKey</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">kvs</span><span class="p">,</span> <span class="n">acc</span><span class="p">):</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2"></a>    <span class="n">s</span> <span class="o">=</span> <span class="n">shuffle</span><span class="p">(</span><span class="n">kvs</span><span class="p">)</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3"></a>    <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">reduce</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">acc</span><span class="p">)),</span> <span class="n">s</span><span class="p">)</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4"></a>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="k">def</span> <span class="nf">reduceByKey</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">kvs</span><span class="p">):</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6"></a>    <span class="n">s</span> <span class="o">=</span> <span class="n">shuffle</span><span class="p">(</span><span class="n">kvs</span><span class="p">)</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7"></a>    <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">reduce</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span> <span class="n">s</span><span class="p">)</span>
+</span></code></pre></div></td></tr></table></div>
 <p><code>reduceByKey</code> shuffles the list of key-value pairs, grouping them by keys, then applies the binary aggregation function <code>f</code> to values in 
 each group. e.g. <code>reduceByKey(lambda x,y:x+y, [("k1",1),("k2",1), ("k1",2), ("k2",3)],0)</code> yields <code>[('k1', 3), ('k2', 4)]</code></p>
 <p>Note that all these combinators are implemented using <code>map</code> and <code>reduce</code>. If <code>map</code> and <code>reduce</code> are parallelized, so are these combinators.</p>
 <p>Apart from <code>reduceByKey</code>, we would also like to include a variant </p>
-<pre><code class="language-python">def reduceByKey2(agg, kvs):
-    return map(agg, shuffle(kvs))
-</code></pre>
-<p>Both variants call shuffle to partition the input.
+<p><div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-11-1">1</a></span>
+<span class="normal"><a href="#__codelineno-11-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="k">def</span> <span class="nf">reduceByKey2</span><span class="p">(</span><span class="n">agg</span><span class="p">,</span> <span class="n">kvs</span><span class="p">):</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2"></a>    <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="n">agg</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">(</span><span class="n">kvs</span><span class="p">))</span>
+</span></code></pre></div></td></tr></table></div>
+Both variants call shuffle to partition the input.
 The difference is that given a partition <code>(key,values)</code> obtained from the shuffled results, the function <code>agg</code> in <code>reducedByKey2</code> is applied to aggregate <code>values</code>, and returns the key of the partition and the aggregated result. Note that <code>agg</code> is given by the user/programmer, which might not be implemented using <code>reduce</code>, in contrast, the <code>f</code> in <code>reduceByKey</code> is applied to the <code>reduce(f,values)</code>.</p>
-<h2 id="example-word-count">Example : Word Count</h2>
+<h2 id="example-word-count">Example : Word Count<a class="headerlink" href="#example-word-count" title="Permanent link">&para;</a></h2>
 <p>In this example, we would to write a program which opens a text file, reads all the words in the file and counts the number of occurences of words.</p>
-<h3 id="using-for-loop">Using for loop</h3>
-<pre><code class="language-python">infile = open(sys.argv[1], 'r')
-dict = {}
-for line in infile:
-     words = line.strip().split()
-     for word in words:
-         if (dict.has_key(word)):
-             dict[word] +=1
-         else:
-             dict[word] = 1
-for word,count in dict.items():
-    print(&quot;%s,%d\n&quot; % (word,count))
-</code></pre>
-<h3 id="using-toy-mapreduce">Using Toy MapReduce</h3>
-<pre><code class="language-python">infile = open(sys.argv[1], 'r')
-lines = []
-for line in infile: lines.append(line.strip())
-
-def f(text):
-    wordand1s = []
-    for word in text.split(): wordand1s.append((word,1))
-    return wordand1s
-
-def g(p):
-    word,icounts = p
-    return (word, sum(icounts))
-
-w1s = flatMap(f,lines)
-
-res = reduceByKey2(g, w1s)
-
-for word,count in res: print(&quot;%s,%d&quot; % (word,count))
-</code></pre>
+<h3 id="using-for-loop">Using for loop<a class="headerlink" href="#using-for-loop" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-12-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-12-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-12-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-12-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-12-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-12-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-12-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-12-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-12-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-12-10">10</a></span>
+<span class="normal"><a href="#__codelineno-12-11">11</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="n">infile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3"></a><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">infile</span><span class="p">:</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4"></a>     <span class="n">words</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5"></a>     <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6"></a>         <span class="k">if</span> <span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">word</span><span class="p">)):</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7"></a>             <span class="nb">dict</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">+=</span><span class="mi">1</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8"></a>         <span class="k">else</span><span class="p">:</span>
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9"></a>             <span class="nb">dict</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10"></a><span class="k">for</span> <span class="n">word</span><span class="p">,</span><span class="n">count</span> <span class="ow">in</span> <span class="nb">dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">,</span><span class="si">%d</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">word</span><span class="p">,</span><span class="n">count</span><span class="p">))</span>
+</span></code></pre></div></td></tr></table></div>
+<h3 id="using-toy-mapreduce">Using Toy MapReduce<a class="headerlink" href="#using-toy-mapreduce" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-13-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-13-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-13-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-13-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-13-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-13-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-13-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-13-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-13-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-13-10">10</a></span>
+<span class="normal"><a href="#__codelineno-13-11">11</a></span>
+<span class="normal"><a href="#__codelineno-13-12">12</a></span>
+<span class="normal"><a href="#__codelineno-13-13">13</a></span>
+<span class="normal"><a href="#__codelineno-13-14">14</a></span>
+<span class="normal"><a href="#__codelineno-13-15">15</a></span>
+<span class="normal"><a href="#__codelineno-13-16">16</a></span>
+<span class="normal"><a href="#__codelineno-13-17">17</a></span>
+<span class="normal"><a href="#__codelineno-13-18">18</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="n">infile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">infile</span><span class="p">:</span> <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4"></a>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6"></a>    <span class="n">wordand1s</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7"></a>    <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">():</span> <span class="n">wordand1s</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">word</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8"></a>    <span class="k">return</span> <span class="n">wordand1s</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9"></a>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10"></a><span class="k">def</span> <span class="nf">g</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11"></a>    <span class="n">word</span><span class="p">,</span><span class="n">icounts</span> <span class="o">=</span> <span class="n">p</span>
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12"></a>    <span class="k">return</span> <span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">icounts</span><span class="p">))</span>
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13"></a>
+</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14"></a><span class="n">w1s</span> <span class="o">=</span> <span class="n">flatMap</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">lines</span><span class="p">)</span>
+</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15"></a>
+</span><span id="__span-13-16"><a id="__codelineno-13-16" name="__codelineno-13-16"></a><span class="n">res</span> <span class="o">=</span> <span class="n">reduceByKey2</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">w1s</span><span class="p">)</span>
+</span><span id="__span-13-17"><a id="__codelineno-13-17" name="__codelineno-13-17"></a>
+</span><span id="__span-13-18"><a id="__codelineno-13-18" name="__codelineno-13-18"></a><span class="k">for</span> <span class="n">word</span><span class="p">,</span><span class="n">count</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">,</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">word</span><span class="p">,</span><span class="n">count</span><span class="p">))</span>
+</span></code></pre></div></td></tr></table></div>
 <p>we abstract away the use of for loop and the dictionary by using <code>flatMap</code> and <code>reduceByKey2</code>.</p>
-<h3 id="using-mapreduce-in-hadoop">Using MapReduce in Hadoop</h3>
+<h3 id="using-mapreduce-in-hadoop">Using MapReduce in Hadoop<a class="headerlink" href="#using-mapreduce-in-hadoop" title="Permanent link">&para;</a></h3>
 <p>We consider using the Python API of Hadoop (a.k.a. pydoop). Hadoop MapReduce provides the standard parallelized/distributed implementtation of the <code>flatMap</code> and <code>reduceByKey2</code>, we don't need to worry implement them.</p>
-<pre><code class="language-python">def mapper(key, text, writer): 
-    for word in text.split():
-        writer.emit(word, &quot;1&quot;)
-
-def reducer(word, icounts, writer):
-    writer.emit(word, sum(map(int, icounts)))
-</code></pre>
+<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-14-1">1</a></span>
+<span class="normal"><a href="#__codelineno-14-2">2</a></span>
+<span class="normal"><a href="#__codelineno-14-3">3</a></span>
+<span class="normal"><a href="#__codelineno-14-4">4</a></span>
+<span class="normal"><a href="#__codelineno-14-5">5</a></span>
+<span class="normal"><a href="#__codelineno-14-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="k">def</span> <span class="nf">mapper</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">writer</span><span class="p">):</span> 
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2"></a>    <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3"></a>        <span class="n">writer</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4"></a>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5"></a><span class="k">def</span> <span class="nf">reducer</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">icounts</span><span class="p">,</span> <span class="n">writer</span><span class="p">):</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6"></a>    <span class="n">writer</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">icounts</span><span class="p">)))</span>
+</span></code></pre></div></td></tr></table></div>
 <p>the function <code>mapper</code> is taking the role of <code>f</code> in the toy mapreduce version, and function <code>reducer</code> is taking the role of <code>g</code>.</p>
 <p>We can think of <code>writer.emit</code> is similar to the regular <code>return</code> and <code>yield</code> in Python's iterator
 depending on the context. </p>
@@ -386,101 +1033,81 @@ depending on the context. </p>
 data that potentially has a key for each entry. In case like the input
 ot the mapper is a plain text file, the key is the byte offset
 w.r.t to the start of the text file.</p>
-<p>Since we are using Pydoop, the integration with with the Hadoop MapReduce is just to run it as a script. </p>
-<pre><code class="language-bash">$ pydoop script wordcount.py /input /output
-</code></pre>
+<p>Since we are using Pydoop, the integration with with the Hadoop MapReduce is just to run it as a script. 
+<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-15-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1"></a>$<span class="w"> </span>pydoop<span class="w"> </span>script<span class="w"> </span>wordcount.py<span class="w"> </span>/input<span class="w"> </span>/output
+</span></code></pre></div></td></tr></table></div></p>
 <p>Note that we do not need to call <code>flatMap</code> or <code>reduceByKey2</code> explicitly.</p>
 <p>In the following chart illustrate of the steps taken place during wordcount example.</p>
 <p><img alt="Hadoop MapReduce" src="../images/a11.png" /></p>
-<h2 id="hadoop-mapreduce-architecture">Hadoop MapReduce Architecture</h2>
+<h2 id="hadoop-mapreduce-architecture">Hadoop MapReduce Architecture<a class="headerlink" href="#hadoop-mapreduce-architecture" title="Permanent link">&para;</a></h2>
 <p>The following diagram show a basic structure of all the server and clients component of the Hadoop MapReduce.</p>
 <p><img alt="MapReduce Architecture" src="../images/12774181-jobtracker-tasktracker.jpg" /></p>
 <p>In Hadoop v1, a JobTracker is spawned for coordination purposes; TaskTrackers are spawed for executing the actual jobs. We can think of the JobTrackers are run in the name node, and the Tasktrackers are processes in the data nodes.</p>
 <p>We leave the advanced architecture of Hadoop Version 2+ in the upcoming lesson, i.e. YARN. </p>
-<h2 id="hadoop-mapreduce-job-management">Hadoop MapReduce Job Management</h2>
+<h2 id="hadoop-mapreduce-job-management">Hadoop MapReduce Job Management<a class="headerlink" href="#hadoop-mapreduce-job-management" title="Permanent link">&para;</a></h2>
 <p>Hadoop MapReduce follows the locallity principal, i.e. computation must be moved to the data, i.e. compute at the data nodes. This is possible thanks to the determinism property discussed earlier. These common tasks, mappers and reducers are compiled and packaged as (JAR) and uploaded to the data node. </p>
 <p>The input data are (pre-) partitioned into splits, (by data nodes). Data are fed to the mappers by split.  </p>
 <p>The output of the mappers will be re-shuffled and re-partitioned and sent to the reducers. </p>
-<p>In some cases combiners are used. Combiners are like local mini-reducers, they reduce the immediate output coming straight from the mapper task so that the network traffic can be further reduced. </p></div>
-            </div>
-        </div>
+<p>In some cases combiners are used. Combiners are like local mini-reducers, they reduce the immediate output coming straight from the mapper task so that the network traffic can be further reduced. </p>
 
-        <footer class="col-md-12">
-            <hr>
-            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
-        </footer>
-        <script src="../../js/jquery-3.6.0.min.js"></script>
-        <script src="../../js/bootstrap.min.js"></script>
-        <script>
-            var base_url = "../..",
-                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
-        </script>
-        <script src="../../js/base.js"></script>
-        <script src="../../javascripts/mathjax.js"></script>
-        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-        <script src="../../search/main.js"></script>
 
-        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="searchModalLabel">Search</h4>
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
             </div>
-            <div class="modal-body">
-                <p>From here you can search these documents. Enter your search terms below.</p>
-                <form>
-                    <div class="form-group">
-                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
-                    </div>
-                </form>
-                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
-            </div>
-            <div class="modal-footer">
-            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
-    </div>
-</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-            </div>
-            <div class="modal-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th style="width: 20%;">Keys</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="help shortcut"><kbd>?</kbd></td>
-                    <td>Open this help</td>
-                  </tr>
-                  <tr>
-                    <td class="next shortcut"><kbd>n</kbd></td>
-                    <td>Next page</td>
-                  </tr>
-                  <tr>
-                    <td class="prev shortcut"><kbd>p</kbd></td>
-                    <td>Previous page</td>
-                  </tr>
-                  <tr>
-                    <td class="search shortcut"><kbd>s</kbd></td>
-                    <td>Search</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
 </div>
-
-    </body>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "content.code.copy", "navigation.expand", "navigation.indexes", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
 </html>

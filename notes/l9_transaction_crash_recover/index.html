@@ -1,97 +1,638 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
-        
-        
-        <link rel="shortcut icon" href="../../img/favicon.ico">
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.3">
+    
+    
+      
         <title>50.043 Transactions and Crash Recovery - Database System and Big Data 50.043</title>
-        <link href="../../css/bootstrap.min.css" rel="stylesheet">
-        <link href="../../css/font-awesome.min.css" rel="stylesheet">
-        <link href="../../css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-        <script>hljs.highlightAll();</script> 
-    </head>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.50c56a3b.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+  
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+  
+  <style>:root{--md-admonition-icon--abstract:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M2.5 1.75v11.5c0 .138.112.25.25.25h3.17a.75.75 0 0 1 0 1.5H2.75A1.75 1.75 0 0 1 1 13.25V1.75C1 .784 1.784 0 2.75 0h8.5C12.216 0 13 .784 13 1.75v7.736a.75.75 0 0 1-1.5 0V1.75a.25.25 0 0 0-.25-.25h-8.5a.25.25 0 0 0-.25.25Zm13.274 9.537v-.001l-4.557 4.45a.75.75 0 0 1-1.055-.008l-1.943-1.95a.75.75 0 0 1 1.062-1.058l1.419 1.425 4.026-3.932a.75.75 0 1 1 1.048 1.074ZM4.75 4h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM4 7.75A.75.75 0 0 1 4.75 7h2a.75.75 0 0 1 0 1.5h-2A.75.75 0 0 1 4 7.75Z"/></svg>');--md-admonition-icon--bug:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4.72.22a.75.75 0 0 1 1.06 0l1 .999a3.488 3.488 0 0 1 2.441 0l.999-1a.748.748 0 0 1 1.265.332.75.75 0 0 1-.205.729l-.775.776c.616.63.995 1.493.995 2.444v.327c0 .1-.009.197-.025.292.408.14.764.392 1.029.722l1.968-.787a.75.75 0 0 1 .556 1.392L13 7.258V9h2.25a.75.75 0 0 1 0 1.5H13v.5c0 .409-.049.806-.141 1.186l2.17.868a.75.75 0 0 1-.557 1.392l-2.184-.873A4.997 4.997 0 0 1 8 16a4.997 4.997 0 0 1-4.288-2.427l-2.183.873a.75.75 0 0 1-.558-1.392l2.17-.868A5.036 5.036 0 0 1 3 11v-.5H.75a.75.75 0 0 1 0-1.5H3V7.258L.971 6.446a.75.75 0 0 1 .558-1.392l1.967.787c.265-.33.62-.583 1.03-.722a1.677 1.677 0 0 1-.026-.292V4.5c0-.951.38-1.814.995-2.444L4.72 1.28a.75.75 0 0 1 0-1.06Zm.53 6.28a.75.75 0 0 0-.75.75V11a3.5 3.5 0 1 0 7 0V7.25a.75.75 0 0 0-.75-.75ZM6.173 5h3.654A.172.172 0 0 0 10 4.827V4.5a2 2 0 1 0-4 0v.327c0 .096.077.173.173.173Z"/></svg>');--md-admonition-icon--danger:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M9.504.43a1.516 1.516 0 0 1 2.437 1.713L10.415 5.5h2.123c1.57 0 2.346 1.909 1.22 3.004l-7.34 7.142a1.249 1.249 0 0 1-.871.354h-.302a1.25 1.25 0 0 1-1.157-1.723L5.633 10.5H3.462c-1.57 0-2.346-1.909-1.22-3.004L9.503.429Zm1.047 1.074L3.286 8.571A.25.25 0 0 0 3.462 9H6.75a.75.75 0 0 1 .694 1.034l-1.713 4.188 6.982-6.793A.25.25 0 0 0 12.538 7H9.25a.75.75 0 0 1-.683-1.06l2.008-4.418.003-.006a.036.036 0 0 0-.004-.009l-.006-.006-.008-.001c-.003 0-.006.002-.009.004Z"/></svg>');--md-admonition-icon--example:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M5 5.782V2.5h-.25a.75.75 0 0 1 0-1.5h6.5a.75.75 0 0 1 0 1.5H11v3.282l3.666 5.76C15.619 13.04 14.543 15 12.767 15H3.233c-1.776 0-2.852-1.96-1.899-3.458Zm-2.4 6.565a.75.75 0 0 0 .633 1.153h9.534a.75.75 0 0 0 .633-1.153L12.225 10.5h-8.45ZM9.5 2.5h-3V6c0 .143-.04.283-.117.403L4.73 9h6.54L9.617 6.403A.746.746 0 0 1 9.5 6Z"/></svg>');--md-admonition-icon--failure:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M2.344 2.343h-.001a8 8 0 0 1 11.314 11.314A8.002 8.002 0 0 1 .234 10.089a8 8 0 0 1 2.11-7.746Zm1.06 10.253a6.5 6.5 0 1 0 9.108-9.275 6.5 6.5 0 0 0-9.108 9.275ZM6.03 4.97 8 6.94l1.97-1.97a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l1.97 1.97a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-1.97 1.97a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L6.94 8 4.97 6.03a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018Z"/></svg>');--md-admonition-icon--info:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/></svg>');--md-admonition-icon--note:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M1 7.775V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 0 1 0 2.474l-5.026 5.026a1.75 1.75 0 0 1-2.474 0l-6.25-6.25A1.752 1.752 0 0 1 1 7.775Zm1.5 0c0 .066.026.13.073.177l6.25 6.25a.25.25 0 0 0 .354 0l5.025-5.025a.25.25 0 0 0 0-.354l-6.25-6.25a.25.25 0 0 0-.177-.073H2.75a.25.25 0 0 0-.25.25ZM6 5a1 1 0 1 1 0 2 1 1 0 0 1 0-2Z"/></svg>');--md-admonition-icon--success:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"/></svg>');--md-admonition-icon--tip:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M3.499.75a.75.75 0 0 1 1.5 0v.996C5.9 2.903 6.793 3.65 7.662 4.376l.24.202c-.036-.694.055-1.422.426-2.163C9.1.873 10.794-.045 12.622.26 14.408.558 16 1.94 16 4.25c0 1.278-.954 2.575-2.44 2.734l.146.508.065.22c.203.701.412 1.455.476 2.226.142 1.707-.4 3.03-1.487 3.898C11.714 14.671 10.27 15 8.75 15h-6a.75.75 0 0 1 0-1.5h1.376a4.484 4.484 0 0 1-.563-1.191 3.835 3.835 0 0 1-.05-2.063 4.647 4.647 0 0 1-2.025-.293.75.75 0 0 1 .525-1.406c1.357.507 2.376-.006 2.698-.318l.009-.01a.747.747 0 0 1 1.06 0 .748.748 0 0 1-.012 1.074c-.912.92-.992 1.835-.768 2.586.221.74.745 1.337 1.196 1.621H8.75c1.343 0 2.398-.296 3.074-.836.635-.507 1.036-1.31.928-2.602-.05-.603-.216-1.224-.422-1.93l-.064-.221c-.12-.407-.246-.84-.353-1.29a2.425 2.425 0 0 1-.507-.441 3.075 3.075 0 0 1-.633-1.248.75.75 0 0 1 1.455-.364c.046.185.144.436.31.627.146.168.353.305.712.305.738 0 1.25-.615 1.25-1.25 0-1.47-.95-2.315-2.123-2.51-1.172-.196-2.227.387-2.706 1.345-.46.92-.27 1.774.019 3.062l.042.19a.884.884 0 0 1 .01.05c.348.443.666.949.94 1.553a.75.75 0 1 1-1.365.62c-.553-1.217-1.32-1.94-2.3-2.768L6.7 5.527c-.814-.68-1.75-1.462-2.692-2.619a3.737 3.737 0 0 0-1.023.88c-.406.495-.663 1.036-.722 1.508.116.122.306.21.591.239.388.038.797-.06 1.032-.19a.75.75 0 0 1 .728 1.31c-.515.287-1.23.439-1.906.373-.682-.067-1.473-.38-1.879-1.193L.75 5.677V5.5c0-.984.48-1.94 1.077-2.664.46-.559 1.05-1.055 1.673-1.353V.75Z"/></svg>');--md-admonition-icon--question:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.92 6.085h.001a.749.749 0 1 1-1.342-.67c.169-.339.436-.701.849-.977C6.845 4.16 7.369 4 8 4a2.756 2.756 0 0 1 1.637.525c.503.377.863.965.863 1.725 0 .448-.115.83-.329 1.15-.205.307-.47.513-.692.662-.109.072-.22.138-.313.195l-.006.004a6.24 6.24 0 0 0-.26.16.952.952 0 0 0-.276.245.75.75 0 0 1-1.248-.832c.184-.264.42-.489.692-.661.103-.067.207-.132.313-.195l.007-.004c.1-.061.182-.11.258-.161a.969.969 0 0 0 .277-.245C8.96 6.514 9 6.427 9 6.25a.612.612 0 0 0-.262-.525A1.27 1.27 0 0 0 8 5.5c-.369 0-.595.09-.74.187a1.01 1.01 0 0 0-.34.398ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"/></svg>');--md-admonition-icon--quote:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M1.75 2.5h10.5a.75.75 0 0 1 0 1.5H1.75a.75.75 0 0 1 0-1.5Zm4 5h8.5a.75.75 0 0 1 0 1.5h-8.5a.75.75 0 0 1 0-1.5Zm0 5h8.5a.75.75 0 0 1 0 1.5h-8.5a.75.75 0 0 1 0-1.5ZM2.5 7.75v6a.75.75 0 0 1-1.5 0v-6a.75.75 0 0 1 1.5 0Z"/></svg>');--md-admonition-icon--warning:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"/></svg>');}</style>
 
-    <body>
-        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
-            <div class="container">
-                <a class="navbar-brand" href="../..">Database System and Big Data 50.043</a>
-                <!-- Expander button -->
-                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
 
-                <!-- Expanded navigation -->
-                <div id="navbar-collapse" class="navbar-collapse collapse">
-                        <!-- Main navigation -->
-                        <ul class="nav navbar-nav">
-                            <li class="navitem">
-                                <a href="../.." class="nav-link">Home</a>
-                            </li>
-                            <li class="navitem">
-                                <a href="../../project/" class="nav-link">Project</a>
-                            </li>
-                            <li class="navitem">
-                                <a href="../l1_course_handout/" class="nav-link">Handout</a>
-                            </li>
-                        </ul>
-
-                    <ul class="nav navbar-nav ml-auto">
-                        <li class="nav-item">
-                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
-                                <i class="fa fa-search"></i> Search
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="container">
-            <div class="row">
-                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
-    <div class="navbar-header">
-        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
-            <span class="fa fa-angle-down"></span>
-        </button>
-    </div>
 
     
-    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
-        <ul class="nav flex-column">
-            
-            <li class="nav-item" data-level="1"><a href="#50043-transactions-and-crash-recovery" class="nav-link">50.043 Transactions and Crash Recovery</a>
-              <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#learning-outcomes" class="nav-link">Learning Outcomes</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#acid-properties" class="nav-link">ACID properties</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#transaction-and-acid" class="nav-link">Transaction and ACID</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#transaction-and-crash-recovery" class="nav-link">Transaction and Crash recovery</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-              </ul>
-            </li>
-        </ul>
-    </div>
-</div></div>
-                    <div class="col-md-9" role="main">
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CSpline+Sans+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Spline Sans Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
 
-<h1 id="50043-transactions-and-crash-recovery">50.043 Transactions and Crash Recovery</h1>
-<h2 id="learning-outcomes">Learning Outcomes</h2>
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#50043-transactions-and-crash-recovery" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Database System and Big Data 50.043" class="md-header__button md-logo" aria-label="Database System and Big Data 50.043" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 3a2 2 0 0 1 2-2h9.982a2 2 0 0 1 1.414.586l4.018 4.018A2 2 0 0 1 21 7.018V21a2 2 0 0 1-2 2H4.75a.75.75 0 0 1 0-1.5H19a.5.5 0 0 0 .5-.5V8.5h-4a2 2 0 0 1-2-2v-4H5a.5.5 0 0 0-.5.5v6.25a.75.75 0 0 1-1.5 0Zm12-.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 0-.146-.336l-4.018-4.018A.5.5 0 0 0 15 2.5Z"/><path d="M4.53 12.24a.75.75 0 0 1-.039 1.06l-2.639 2.45 2.64 2.45a.75.75 0 1 1-1.022 1.1l-3.23-3a.75.75 0 0 1 0-1.1l3.23-3a.75.75 0 0 1 1.06.04Zm3.979 1.06a.75.75 0 1 1 1.02-1.1l3.231 3a.75.75 0 0 1 0 1.1l-3.23 3a.75.75 0 1 1-1.021-1.1l2.639-2.45-2.64-2.45Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Database System and Big Data 50.043
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              50.043 Transactions and Crash Recovery
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../l1_course_handout/" class="md-tabs__link">
+        
+  
+    
+  
+  Handout
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Database System and Big Data 50.043" class="md-nav__button md-logo" aria-label="Database System and Big Data 50.043" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 3a2 2 0 0 1 2-2h9.982a2 2 0 0 1 1.414.586l4.018 4.018A2 2 0 0 1 21 7.018V21a2 2 0 0 1-2 2H4.75a.75.75 0 0 1 0-1.5H19a.5.5 0 0 0 .5-.5V8.5h-4a2 2 0 0 1-2-2v-4H5a.5.5 0 0 0-.5.5v6.25a.75.75 0 0 1-1.5 0Zm12-.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 0-.146-.336l-4.018-4.018A.5.5 0 0 0 15 2.5Z"/><path d="M4.53 12.24a.75.75 0 0 1-.039 1.06l-2.639 2.45 2.64 2.45a.75.75 0 1 1-1.022 1.1l-3.23-3a.75.75 0 0 1 0-1.1l3.23-3a.75.75 0 0 1 1.06.04Zm3.979 1.06a.75.75 0 1 1 1.02-1.1l3.231 3a.75.75 0 0 1 0 1.1l-3.23 3a.75.75 0 1 1-1.021-1.1l2.639-2.45-2.64-2.45Z"/></svg>
+
+    </a>
+    Database System and Big Data 50.043
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../l1_course_handout/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Handout
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#learning-outcomes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Learning Outcomes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#acid-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      ACID properties
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ACID properties">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#atomicity" class="md-nav__link">
+    <span class="md-ellipsis">
+      Atomicity
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#consistency" class="md-nav__link">
+    <span class="md-ellipsis">
+      Consistency
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Consistency">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-consistency" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data consistency
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#operation-consistency" class="md-nav__link">
+    <span class="md-ellipsis">
+      Operation consistency
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Isolation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#durability" class="md-nav__link">
+    <span class="md-ellipsis">
+      Durability
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#transaction-and-acid" class="md-nav__link">
+    <span class="md-ellipsis">
+      Transaction and ACID
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#transaction-and-crash-recovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      Transaction and Crash recovery
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Transaction and Crash recovery">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#force-and-no-stealing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Force and no stealing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stealing-and-undo-logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stealing and undo logging
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no-force-and-redo-logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      No force and redo logging
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-quick-summary-so-far-undo-vs-redo" class="md-nav__link">
+    <span class="md-ellipsis">
+      A Quick Summary so far - Undo vs Redo
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#undoredo-logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Undo/Redo Logging
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Undo/Redo Logging">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-backward-pass" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 1 - backward pass
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-forward-pass" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 2 - forward pass
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checkpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      Checkpoint
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Checkpoint">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quiescent-checkpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quiescent checkpoint
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nonquiescent-checkpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nonquiescent checkpoint
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Nonquiescent checkpoint">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nonquiescent-checkpoint-with-undo-logging-with-stealing-and-force" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nonquiescent checkpoint with undo-logging (with stealing and force)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nonquiescent-checkpoint-with-redo-logging-with-no-force-and-no-stealing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nonquiescent checkpoint with redo-logging (with no force and no stealing)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nonquiescent-checkpoint-with-undoredo-logging-with-no-force-and-stealing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nonquiescent checkpoint with undo/redo-logging (with no force and stealing)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="50043-transactions-and-crash-recovery">50.043 Transactions and Crash Recovery<a class="headerlink" href="#50043-transactions-and-crash-recovery" title="Permanent link">&para;</a></h1>
+<h2 id="learning-outcomes">Learning Outcomes<a class="headerlink" href="#learning-outcomes" title="Permanent link">&para;</a></h2>
 <p>By the end of this unit, you should be able to</p>
 <ol>
 <li>describe the ACID properties of database system.</li>
@@ -100,9 +641,9 @@
 <li>explain recovery process with undo, redo, undo/redo logging.</li>
 <li>explain quiescent and nonquiescent checkpoints.</li>
 </ol>
-<h2 id="acid-properties">ACID properties</h2>
+<h2 id="acid-properties">ACID properties<a class="headerlink" href="#acid-properties" title="Permanent link">&para;</a></h2>
 <p>To ensure data correctness, modern DBMSes often ensure certain properties.</p>
-<h3 id="atomicity">Atomicity</h3>
+<h3 id="atomicity">Atomicity<a class="headerlink" href="#atomicity" title="Permanent link">&para;</a></h3>
 <p>The atomicity property allows users of DBMSes to define a sequence of operations to be performed as none or all, there is no in-between. 
 For example, consider the following sequence of database operations represent a balance transfer of $100 from account A to account B.</p>
 <ol>
@@ -110,33 +651,38 @@ For example, consider the following sequence of database operations represent a 
 <li>credit $100 into account B</li>
 </ol>
 <p>These two operations must be performed altogether but not partially. </p>
-<h3 id="consistency">Consistency</h3>
+<h3 id="consistency">Consistency<a class="headerlink" href="#consistency" title="Permanent link">&para;</a></h3>
 <p>The consistency property ensures the data integrity constraints are not violated. This property has two levels.</p>
-<h4 id="data-consistency">Data consistency</h4>
+<h4 id="data-consistency">Data consistency<a class="headerlink" href="#data-consistency" title="Permanent link">&para;</a></h4>
 <p>The data consistency refers to the overall constraint (aka business logic) needs to be maintained by the database. DBMS ensures data consistency if the user's operations (in terms of transactions) are consistent.</p>
-<h4 id="operation-consistency">Operation consistency</h4>
+<h4 id="operation-consistency">Operation consistency<a class="headerlink" href="#operation-consistency" title="Permanent link">&para;</a></h4>
 <p>This refers to database operations issued by the users to the database as a single transaction must not violate the business constraint, e.g. the total sum of balance of all accounts in a bank must remain unchanged, and the user operations given in earlier example is  of consistent.</p>
 <p>Esnuring operation consistency has to be user's responsibility.</p>
-<h3 id="isolation">Isolation</h3>
+<h3 id="isolation">Isolation<a class="headerlink" href="#isolation" title="Permanent link">&para;</a></h3>
 <p>The isoliation property ensures that multiple concurrent transactions must not be dependent on one another. In other words, if the DBMS executing these concurrent transactions by interleaving, the result be the same as executing them in a sequential order.</p>
 <p>Note that isolation does not entail determinism.</p>
-<h3 id="durability">Durability</h3>
+<h3 id="durability">Durability<a class="headerlink" href="#durability" title="Permanent link">&para;</a></h3>
 <p>The durability property ensures the effect of transaction operations will stay permanently upon commit.</p>
-<h2 id="transaction-and-acid">Transaction and ACID</h2>
+<h2 id="transaction-and-acid">Transaction and ACID<a class="headerlink" href="#transaction-and-acid" title="Permanent link">&para;</a></h2>
 <p>Transaction is one of the popular techniques in ensuring ACID properties. </p>
 <p>In SQL, one can enclose the operations between <code>BEGIN</code> and <code>COMMIT</code></p>
-<pre><code class="language-sql">begin;
-select @bal := bal from saving where id=1001;
-update saving set bal = @bal-100 where id=1001;
-select @bal := bal from saving where id=2001;
-update saving set bal = @bal+100 where id=2001;
-commit;
-</code></pre>
+<div class="language-sql highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">2</a></span>
+<span class="normal"><a href="#__codelineno-0-3">3</a></span>
+<span class="normal"><a href="#__codelineno-0-4">4</a></span>
+<span class="normal"><a href="#__codelineno-0-5">5</a></span>
+<span class="normal"><a href="#__codelineno-0-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="k">begin</span><span class="p">;</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="k">select</span><span class="w"> </span><span class="o">@</span><span class="n">bal</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">bal</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">saving</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="o">=</span><span class="mi">1001</span><span class="p">;</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="k">update</span><span class="w"> </span><span class="n">saving</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">bal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">@</span><span class="n">bal</span><span class="o">-</span><span class="mi">100</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="o">=</span><span class="mi">1001</span><span class="p">;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="k">select</span><span class="w"> </span><span class="o">@</span><span class="n">bal</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="n">bal</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">saving</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="o">=</span><span class="mi">2001</span><span class="p">;</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="k">update</span><span class="w"> </span><span class="n">saving</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">bal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">@</span><span class="n">bal</span><span class="o">+</span><span class="mi">100</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="o">=</span><span class="mi">2001</span><span class="p">;</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="k">commit</span><span class="p">;</span>
+</span></code></pre></div></td></tr></table></div>
 <p>In the above transaction, we transfer $100 from account with id <code>1001</code> to another account with id <code>2001</code>. The debit from account <code>1001</code> and the credit to account <code>2001</code> will take effect altogether or none.</p>
 <p>In the following section, we first study how to apply transaction with logs to ensure atomicity. Then we consider how to apply transaction to ensure isolation.</p>
 <p>Durability follows from atomicty and crash recovery process if page flush operation is atomic (as an assumption we take).</p>
 <p>Consistency is ensured if transactions operations are consistent.</p>
-<h2 id="transaction-and-crash-recovery">Transaction and Crash recovery</h2>
+<h2 id="transaction-and-crash-recovery">Transaction and Crash recovery<a class="headerlink" href="#transaction-and-crash-recovery" title="Permanent link">&para;</a></h2>
 <p>Let's consider the running example of of debitting account <code>1001</code> and crediting account <code>2001</code>.</p>
 <p>There are a few possible program points where a crash could occur</p>
 <ol>
@@ -145,7 +691,7 @@ commit;
 <li>after the second update statement before the commit</li>
 <li>after the commit</li>
 </ol>
-<h3 id="force-and-no-stealing">Force and no stealing</h3>
+<h3 id="force-and-no-stealing">Force and no stealing<a class="headerlink" href="#force-and-no-stealing" title="Permanent link">&para;</a></h3>
 <p>One way to simplify the crash recovery is to assume that </p>
 <ul>
 <li>A dirty page in the buffer pool is written to disk when the transaction is committed. This is known as the <em>Force</em> policy</li>
@@ -153,7 +699,7 @@ commit;
 </ul>
 <p>With force and no stealing policy in-place, there is little work to do for recovery, as a committed transaction must have been written to disk. Uncommit transactions have not be written to disk. Note we assume that the commit and page flushing are atomically performed altogether. </p>
 <p>However such a policy is not very practical. Forcing increases unncessary page I/Os, e.g. when multiple records from the same page get updated in consecutive transactions. No-stealing policy disallows concurrent transaction activities in the event the transaction involves larger set of pages.</p>
-<h3 id="stealing-and-undo-logging">Stealing and undo logging</h3>
+<h3 id="stealing-and-undo-logging">Stealing and undo logging<a class="headerlink" href="#stealing-and-undo-logging" title="Permanent link">&para;</a></h3>
 <p>Let's relax our policy to allow page stealing (but forcing is still enforced). 
 Now the issue is that some of the pages in the buffer pool belonging to an uncommitted transaction could have been written to the disk due to stealing before the commit. When the crash occurs before the commit, we need to undo the page write. To enable recovery, the system maintains a write ahead log with undo information. Each entry in this log has the following fields</p>
 <ul>
@@ -171,18 +717,23 @@ Now the issue is that some of the pages in the buffer pool belonging to an uncom
 <li>When <code>T</code> is being committed, to make sure all log entries are written to disk, all updated pages are written to disk. Then append <code>&lt;T, commit&gt;</code> to the log on the disk.</li>
 </ol>
 <p>For instance, from our running example, let's say the transaction id is <code>t1</code>, the balance of account <code>1001</code> was <code>2000</code> in page <code>p1</code> with offset <code>0</code>, and the account <code>2001</code> balance was <code>500</code> in page <code>p2</code> with offset <code>40</code>. Both pages belong to file <code>f0</code>. When the transaction committing, we should have the following in the log</p>
-<pre><code>&lt;t1 begin&gt;
-&lt;t1 update f0 p1 0 2000&gt;
-&lt;t1 update f0 p2 40 500&gt;
-&lt;t1 commit&gt;
-</code></pre>
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
+<span class="normal"><a href="#__codelineno-1-2">2</a></span>
+<span class="normal"><a href="#__codelineno-1-3">3</a></span>
+<span class="normal"><a href="#__codelineno-1-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a>&lt;t1 begin&gt;
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a>&lt;t1 update f0 p1 0 2000&gt;
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a>&lt;t1 update f0 p2 40 500&gt;
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4"></a>&lt;t1 commit&gt;
+</span></code></pre></div></td></tr></table></div>
 <p>Now let's imagine the crash occurs after the second update statement, but we are unsure whether all the dirty pages have been written to disk. In that scenario, the recovery manager scans the log backwards (from the tail of the log to the start of the log) to look for transactions that have a <code>begin</code> but without <code>commit</code> (and without <code>abort</code>) and it finds the following entries at the tail.</p>
-<pre><code>&lt;t1 begin&gt;
-&lt;t1 update f0 p1 0 2000&gt;
-&lt;t1 update f0 p2 40 500&gt;
-</code></pre>
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
+<span class="normal"><a href="#__codelineno-2-2">2</a></span>
+<span class="normal"><a href="#__codelineno-2-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a>&lt;t1 begin&gt;
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a>&lt;t1 update f0 p1 0 2000&gt;
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3"></a>&lt;t1 update f0 p2 40 500&gt;
+</span></code></pre></div></td></tr></table></div>
 <p>With the above information the recovery manager can (conservatively) restore pages <code>p1</code> and <code>p2</code> back to the origin state before the transaction <code>t1</code> started. Finally it marks the transaction has been undone correctly with <code>&lt;t1, abort&gt;</code> log entry, so that the future recovery routine should not bother about this "chunk of history".</p>
-<h3 id="no-force-and-redo-logging">No force and redo logging</h3>
+<h3 id="no-force-and-redo-logging">No force and redo logging<a class="headerlink" href="#no-force-and-redo-logging" title="Permanent link">&para;</a></h3>
 <p>If we relax the policy by lifting force (but no stealing is enforced), we need another kind of logging. </p>
 <p>Now the issue we face is that all the dirty pages in the buffer pool might have not been flushed off the disk even after the transaction has been committed. When the crash occurs after the transaction commit, we need to find a way to check and "redo" these page writes during the crash recovery phase.</p>
 <p>To enable recovery, the system maintains a write ahead log with redo information. Each entry in this log has the following fields</p>
@@ -201,19 +752,23 @@ Now the issue is that some of the pages in the buffer pool belonging to an uncom
 <li>When <code>T</code> is being committed, to make sure all log entries are written to disk. Then append <code>&lt;T, commit&gt;</code> to the log on the disk.</li>
 </ol>
 <p>Next, let's reuse the same running example and imagine the crash occurs after the commit statement, but we are unsure whether all the dirty pages have been flushed to disk. In that scenario, the recovery manager scans the log from the very begining of the log to the end, for every transaction with <code>begin</code> and <code>commit</code>, apply the redo operation.</p>
-<p>For instance,</p>
-<pre><code>...
-&lt;t1 begin&gt;
-&lt;t1 update f0 p1 0 2100&gt;
-&lt;t1 update f0 p2 40 600&gt;
-&lt;t1 commit&gt;
-</code></pre>
+<p>For instance,
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span>
+<span class="normal"><a href="#__codelineno-3-2">2</a></span>
+<span class="normal"><a href="#__codelineno-3-3">3</a></span>
+<span class="normal"><a href="#__codelineno-3-4">4</a></span>
+<span class="normal"><a href="#__codelineno-3-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a>...
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a>&lt;t1 begin&gt;
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a>&lt;t1 update f0 p1 0 2100&gt;
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4"></a>&lt;t1 update f0 p2 40 600&gt;
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5"></a>&lt;t1 commit&gt;
+</span></code></pre></div></td></tr></table></div></p>
 <p>given the above entry, the recovery algorithm re-applies the updates though they could have been written to disk. It needs start from the begining, i.e. it has to look at all log entries of committed transaction including those <em>older than</em> <code>t1</code>. </p>
-<h3 id="a-quick-summary-so-far-undo-vs-redo">A Quick Summary so far - Undo vs Redo</h3>
+<h3 id="a-quick-summary-so-far-undo-vs-redo">A Quick Summary so far - Undo vs Redo<a class="headerlink" href="#a-quick-summary-so-far-undo-vs-redo" title="Permanent link">&para;</a></h3>
 <p>Let's contrast Undo logging with Redo logging.</p>
 <p>Undo logging assumes force and stealing. Dirty pages must be flushed before committing the transaction, hence the commit is slower (more work to do). On the other hand, the recovery process is easier, as we only need to look for uncommitted transaction logs by scanning backward from the tail of the log till the start of the log. Very often we only need to small fraction of the log entries (by heuristics we often find very small numbers of uncommited transaction near the tail).</p>
 <p>Redo logging assumes no-force and no-stealing. Dirty pages live in the buffer pool beyond transaction committing point, however, pages belonging to an active transaction must not be evicted (written to disk). Hence the commit is faster (no need to make sure dirty pages are flushed). On the other hand, the recovery process overhaul all the transaction entries in the log.</p>
-<h3 id="undoredo-logging">Undo/Redo Logging</h3>
+<h3 id="undoredo-logging">Undo/Redo Logging<a class="headerlink" href="#undoredo-logging" title="Permanent link">&para;</a></h3>
 <p>Let's further relax the policy to allow no-force and stealing. To support this liberal policy, we combine both Undo and Redo into a single logging mechannism. </p>
 <p>Each entry of the Undo/Redo logging has the following fields</p>
 <ul>
@@ -231,13 +786,13 @@ Now the issue is that some of the pages in the buffer pool belonging to an uncom
 <li>When <code>T</code> is being committed, to make sure all log entries are written to disk. Then append <code>&lt;T, commit&gt;</code> to the log on the disk.</li>
 </ol>
 <p>The recovery is carried out in two phases.</p>
-<h4 id="phase-1-backward-pass">Phase 1 - backward pass</h4>
+<h4 id="phase-1-backward-pass">Phase 1 - backward pass<a class="headerlink" href="#phase-1-backward-pass" title="Permanent link">&para;</a></h4>
 <p>Since stealing is allowed, in the first pass, like undo logging, we scan the log backwards from the tail, to search for open transactions (i.e. transactions without commit or abort), and perform the undo steps.</p>
-<h4 id="phase-2-forward-pass">Phase 2 - forward pass</h4>
+<h4 id="phase-2-forward-pass">Phase 2 - forward pass<a class="headerlink" href="#phase-2-forward-pass" title="Permanent link">&para;</a></h4>
 <p>Since no force is in placed, during the second pass, like redo logging, we scan the log forward from the begining. For each committed transaction, we redo the update.</p>
-<h3 id="checkpoint">Checkpoint</h3>
+<h3 id="checkpoint">Checkpoint<a class="headerlink" href="#checkpoint" title="Permanent link">&para;</a></h3>
 <p>To reduce the recovery overhead (especially the redo step), we could insert checkpoints into the log.</p>
-<h4 id="quiescent-checkpoint">Quiescent checkpoint</h4>
+<h4 id="quiescent-checkpoint">Quiescent checkpoint<a class="headerlink" href="#quiescent-checkpoint" title="Permanent link">&para;</a></h4>
 <p>One naive approach is to </p>
 <ol>
 <li>pause the system by preventing new transactions to be initiated</li>
@@ -248,25 +803,36 @@ Now the issue is that some of the pages in the buffer pool belonging to an uncom
 <p>During the undo recovery phase, we scan the log backward upto the checkpoint.
 During the redo recovery phase, we scan the log forward starting from the checkpoint.</p>
 <p>For instance, consider the tail fragment of some log (simplified). For the ease of referencing, we added line number to each entry.</p>
-<pre><code>1. ...
-2.  &lt;t0 commit&gt;
-3.  &lt;t1 begin&gt;
-4.  &lt;t1 update f1 p1 0 10 20&gt;
-5.  &lt;t2 begin&gt;
-6.  &lt;t2 update f2 p3 0 200 300&gt;
-7.  &lt;start_checkpoint t1,t2&gt; # sys pauses, no more new transaction
-8.  &lt;t1 commit&gt;
-9.  &lt;t2 commit&gt;
-10. &lt;end_checkpoint t1,t2&gt;  # sys resumes, new transaction can be added
-11. &lt;t3 begin&gt;
-12. &lt;t3 update f3 p2 0 30 40&gt;
-</code></pre>
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-4-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-4-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-4-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-4-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-4-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-4-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-4-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-4-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-4-10">10</a></span>
+<span class="normal"><a href="#__codelineno-4-11">11</a></span>
+<span class="normal"><a href="#__codelineno-4-12">12</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1"></a>1. ...
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2"></a>2.  &lt;t0 commit&gt;
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3"></a>3.  &lt;t1 begin&gt;
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4"></a>4.  &lt;t1 update f1 p1 0 10 20&gt;
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5"></a>5.  &lt;t2 begin&gt;
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6"></a>6.  &lt;t2 update f2 p3 0 200 300&gt;
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7"></a>7.  &lt;start_checkpoint t1,t2&gt; # sys pauses, no more new transaction
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8"></a>8.  &lt;t1 commit&gt;
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9"></a>9.  &lt;t2 commit&gt;
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10"></a>10. &lt;end_checkpoint t1,t2&gt;  # sys resumes, new transaction can be added
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11"></a>11. &lt;t3 begin&gt;
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12"></a>12. &lt;t3 update f3 p2 0 30 40&gt;
+</span></code></pre></div></td></tr></table></div>
 <p>For undo, we scan the log backwards until line 10, we undo the update at line 12.
 For redo, we start from line 10 and scan forward, but we find nothing to re-do because there is nothing to re-do.</p>
-<h4 id="nonquiescent-checkpoint">Nonquiescent checkpoint</h4>
+<h4 id="nonquiescent-checkpoint">Nonquiescent checkpoint<a class="headerlink" href="#nonquiescent-checkpoint" title="Permanent link">&para;</a></h4>
 <p>A major disadvantage of quiescent checkpoing is during the pause, no new transactions is initiated, it hurts the overall performance. </p>
 <p>A nonquiescent checkpoint overcomes this drawback by capturing the uncommitted active transactions when the checkpoint is started.</p>
-<h5 id="nonquiescent-checkpoint-with-undo-logging-with-stealing-and-force">Nonquiescent checkpoint with undo-logging (with stealing and force)</h5>
+<h5 id="nonquiescent-checkpoint-with-undo-logging-with-stealing-and-force">Nonquiescent checkpoint with undo-logging (with stealing and force)<a class="headerlink" href="#nonquiescent-checkpoint-with-undo-logging-with-stealing-and-force" title="Permanent link">&para;</a></h5>
 <p>The main idea is to flush all uncommitted tranactions' dirty pages during the checkpoint and commit them.</p>
 <ol>
 <li>find all the active (and uncommitted) transactions ids, <code>T1</code>, ..., <code>Tn</code>.</li>
@@ -275,21 +841,32 @@ For redo, we start from line 10 and scan forward, but we find nothing to re-do b
 </ol>
 <p>During the undo recovery phase, we start from the last completed checkpoint's  <code>start_checkpoint</code> entry and scan for uncommitted transactions in the log and undo the page write if there is any. This is because during the checkpoint, there might be new transaction initiated. Note that that undo operations are applied backwards starting from the tail.</p>
 <p>For instance, consider the tail fragment of some log (simplified).</p>
-<pre><code>1. ...
-2.  &lt;t0 commit&gt;
-3.  &lt;t1 begin&gt;
-4.  &lt;t1 update f1 p1 0 10&gt;
-5.  &lt;t2 begin&gt;
-6.  &lt;t2 update f2 p3 0 200&gt;
-7.  &lt;start_checkpoint t1,t2&gt;
-8.  &lt;t3 begin&gt;
-9.  &lt;t1 commit&gt;
-10. &lt;t2 commit&gt;
-11. &lt;t3 update f3 p2 0 30&gt;
-12. &lt;end_checkpoint t1,t2&gt;
-</code></pre>
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-5-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-5-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-5-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-5-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-5-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-5-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-5-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-5-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-5-10">10</a></span>
+<span class="normal"><a href="#__codelineno-5-11">11</a></span>
+<span class="normal"><a href="#__codelineno-5-12">12</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1"></a>1. ...
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2"></a>2.  &lt;t0 commit&gt;
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3"></a>3.  &lt;t1 begin&gt;
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4"></a>4.  &lt;t1 update f1 p1 0 10&gt;
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5"></a>5.  &lt;t2 begin&gt;
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6"></a>6.  &lt;t2 update f2 p3 0 200&gt;
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7"></a>7.  &lt;start_checkpoint t1,t2&gt;
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8"></a>8.  &lt;t3 begin&gt;
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9"></a>9.  &lt;t1 commit&gt;
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10"></a>10. &lt;t2 commit&gt;
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11"></a>11. &lt;t3 update f3 p2 0 30&gt;
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12"></a>12. &lt;end_checkpoint t1,t2&gt;
+</span></code></pre></div></td></tr></table></div>
 <p>During the recovery, we start from line 7 <code>&lt;start_checkpoint t1,t2&gt;</code> and look for uncommitted transaction, which is <code>t3</code> in this case, and undo the update at line 11.</p>
-<h5 id="nonquiescent-checkpoint-with-redo-logging-with-no-force-and-no-stealing">Nonquiescent checkpoint with redo-logging (with no force and no stealing)</h5>
+<h5 id="nonquiescent-checkpoint-with-redo-logging-with-no-force-and-no-stealing">Nonquiescent checkpoint with redo-logging (with no force and no stealing)<a class="headerlink" href="#nonquiescent-checkpoint-with-redo-logging-with-no-force-and-no-stealing" title="Permanent link">&para;</a></h5>
 <p>The main idea is to flush all committed transactions (the dirty pages) during the check point.</p>
 <ol>
 <li>find all the active (and uncommitted) transactions ids, <code>T1</code>, ..., <code>Tn</code>.</li>
@@ -299,21 +876,32 @@ For redo, we start from line 10 and scan forward, but we find nothing to re-do b
 </ol>
 <p>During the redo recovery phase, we start from the last completed checkpoint's <code>start_checkpoint</code> entry and search for transactions being committed  after this point, and redo these transactions. Note that some of these transactions (to be redone) could have been started before the starting of the check point (but still active during the check point).</p>
 <p>For instance, consider the tail fragment of some log (simplified).</p>
-<pre><code>1.  ...
-2.  &lt;t0 commit&gt;
-3.  &lt;t1 begin&gt;
-4.  &lt;t1 update f1 p1 0 20&gt;
-5.  &lt;t2 begin&gt;
-6.  &lt;t2 update f2 p3 0 300&gt;
-7.  &lt;start_checkpoint t1,t2&gt; 
-8.  &lt;t3 begin&gt;
-9.  &lt;t1 commit&gt;
-10. &lt;t3 update f3 p2 0 40&gt;
-11. &lt;end_checkpoint t1,t2&gt; # dirty pages belong to t0 have been flushed
-12. &lt;t2 commit&gt;
-</code></pre>
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-6-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-6-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-6-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-6-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-6-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-6-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-6-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-6-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-6-10">10</a></span>
+<span class="normal"><a href="#__codelineno-6-11">11</a></span>
+<span class="normal"><a href="#__codelineno-6-12">12</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1"></a>1.  ...
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2"></a>2.  &lt;t0 commit&gt;
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3"></a>3.  &lt;t1 begin&gt;
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4"></a>4.  &lt;t1 update f1 p1 0 20&gt;
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5"></a>5.  &lt;t2 begin&gt;
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6"></a>6.  &lt;t2 update f2 p3 0 300&gt;
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7"></a>7.  &lt;start_checkpoint t1,t2&gt; 
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8"></a>8.  &lt;t3 begin&gt;
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9"></a>9.  &lt;t1 commit&gt;
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10"></a>10. &lt;t3 update f3 p2 0 40&gt;
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11"></a>11. &lt;end_checkpoint t1,t2&gt; # dirty pages belong to t0 have been flushed
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12"></a>12. &lt;t2 commit&gt;
+</span></code></pre></div></td></tr></table></div>
 <p>We start from line 7 <code>&lt;start_checkpoint t1,t2&gt;</code> and search for committed transactions, i.e. <code>t1</code> and <code>t2</code>, we need to re-do the updates at lines 4 and 6.</p>
-<h5 id="nonquiescent-checkpoint-with-undoredo-logging-with-no-force-and-stealing">Nonquiescent checkpoint with undo/redo-logging (with no force and stealing)</h5>
+<h5 id="nonquiescent-checkpoint-with-undoredo-logging-with-no-force-and-stealing">Nonquiescent checkpoint with undo/redo-logging (with no force and stealing)<a class="headerlink" href="#nonquiescent-checkpoint-with-undoredo-logging-with-no-force-and-stealing" title="Permanent link">&para;</a></h5>
 <p>The most complicated checkpoint so far. The main idea is to flush all dirty pages being updated before the check point start.</p>
 <ol>
 <li>find all the active (and uncommitted) transactions ids, <code>T1</code>, ..., <code>Tn</code>.</li>
@@ -324,101 +912,93 @@ For redo, we start from line 10 and scan forward, but we find nothing to re-do b
 <p>During the undo recovery phase, we start from the last completed checkpoint's <code>start_checkpoint</code> entry and search for uncommitted transactions and undo the update, some of these transaction could have been started before the <code>start_checkpoint</code>.
 During the redo recovery phase, we start from the last completed checkpoint's <code>start_checkpoint</code> entry and search for transactions being committed  after this point, and redo these transactions (the same as the redo-logging case).</p>
 <p>For instance, consider the tail fragment of some log (simplified).</p>
-<pre><code>1.  ...
-2.  &lt;t0 commit&gt;
-3.  &lt;t1 begin&gt;
-4.  &lt;t1 update f1 p1 0 10 20&gt;
-5.  &lt;t2 begin&gt;
-6.  &lt;t2 update f2 p3 0 200 300&gt;
-7.  &lt;start_checkpoint t1,t2&gt; 
-8.  &lt;t3 begin&gt;
-9.  &lt;t1 update f1 p10 0 5 7&gt;
-10. &lt;t1 commit&gt;
-11. &lt;t3 update f3 p2 0 30 40&gt;
-12. &lt;end_checkpoint t1,t2&gt; # p1, p3 and other dirty pages belong to t0 have been flushed
-13. &lt;t2 commit&gt;
-</code></pre>
-<p>For undo-phase, we start from line 7 <code>&lt;start_checkpoint t1,t2&gt;</code> and search for uncommitted transactions, i.e. <code>t3</code>, we undo the update at line 11.</p>
-<p>For redo-phase, we start from line 7 <code>&lt;start_checkpoint t1,t2&gt;</code> and search for committed transactions, i.e. <code>t1</code> and <code>t2</code>, we need to re-do the updates at lines 4, 6 and 9.</p></div>
-            </div>
-        </div>
+<p><div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-7-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-7-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-7-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-7-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-7-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-7-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-7-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-7-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-7-10">10</a></span>
+<span class="normal"><a href="#__codelineno-7-11">11</a></span>
+<span class="normal"><a href="#__codelineno-7-12">12</a></span>
+<span class="normal"><a href="#__codelineno-7-13">13</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1"></a>1.  ...
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2"></a>2.  &lt;t0 commit&gt;
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3"></a>3.  &lt;t1 begin&gt;
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4"></a>4.  &lt;t1 update f1 p1 0 10 20&gt;
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5"></a>5.  &lt;t2 begin&gt;
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6"></a>6.  &lt;t2 update f2 p3 0 200 300&gt;
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7"></a>7.  &lt;start_checkpoint t1,t2&gt; 
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8"></a>8.  &lt;t3 begin&gt;
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9"></a>9.  &lt;t1 update f1 p10 0 5 7&gt;
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10"></a>10. &lt;t1 commit&gt;
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11"></a>11. &lt;t3 update f3 p2 0 30 40&gt;
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12"></a>12. &lt;end_checkpoint t1,t2&gt; # p1, p3 and other dirty pages belong to t0 have been flushed
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13"></a>13. &lt;t2 commit&gt;
+</span></code></pre></div></td></tr></table></div>
+For undo-phase, we start from line 7 <code>&lt;start_checkpoint t1,t2&gt;</code> and search for uncommitted transactions, i.e. <code>t3</code>, we undo the update at line 11.</p>
+<p>For redo-phase, we start from line 7 <code>&lt;start_checkpoint t1,t2&gt;</code> and search for committed transactions, i.e. <code>t1</code> and <code>t2</code>, we need to re-do the updates at lines 4, 6 and 9.</p>
 
-        <footer class="col-md-12">
-            <hr>
-            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
-        </footer>
-        <script src="../../js/jquery-3.6.0.min.js"></script>
-        <script src="../../js/bootstrap.min.js"></script>
-        <script>
-            var base_url = "../..",
-                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
-        </script>
-        <script src="../../js/base.js"></script>
-        <script src="../../javascripts/mathjax.js"></script>
-        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-        <script src="../../search/main.js"></script>
 
-        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="searchModalLabel">Search</h4>
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
             </div>
-            <div class="modal-body">
-                <p>From here you can search these documents. Enter your search terms below.</p>
-                <form>
-                    <div class="form-group">
-                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
-                    </div>
-                </form>
-                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
-            </div>
-            <div class="modal-footer">
-            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
-    </div>
-</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-            </div>
-            <div class="modal-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th style="width: 20%;">Keys</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="help shortcut"><kbd>?</kbd></td>
-                    <td>Open this help</td>
-                  </tr>
-                  <tr>
-                    <td class="next shortcut"><kbd>n</kbd></td>
-                    <td>Next page</td>
-                  </tr>
-                  <tr>
-                    <td class="prev shortcut"><kbd>p</kbd></td>
-                    <td>Previous page</td>
-                  </tr>
-                  <tr>
-                    <td class="search shortcut"><kbd>s</kbd></td>
-                    <td>Search</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
 </div>
-
-    </body>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "content.code.copy", "navigation.expand", "navigation.indexes", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
 </html>
