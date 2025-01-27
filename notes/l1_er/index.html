@@ -443,14 +443,14 @@
 <p>An ER Diagram may consists of some of the following</p>
 <ol>
 <li>Entity set. An entity set captures a set of objects or items to be stored. It is represented as a rectangular box with the entity name inside. </li>
-<li>Attribute. An attribute describe a property of an entity. An attribute is represented as an oval shape with the attribute name inside. Attribute serves as (part of) the primary key of the entity will be underlined.</li>
+<li>Attribute. An attribute describe a property of an entity. An attribute is represented as an oval shape with the attribute name inside. Attribute serving as (part of) the primary key of the entity will be underlined.</li>
 <li>Relationship. A relationship defines the relationship between entities. It is represented as a diamond shape with the relationship name inside. Relationships are often annotated with cardinality constraints. We will discuss it shortly.</li>
 </ol>
 <p><img alt="" src="../images/student_class_er.png" /></p>
 <p>For example in the above ER diagram, we find two entities, i.e. <code>Student</code> and <code>Class</code>. Each <code>Student</code> entity has three attributes, <code>NRIC</code>, <code>Name</code> and <code>DoB</code>, with <code>NRIC</code> as the primary key. Likewise, each <code>Class</code> entity has three attributes, <code>Number</code> (as primary key), <code>Name</code> and <code>Location</code>. </p>
 <p>There exists a binary relationship between <code>Student</code> and <code>Class</code> entities, <code>Enrolled in</code>. It describes a business constraints that students can be enrolled into classes.  The annotation <code>N</code> describes that each class may have more than 1 students. The annotation <code>M</code> defines that each student may take more than one modules.  Note that in this module, for simplicity, we only require the upper bound to be specified in cardinality constraints, which could be either <code>1</code> or <code>N</code> (or <code>M</code>). Note that <code>N</code> and <code>M</code> are just meta terms to represent "many". </p>
 <h3 id="self-referencing-relationship">Self-referencing relationship<a class="headerlink" href="#self-referencing-relationship" title="Permanent link">&para;</a></h3>
-<p>There is an edge case in which a relationship may be self-referencing w.r.t to an entity. </p>
+<p>There is an edge case in which a relationship may be self-referencing w.r.t an entity. </p>
 <p><img alt="" src="../images/self_ref_er.png" /></p>
 <p>In the above ER diagram, we omit the attributes of the Article entity for simplicity. Each article can be referenced by many other articles. Each article can reference many other articles. The extra annotation <code>Citing</code> and <code>Cited</code> label the role of the article involved in the relationship.</p>
 <h3 id="tertiary-relationship">Tertiary relationship<a class="headerlink" href="#tertiary-relationship" title="Permanent link">&para;</a></h3>
