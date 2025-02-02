@@ -528,7 +528,7 @@
 <li>Define relational algebra terms to query a relational model</li>
 </ol>
 <h2 id="relational-algebra">Relational Algebra<a class="headerlink" href="#relational-algebra" title="Permanent link">&para;</a></h2>
-<p>Given that relational model is a logical model (abstracting away the implementation details), we need something operations defined on the same layout to manipulate the data in a relational model. (So that we don't need to deal with the implementation details yet.)</p>
+<p>Given that relational model is a logical model (abstracting away the implementation details), we need some operations defined on the same layout to manipulate the data in a relational model. (So that we don't need to deal with the implementation details yet.)</p>
 <p>Like math algebra, Relational Algebra is a way to express data operation through symbols and relation manipulations. </p>
 <ol>
 <li>The data manipulation operations are defined in terms of a sequence of operation applications.</li>
@@ -570,7 +570,7 @@ Publish(<ins>article_id, book_id, publisher_id</ins>)</p>
 <p>A selection operator, <span class="arithmatex">\(\sigma_{P}(R)\)</span>, takes a logical predicate <span class="arithmatex">\(P\)</span> and a relation <span class="arithmatex">\(R\)</span> and returns all the tuple in <span class="arithmatex">\(R\)</span> that satisfy <span class="arithmatex">\(P\)</span>. </p>
 <p>Note that <span class="arithmatex">\(P\)</span> can be</p>
 <ol>
-<li>a simple predicate such as a equality test $name = "tom" or </li>
+<li>a simple predicate such as an equality test <span class="arithmatex">name = "tom"</span> or </li>
 <li>a conjunction or disjunction of predicates, e.g. <span class="arithmatex">\(name = "tom"\ {\tt AND} \ age &gt; 21\)</span>.</li>
 </ol>
 <p>For example, the following relational algebra expression returns a relation with all tuples from <span class="arithmatex">\(Publish\)</span> with <span class="arithmatex">\(publisher\_id\)</span> equals to <code>p1</code>.</p>
@@ -666,7 +666,7 @@ Publish(<ins>article_id, book_id, publisher_id</ins>)</p>
 <p>Cartesian Product is one of the four possible join operators.</p>
 <p>Let's discuss the other three.</p>
 <h3 id="inner-join">Inner Join<a class="headerlink" href="#inner-join" title="Permanent link">&para;</a></h3>
-<p>The inner join operator <span class="arithmatex">\((R \bowtie_{R.A = S.B, R.C=S.D,...} S)\)</span>, returns a relation that containing tuples from <span class="arithmatex">\(R\times S\)</span> that satisfy <span class="arithmatex">\(R.A = S.B, R.C=S.D,...\)</span>.</p>
+<p>The inner join operator <span class="arithmatex">\((R \bowtie_{R.A = S.B, R.C=S.D,...} S)\)</span>, returns a relation containing tuples from <span class="arithmatex">\(R\times S\)</span> that satisfy <span class="arithmatex">\(R.A = S.B, R.C=S.D,...\)</span>.</p>
 <p>Let <span class="arithmatex">\(R(A,B,C)\)</span> and <span class="arithmatex">\(S(D,E,F)\)</span> be relations.</p>
 <table>
 <thead>
@@ -752,7 +752,7 @@ Publish(<ins>article_id, book_id, publisher_id</ins>)</p>
 </tbody>
 </table>
 <h3 id="natural-join">Natural Join<a class="headerlink" href="#natural-join" title="Permanent link">&para;</a></h3>
-<p>The natural join operator <span class="arithmatex">\((R \bowtie S)\)</span>, returns a relation that containing tuples from <span class="arithmatex">\(R\times S\)</span> that satisfy <span class="arithmatex">\(R.A = S.A, R.B=S.B,...\)</span>, where <span class="arithmatex">\(A\)</span>, <span class="arithmatex">\(B\)</span>, ... are the common attributes between <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(S\)</span>.</p>
+<p>The natural join operator <span class="arithmatex">\((R \bowtie S)\)</span>, returns a relation containing tuples from <span class="arithmatex">\(R\times S\)</span> that satisfy <span class="arithmatex">\(R.A = S.A, R.B=S.B,...\)</span>, where <span class="arithmatex">\(A\)</span>, <span class="arithmatex">\(B\)</span>, ... are the common attributes between <span class="arithmatex">\(R\)</span> and <span class="arithmatex">\(S\)</span>.</p>
 <p>Note that the common column are merged after natural join.</p>
 <p>Let <span class="arithmatex">\(R(A,B,C)\)</span> and <span class="arithmatex">\(S(D,E,F)\)</span> be relations.</p>
 <table>
