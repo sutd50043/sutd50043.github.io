@@ -715,7 +715,7 @@ log_d(|R|/d) + \alpha(C,R) \cdot | R |
 <p>This will bring us back to the same estimated cost as the clustered index (modular the cost of sorting).</p>
 <h2 id="sort-operation">Sort Operation<a class="headerlink" href="#sort-operation" title="Permanent link">&para;</a></h2>
 <p>Sorting is essential. </p>
-<p>From Data Driven World and Algorithms, we learned various sorting algorthms. All of these algorithms assumes that the data can fit in the RAM. In the settings of database operations, this assumption is no longer valid. </p>
+<p>From Data Driven World and Algorithms, we lea rned various sorting algorthms. All of these algorithms assumes that the data can fit in the RAM. In the settings of database operations, this assumption is no longer valid. </p>
 <h3 id="external-sort">External Sort<a class="headerlink" href="#external-sort" title="Permanent link">&para;</a></h3>
 <p>The external sorting algorithm is an instance of the merge sort. </p>
 <h4 id="recap-merge-sort">Recap Merge sort<a class="headerlink" href="#recap-merge-sort" title="Permanent link">&para;</a></h4>
@@ -986,7 +986,7 @@ The cost will be <span class="arithmatex">\(B(S) + \lceil B(S) / (m - 2) \rceil 
 </li>
 </ol>
 <p>If the index is clustered, the cost of this approach is <span class="arithmatex">\(B(R) + |R| \cdot K\)</span> where <span class="arithmatex">\(K\)</span> is a constant dependent on the structure of the index or the height of the B+ Tree index. E.g. if the height of the B+ Tree is 3, then <span class="arithmatex">\(K = 4\)</span> assuming each node occupying a page. </p>
-<p>When the index is not clustered, the cost will become <span class="arithmatex">\(B(R) + |R| \cdot K \cdot j\)</span> where <span class="arithmatex">\(j\)</span> is the maximum number of tuples of <span class="arithmatex">\(S\)</span> sharing one key. </p>
+<p>When the index is not clustered, the cost will become <span class="arithmatex">\(B(R) + |R| \cdot (K + j - 1)\)</span> where <span class="arithmatex">\(j\)</span> is the maximum number of tuples of <span class="arithmatex">\(S\)</span> sharing one key. </p>
 <p>An extreme case where <span class="arithmatex">\(R\)</span> is sorted by <span class="arithmatex">\(a\)</span> and <span class="arithmatex">\(S.b\)</span> is a clustered index. The total cost is <span class="arithmatex">\(B(R) + B(S)\)</span>. </p>
 <h3 id="sort-merge-join">Sort Merge Join<a class="headerlink" href="#sort-merge-join" title="Permanent link">&para;</a></h3>
 <p>The fourth alternative is sort merge join. </p>
