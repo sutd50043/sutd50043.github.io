@@ -549,7 +549,7 @@
 <h2 id="decomposition">Decomposition<a class="headerlink" href="#decomposition" title="Permanent link">&para;</a></h2>
 <p>By now, we know that having an FD in which the LHS of the constraint is not a the primary key of the relation imposes data anomalies. </p>
 <p>Recall the relation Publish(<ins>article_id, book_id</ins>, publisher_id, date)</p>
-<p>with the fillowing data</p>
+<p>with the following data</p>
 <table>
 <thead>
 <tr>
@@ -710,7 +710,7 @@
 <li>Compute <span class="arithmatex">\(F^+\)</span></li>
 <li>Let <span class="arithmatex">\(Result = \{R\}\)</span></li>
 <li>While <span class="arithmatex">\(R_i \in Result\)</span> not in BCNF, do 
-  3.1. Choose <span class="arithmatex">\(X\rightarrow Y \in F^+\)</span> such that <span class="arithmatex">\(X\)</span> and <span class="arithmatex">\(Y\)</span> are attribtues in <span class="arithmatex">\(R_i\)</span> but <span class="arithmatex">\(X\)</span> is not a super key of <span class="arithmatex">\(R_i\)</span>.
+  3.1. Choose <span class="arithmatex">\(X\rightarrow Y \in F^+\)</span> such that <span class="arithmatex">\(X\)</span> and <span class="arithmatex">\(Y\)</span> are attributes in <span class="arithmatex">\(R_i\)</span> but <span class="arithmatex">\(X\)</span> is not a super key of <span class="arithmatex">\(R_i\)</span>.
   3.2. Decompose <span class="arithmatex">\(R_i\)</span> into <span class="arithmatex">\(R_{i1}\)</span> <span class="arithmatex">\(R_{i2}\)</span> with <span class="arithmatex">\(X\rightarrow Y\)</span>.
   3.3. Update <span class="arithmatex">\(Result = Result - \{ R_i\}  \cup \{ R_{i1}, R_{i2} \}\)</span></li>
 </ol>
@@ -763,9 +763,9 @@
 <p>The following diagram shows some example</p>
 <p><img alt="" src="../images/3nf.png" /></p>
 <p>In the first diagram, <span class="arithmatex">\(X \rightarrow A\)</span>, assuming <span class="arithmatex">\(KEY\)</span> is the only candidate key, hence <span class="arithmatex">\(X\)</span> is not a super key. Further more <span class="arithmatex">\(A\)</span> is not part of a candidate key. Thus it is a counter example of 3NF.</p>
-<p>In the second diagram, <span class="arithmatex">\(X\rightarrow A\)</span>, <span class="arithmatex">\(X\)</span> is not a supere key and <span class="arithmatex">\(A\)</span> is part of a candidate key. Thus it is in 3NF.</p>
+<p>In the second diagram, <span class="arithmatex">\(X\rightarrow A\)</span>, <span class="arithmatex">\(X\)</span> is not a super key and <span class="arithmatex">\(A\)</span> is part of a candidate key. Thus it is in 3NF.</p>
 <h4 id="lemma-a-relation-in-3nf-is-also-in-bcnf">Lemma: A relation in 3NF is also in BCNF.<a class="headerlink" href="#lemma-a-relation-in-3nf-is-also-in-bcnf" title="Permanent link">&para;</a></h4>
-<p>It can be proven from by the definitions. </p>
+<p>It can be proven from the definitions. </p>
 <h4 id="bcnf-vs-3nf">BCNF vs 3NF<a class="headerlink" href="#bcnf-vs-3nf" title="Permanent link">&para;</a></h4>
 <p>BCNF is easier to compute, we just keep finding a FD that violates the definition and keep decomposing until none is found.</p>
 <p>Though BCNF decomposition is lossless, it is <em>not</em> dependency preserving.</p>
